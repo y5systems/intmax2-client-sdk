@@ -1,24 +1,26 @@
 {
-  "name": "intmax2-core-sdk",
+  "name": "intmax2-client-sdk",
   "version": "0.0.1",
-  "type": "module",
-  "main": "./src/_cjs/index.js",
-  "module": "./src/_esm/index.js",
-  "types": "./src/_types/index.d.ts",
-  "files": ["src/_cjs", "src/_esm", "src/_types"],
+  "type": "commonjs",
+  "description": "",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./client": "./dist/browser/index.js",
+    "./server": "./dist/node/index.js",
+    "./wasm": "./dist/wasm"
+  },
   "scripts": {
-    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run build:types",
-    "build:cjs": "tsc --project ./tsconfig.build.json --module commonjs --outDir ./src/_cjs --removeComments --verbatimModuleSyntax false && printf '{\"type\":\"commonjs\"}' > ./src/_cjs/package.json",
-    "build:esm": "tsc --project ./tsconfig.build.json --module es2015 --outDir ./src/_esm && printf '{\"type\": \"module\",\"sideEffects\":false}' > ./src/_esm/package.json",
-    "build:types": "tsc --project ./tsconfig.build.json --module esnext --outDir ./src/_types --declaration --declarationMap --emitDeclarationOnly",
-    "clean": "rimraf src/_esm src/_cjs src/_types",
-    "format": "npx @biomejs/biome format --write src",
-    "lint": "npx @biomejs/biome lint --write src",
-    "check": "npx @biomejs/biome check --write src"
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@scure/bip39": "^1.5.1",
+    "axios": "^1.7.9",
+    "viem": "^2.22.8"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.3",
-    "rimraf": "^5.0.10",
-    "typescript": "^5.5.4"
+    "node": "^22.13.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.5.3"
   }
 }

@@ -5,6 +5,7 @@ declare module '*.wasm?url' {
 
 declare module '*.wasm' {
   const wasm: ArrayBuffer;
+  const content: string;
   export default wasm;
 }
 

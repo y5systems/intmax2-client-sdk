@@ -8,7 +8,7 @@ import { mainnet, sepolia } from 'viem/chains';
 export class TokenFetcher {
   tokens: Token[] = [];
 
-  #intervalId: number | null = null;
+  #intervalId: number | null | NodeJS.Timeout = null;
   readonly #httpClient: AxiosInstance;
   readonly #liquidityContractAddress: string;
   readonly #publicClient: PublicClient;

@@ -1,0 +1,44 @@
+name: NPM Publish and GitHub Release
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build package
+        run: pnpm prepare
+
+      - name: Copy WASM files
+        run: |
+          mkdir -p dist/wasm
+          cp -r src/wasm/* dist/wasm/
+
+      - name: Publish to NPM
+        uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2

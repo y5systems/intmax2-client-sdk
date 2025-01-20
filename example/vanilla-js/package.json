@@ -8,6 +8,9 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
+  "dependencies": {
+    "intmax2-client-sdk": "file:../../dist"
+  },
   "devDependencies": {
     "typescript": "~5.6.2",
     "vite": "^6.0.5"

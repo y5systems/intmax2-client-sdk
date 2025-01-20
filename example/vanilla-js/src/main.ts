@@ -1,5 +1,5 @@
 import './style.css';
-import { IntMaxClient } from '../../../src';
+import { IntMaxClient } from 'intmax2-client-sdk';
 
 const client = await IntMaxClient.init({ environment: 'testnet' });
 
@@ -13,13 +13,13 @@ async function ff() {
   const { balances } = await client.fetchTokenBalances();
   console.log('balances', balances);
 
-  // const gas = await client.estimateDepositGas({
-  //   amount: 1001,
-  //   token: balances[1].token,
-  //   address: client.address,
-  //   isGasEstimation: true,
-  // });
-  // console.log(gas);
+  const gas = await client.estimateDepositGas({
+    amount: 1001,
+    token: balances[1].token,
+    address: client.address,
+    isGasEstimation: true,
+  });
+  console.log(gas);
 
   // const deposit = await client.deposit({
   //   amount: 100,

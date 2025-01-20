@@ -1,17 +1,49 @@
 {
   "name": "intmax2-client-sdk",
   "version": "0.0.1",
+  "description": "Client SDK for Intmax2",
   "type": "commonjs",
-  "description": "",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./client": "./dist/browser/index.js",
-    "./server": "./dist/node/index.js",
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./client": {
+      "require": "./dist/browser/index.js",
+      "import": "./dist/browser/index.mjs",
+      "types": "./dist/browser/index.d.ts"
+    },
+    "./server": {
+      "require": "./dist/node/index.js",
+      "import": "./dist/node/index.mjs",
+      "types": "./dist/node/index.d.ts"
+    },
     "./wasm": "./dist/wasm"
   },
+  "files": [
+    "dist",
+    "src/wasm",
+    "README.md"
+  ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && pnpm run copy-wasm",
+    "build:esm": "tsc -p tsconfig.esm.json && pnpm run copy-wasm",
+    "copy-wasm": "mkdir -p dist/wasm && cp -r src/wasm/* dist/wasm/",
+    "prepare": "pnpm build && pnpm build:esm",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" --fix"
+  },
+  "keywords": [
+    "sdk",
+    "client",
+    "intmax2"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "@scure/bip39": "^1.5.1",
@@ -21,6 +53,10 @@
   "devDependencies": {
     "node": "^22.13.0",
     "prettier": "^3.4.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

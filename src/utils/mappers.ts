@@ -14,7 +14,6 @@ import {
 import { formatEther, zeroAddress } from 'viem';
 
 export const jsTransferToTransfer = (td: JsTransferData): TransferData => {
-  console.log('td', td);
   return {
     transfer: {
       amount: td.transfer.amount,

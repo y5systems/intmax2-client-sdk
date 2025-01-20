@@ -221,6 +221,7 @@ export interface INTMAXClient {
   // additional services
   login: () => Promise<LoginResponse>;
   logout: () => Promise<void>;
+  getTokensList: () => Promise<Token[]>;
 }
 
 export interface PaginatedResponse<T> {

@@ -200,7 +200,7 @@ export class IntMaxClient implements INTMAXClient {
         return this.#privateKey;
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
 
     throw Error('Signature is wrong');
@@ -435,7 +435,6 @@ export class IntMaxClient implements INTMAXClient {
         }
       }
     }
-    console.log(txConfig);
 
     const estimatedGas = await this.#publicClient.estimateContractGas({
       address: txConfig.address,
@@ -486,6 +485,13 @@ export class IntMaxClient implements INTMAXClient {
     throw Error('Not implemented!');
   }
 
+  async getTokensList(): Promise<Token[]> {
+    if (!this.#tokenFetcher.tokens) {
+      return this.#tokenFetcher.fetchTokens();
+    }
+    return this.#tokenFetcher.tokens;
+  }
+
   // PRIVATE METHODS
   #generateConfig(env: IntMaxEnvironment): Config {
     const urls = env === 'mainnet' ? TESTNET_ENV : TESTNET_ENV;
@@ -513,6 +519,7 @@ export class IntMaxClient implements INTMAXClient {
       BigInt(urls.rollup_contract_deployed_block_number), // Rollup Contract Deployed Block Number
     );
   }
+
   #checkAllowanceToExecuteMethod() {
     if (!this.isLoggedIn && !this.address) {
       throw Error('Not logged in');
@@ -522,6 +529,7 @@ export class IntMaxClient implements INTMAXClient {
       throw Error('User data not found');
     }
   }
+
   async #decryptTransactionData(
     data: EncryptedDataItem[],
     variant: TransactionType,

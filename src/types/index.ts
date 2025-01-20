@@ -182,7 +182,7 @@ export interface LoginResponse {
   isLoggedIn: boolean;
 }
 
-export type IntMaxEnvironment = 'testnet' | 'mainnet';
+export type IntMaxEnvironment = 'testnet' | 'mainnet' | 'devnet';
 
 export interface ConstructorParams {
   environment: IntMaxEnvironment;

@@ -1,6 +1,6 @@
 import { IntMaxEnvironment, PaginatedResponse, Token, TokenType } from '../types';
 import { axiosClientInit } from '../utils';
-import { liquidityAbiNft, TESTNET_ENV } from '../constants';
+import { DEVNET_ENV, liquidityAbiNft, MAINNET_ENV, TESTNET_ENV } from '../constants';
 import { AxiosInstance } from 'axios';
 import { Abi, createPublicClient, http, PublicClient } from 'viem';
 import { mainnet, sepolia } from 'viem/chains';
@@ -15,10 +15,19 @@ export class TokenFetcher {
 
   constructor(environment: IntMaxEnvironment) {
     this.#liquidityContractAddress =
-      environment === 'mainnet' ? TESTNET_ENV.liquidity_contract : TESTNET_ENV.liquidity_contract;
+      environment === 'mainnet'
+        ? MAINNET_ENV.liquidity_contract
+        : environment === 'testnet'
+          ? TESTNET_ENV.liquidity_contract
+          : DEVNET_ENV.liquidity_contract;
 
     this.#httpClient = axiosClientInit({
-      baseURL: environment === 'mainnet' ? TESTNET_ENV.tokens_url : TESTNET_ENV.tokens_url,
+      baseURL:
+        environment === 'mainnet'
+          ? MAINNET_ENV.tokens_url
+          : environment === 'testnet'
+            ? TESTNET_ENV.tokens_url
+            : DEVNET_ENV.tokens_url,
     });
 
     this.#publicClient = createPublicClient({

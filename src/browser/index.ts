@@ -73,7 +73,7 @@ import {
 } from '../wasm/browser/intmax2_wasm_lib';
 import wasmBytes from '../wasm/browser/intmax2_wasm_lib_bg.wasm?url';
 import { mainnet, sepolia } from 'viem/chains';
-import { LiquidityAbi, networkMessage, TESTNET_ENV } from '../constants';
+import { DEVNET_ENV, LiquidityAbi, MAINNET_ENV, networkMessage, TESTNET_ENV } from '../constants';
 import { AxiosInstance } from 'axios';
 import { TokenFetcher } from './token-fetcher';
 import { decryptedToWASMTx, jsTransferToTransfer, transactionMapper, wasmTxToTx } from '../utils/mappers';
@@ -111,10 +111,15 @@ export class IntMaxClient implements INTMAXClient {
     });
 
     this.#vaultHttpClient = axiosClientInit({
-      baseURL: environment === 'mainnet' ? TESTNET_ENV.key_vault_url : TESTNET_ENV.key_vault_url,
+      baseURL:
+        environment === 'mainnet'
+          ? MAINNET_ENV.key_vault_url
+          : environment === 'testnet'
+            ? TESTNET_ENV.key_vault_url
+            : DEVNET_ENV.key_vault_url,
     });
 
-    this.#urls = environment === 'mainnet' ? TESTNET_ENV : TESTNET_ENV;
+    this.#urls = environment === 'mainnet' ? MAINNET_ENV : environment === 'testnet' ? TESTNET_ENV : DEVNET_ENV;
     this.#config = this.#generateConfig(environment);
     this.#txFetcher = new TransactionFetcher(environment);
     this.#tokenFetcher = new TokenFetcher(environment);
@@ -494,7 +499,7 @@ export class IntMaxClient implements INTMAXClient {
 
   // PRIVATE METHODS
   #generateConfig(env: IntMaxEnvironment): Config {
-    const urls = env === 'mainnet' ? TESTNET_ENV : TESTNET_ENV;
+    const urls = env === 'mainnet' ? MAINNET_ENV : env === 'testnet' ? TESTNET_ENV : DEVNET_ENV;
 
     return new Config(
       urls.store_vault_server_url,

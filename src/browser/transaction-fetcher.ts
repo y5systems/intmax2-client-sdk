@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { axiosClientInit, getWithdrawHash } from '../utils';
-import { LiquidityAbi, TESTNET_ENV } from '../constants';
+import { DEVNET_ENV, LiquidityAbi, MAINNET_ENV, TESTNET_ENV } from '../constants';
 import {
   ContractWithdrawal,
   EncryptedDataItem,
@@ -24,14 +24,29 @@ export class TransactionFetcher {
 
   constructor(environment: IntMaxEnvironment) {
     this.#liquidityContractAddress =
-      environment === 'mainnet' ? TESTNET_ENV.liquidity_contract : TESTNET_ENV.liquidity_contract;
+      environment === 'mainnet'
+        ? MAINNET_ENV.liquidity_contract
+        : environment === 'testnet'
+          ? TESTNET_ENV.liquidity_contract
+          : DEVNET_ENV.liquidity_contract;
 
     this.#storeVaultHttpClient = axiosClientInit({
-      baseURL: environment === 'mainnet' ? TESTNET_ENV.store_vault_server_url : TESTNET_ENV.store_vault_server_url,
+      baseURL:
+        environment === 'mainnet'
+          ? MAINNET_ENV.store_vault_server_url
+          : environment === 'testnet'
+            ? TESTNET_ENV.store_vault_server_url
+            : DEVNET_ENV.store_vault_server_url,
     });
 
     this.#withdrawalHttpClient = axiosClientInit({
-      baseURL: `${environment === 'mainnet' ? TESTNET_ENV.withdrawal_aggregator_url : TESTNET_ENV.withdrawal_aggregator_url}/withdrawal-server`,
+      baseURL: `${
+        environment === 'mainnet'
+          ? MAINNET_ENV.withdrawal_aggregator_url
+          : environment === 'testnet'
+            ? TESTNET_ENV.withdrawal_aggregator_url
+            : DEVNET_ENV.withdrawal_aggregator_url
+      }/withdrawal-server`,
     });
 
     this.#publicClient = createPublicClient({

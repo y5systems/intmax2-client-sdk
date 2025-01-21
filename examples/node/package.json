@@ -1,0 +1,17 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-vlad-petrovych-intmax:InternetMaximalism/intmax2-client-sdk.git"
+  },
+  "dependencies": {
+    "intmax2-client-sdk": "file:../../server-sdk/dist"
+  }
+}

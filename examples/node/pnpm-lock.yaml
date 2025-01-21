@@ -1,0 +1,22 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      intmax2-client-sdk:
+        specifier: file:../../server-sdk/dist
+        version: dist@file:../../server-sdk/dist
+
+packages:
+
+  dist@file:../../server-sdk/dist:
+    resolution: {directory: ../../server-sdk/dist, type: directory}
+
+snapshots:
+
+  dist@file:../../server-sdk/dist: {}

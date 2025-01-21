@@ -12,6 +12,7 @@
     "url": "git@github.com-vlad-petrovych-intmax:InternetMaximalism/intmax2-client-sdk.git"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
     "intmax2-client-sdk": "file:../../server-sdk/dist"
   }
 }

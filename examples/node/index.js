@@ -1,4 +1,7 @@
 const { IntMaxNodeClient, TokenType } = require('intmax2-client-sdk');
+const dotenv = require('dotenv');
+dotenv.config();
+
 
 const main = async () => {
   try {
@@ -6,7 +9,7 @@ const main = async () => {
     console.log('Initializing client...');
     const client = new IntMaxNodeClient({
       environment: 'devnet',
-      eth_private_key: '0xcb1c7287a5cb621a3752c87671f189bcd4f17ec37a74ce986f4e6dd4c4f0dcef',
+      eth_private_key: process.env.ETH_PRIVATE_KEY,
     });
 
     // Login

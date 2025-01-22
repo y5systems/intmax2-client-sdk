@@ -1,8 +1,6 @@
 import {
   Abi,
-  createClient,
   createPublicClient,
-  createWalletClient,
   encodeFunctionData,
   erc20Abi,
   erc721Abi,
@@ -15,10 +13,8 @@ import {
   PublicClient,
   sha256,
   toHex,
-  WalletClient,
   WriteContractParameters,
 } from 'viem';
-import * as viemActions from 'viem/actions';
 import {
   BroadcastTransactionRequest,
   BroadcastTransactionResponse,
@@ -401,23 +397,19 @@ export class IntMaxNodeClient implements INTMAXClient {
 
     if (txConfig.functionName !== 'depositNativeToken') {
       const isValidApproval = await this.#validateApproval({
-        //@ts-ignore
-        tokenAddress: txConfig.args[0],
-        //@ts-ignore
-        amount: BigInt(txConfig.args[2]),
+        tokenAddress: txConfig?.args?.[0] as `0x${string}`,
+        amount: BigInt(txConfig?.args?.[2] as string),
         functionName: txConfig.functionName,
       });
 
       if (!isValidApproval) {
         switch (txConfig.functionName) {
           case 'depositERC20':
-            //@ts-ignore
-            await this.#getAllowance(txConfig.args[0], BigInt(txConfig.args[2]));
+            await this.#getAllowance(txConfig?.args?.[0] as `0x${string}`, BigInt(txConfig?.args?.[2] as string));
             break;
           case 'depositERC721':
           case 'depositERC1155':
-            //@ts-ignore
-            await this.#checkApproval(txConfig.args[0]);
+            await this.#checkApproval(txConfig.args?.[0] as `0x${string}`);
             break;
         }
       }
@@ -570,8 +562,10 @@ export class IntMaxNodeClient implements INTMAXClient {
       decryptedToWASMTx(tx, rawTransactions[idx].uuid, rawTransactions[idx].txType, rawTransactions[idx].timestamp),
     );
 
+    const tokens = await this.#tokenFetcher.fetchTokens();
+
     return formattedTxs
-      .map((tx) => wasmTxToTx(tx, this.#userData as unknown as JsUserData, pendingWithdrawals))
+      .map((tx) => wasmTxToTx(tx, this.#userData as unknown as JsUserData, tokens, pendingWithdrawals))
       .filter(Boolean) as Transaction[];
   }
 

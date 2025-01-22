@@ -3,6 +3,7 @@ import {
   ContractWithdrawal,
   EncryptedDataItem,
   RawTransaction,
+  Token,
   TokenType,
   Transaction,
   TransactionStatus,
@@ -91,6 +92,7 @@ export const wasmTxToTx = (
     timestamp: number;
   },
   userData: JsUserData,
+  tokens: Token[],
   pendingWithdrawals?: Record<WithdrawalsStatus, ContractWithdrawal[]>,
 ): Transaction | null => {
   if (rawTx.txType === TransactionType.Receive) {
@@ -154,6 +156,8 @@ export const wasmTxToTx = (
       timestamp: number;
     };
 
+    const token = tokens.find((t) => t.contractAddress.toLowerCase() === tx.token_address.toLowerCase());
+
     const processedUuids = userData.processed_deposit_uuids;
     let transaction: Transaction = {
       amount: '',
@@ -162,7 +166,7 @@ export const wasmTxToTx = (
       timestamp: tx.timestamp,
       to: '',
       tokenType: tx.token_type,
-      tokenIndex: 0,
+      tokenIndex: token?.tokenIndex ?? 0,
       transfers: [],
       txType: tx.txType,
       uuid: tx.uuid,
@@ -174,7 +178,6 @@ export const wasmTxToTx = (
         transaction = {
           ...transaction,
           amount: tx.amount,
-          tokenIndex: Number(tx.token_id),
           status: TransactionStatus.Rejected,
           timestamp: tx.timestamp,
         };
@@ -182,7 +185,6 @@ export const wasmTxToTx = (
         transaction = {
           ...transaction,
           amount: tx.amount,
-          tokenIndex: Number(tx.token_id),
           timestamp: tx.timestamp,
           status: TransactionStatus.Completed,
         };
@@ -191,7 +193,6 @@ export const wasmTxToTx = (
       transaction = {
         ...transaction,
         amount: tx.amount,
-        tokenIndex: Number(tx.token_id),
         timestamp: tx.timestamp,
       };
     }

@@ -563,8 +563,10 @@ export class IntMaxClient implements INTMAXClient {
       decryptedToWASMTx(tx, rawTransactions[idx].uuid, rawTransactions[idx].txType, rawTransactions[idx].timestamp),
     );
 
+    const tokens = await this.#tokenFetcher.fetchTokens();
+
     return formattedTxs
-      .map((tx) => wasmTxToTx(tx, this.#userData as unknown as JsUserData, pendingWithdrawals))
+      .map((tx) => wasmTxToTx(tx, this.#userData as unknown as JsUserData, tokens, pendingWithdrawals))
       .filter(Boolean) as Transaction[];
   }
 

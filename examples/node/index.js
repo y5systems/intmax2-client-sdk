@@ -28,42 +28,50 @@ const main = async () => {
     });
 
     // Example deposit
-    console.log('\nPreparing deposit...');
+    // console.log('\nPreparing deposit...');
     // const tokens = await client.getTokensList();
+
+    //  Here you can update token address to find exist token in the list
     // const nativeToken = tokens.find(
     //   (t) => t.contractAddress.toLowerCase() === '0x0000000000000000000000000000000000000000',
     // );
-
+    //
+    // let token;
+    //
     // if (nativeToken) {
-      const token = {
-        contractAddress:  '0x59c7f11db480309f6eef8592a85c95efd4b02e59',
-        decimals: 18,
-        price: 0,
-        tokenIndex: 10,
-        tokenType: TokenType.ERC20,
-        // ...nativeToken,
-        // tokenType: TokenType.NATIVE,
-
-      };
-
-      // Estimate deposit gas
-      const gas = await client.estimateDepositGas({
-        amount: 1000,
-        token,
-        address: client.address,
-        isGasEstimation: true,
-      });
-      console.log('Estimated gas for deposit:', gas);
-
-      // Perform deposit
-      console.log('Performing deposit...');
-      const deposit = await client.deposit({
-        amount: 1000,
-        token,
-        address: client.address,
-      });
-      console.log('Deposit result:', JSON.stringify(deposit, null, 2));
+    //   token = {
+    //     ...nativeToken,
+    //     tokenType: TokenType.NATIVE, // should be changed, if you are using not ETH, to  TokenType.ERC20
+    //   };
     // }
+
+    // If you want to deposit a specific token, you can set it like this one
+    // token = {
+    //   decimals: 0,
+    //   price: 0,
+    //   contractAddress:  '0x28e16f104a2ca00e75ffa5816cea2f63b34b986c', // Address of the token contract
+    //   tokenIndex: 1, // Token id in contractAddress if this NFT, if not NFT set to 0
+    //   tokenType: TokenType.ERC721, // TokenType.ERC20, TokenType.ERC721, TokenType.ERC1155
+    // }
+
+
+    // Estimate deposit gas
+    // const gas = await client.estimateDepositGas({
+    //   amount: 1,
+    //   token,
+    //   address: client.address,
+    //   isGasEstimation: true,
+    // });
+    // console.log('Estimated gas for deposit:', gas);
+
+    // Perform deposit
+    // console.log('Performing deposit...');
+    // const deposit = await client.deposit({
+    //   amount: 1,
+    //   token,
+    //   address: client.address,
+    // });
+    // console.log('Deposit result:', JSON.stringify(deposit, null, 2));
 
     // // Example withdrawal
     // console.log('\nPreparing withdrawal...');

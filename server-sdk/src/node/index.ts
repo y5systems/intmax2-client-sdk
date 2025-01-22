@@ -1,7 +1,9 @@
 import {
   Abi,
+  createClient,
   createPublicClient,
   createWalletClient,
+  encodeFunctionData,
   erc20Abi,
   erc721Abi,
   Hex,
@@ -16,6 +18,7 @@ import {
   WalletClient,
   WriteContractParameters,
 } from 'viem';
+import * as viemActions from 'viem/actions';
 import {
   BroadcastTransactionRequest,
   BroadcastTransactionResponse,
@@ -80,13 +83,12 @@ import {
 } from '../wasm/node';
 import { mainnet, sepolia } from 'viem/chains';
 import { AxiosInstance } from 'axios';
-import { privateKeyToAccount, signMessage } from 'viem/accounts';
+import { privateKeyToAccount } from 'viem/accounts';
 
 export class IntMaxNodeClient implements INTMAXClient {
   readonly #config: Config;
   readonly #tokenFetcher: TokenFetcher;
   readonly #txFetcher: TransactionFetcher;
-  readonly #walletClient: WalletClient;
   readonly #publicClient: PublicClient;
   readonly #vaultHttpClient: AxiosInstance;
   readonly #cacheMap: Map<string, any> = new Map();
@@ -100,13 +102,8 @@ export class IntMaxNodeClient implements INTMAXClient {
   tokenBalances: TokenBalance[] = [];
 
   constructor({ environment, eth_private_key, l1_rpc_url }: ConstructorNodeParams) {
-    this.#ethAccount = privateKeyToAccount(eth_private_key);
     this.#cacheMap.set('user_data_fetch', []);
-    this.#walletClient = createWalletClient({
-      account: this.#ethAccount,
-      chain: environment === 'mainnet' ? mainnet : sepolia,
-      transport: l1_rpc_url ? http(l1_rpc_url) : http(),
-    });
+    this.#ethAccount = privateKeyToAccount(eth_private_key);
 
     this.#publicClient = createPublicClient({
       chain: environment === 'mainnet' ? mainnet : sepolia,
@@ -441,9 +438,39 @@ export class IntMaxNodeClient implements INTMAXClient {
   }
 
   async deposit(params: PrepareDepositTransactionRequest): Promise<PrepareDepositTransactionResponse> {
-    const txConfig = await this.#prepareDepositToken({ ...params, isGasEstimation: false });
+    try {
+      // APPROVE WITH ESTIMATE
+      await this.estimateDepositGas({ ...params, isGasEstimation: true });
+    } catch (e) {
+      console.error(e);
+      throw Error('Failed to estimate gas');
+    }
 
-    const depositHash = await this.#walletClient.writeContract(txConfig);
+    const txConfig = await this.#prepareDepositToken({ ...params, isGasEstimation: false });
+    const { gas, maxPriorityFeePerGas, maxFeePerGas } = await this.#estimateFee(txConfig);
+    const encodeData = encodeFunctionData({
+      abi: txConfig.abi,
+      functionName: txConfig.functionName,
+      args: txConfig.args,
+    });
+
+    const signedTx = await this.#ethAccount.signTransaction({
+      type: 'eip1559',
+      chainId: this.#publicClient.chain?.id as number,
+      data: encodeData,
+      gas,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      nonce: await this.#publicClient.getTransactionCount({
+        address: this.#ethAccount.address,
+      }),
+      to: txConfig.address,
+      value: txConfig.value,
+    });
+
+    const depositHash = await this.#publicClient.sendRawTransaction({
+      serializedTransaction: signedTx,
+    });
 
     let status: TransactionStatus = TransactionStatus.Processing;
     while (status === TransactionStatus.Processing) {
@@ -632,7 +659,6 @@ export class IntMaxNodeClient implements INTMAXClient {
   }
 
   async #prepareDepositToken({ token, isGasEstimation, amount, address }: PrepareEstimateDepositTransactionRequest) {
-    const accounts = await this.#walletClient.getAddresses();
     const salt = isGasEstimation
       ? randomBytesHex(16)
       : await this.#depositToAccount({
@@ -659,7 +685,7 @@ export class IntMaxNodeClient implements INTMAXClient {
             : BigInt(amount),
       tokenAddress: token.contractAddress,
       tokenId: token.tokenIndex,
-      account: accounts[0],
+      account: this.#ethAccount.address,
     });
   }
 
@@ -677,7 +703,7 @@ export class IntMaxNodeClient implements INTMAXClient {
     tokenAddress: string;
     tokenId: number;
     account: `0x${string}`;
-  }) {
+  }): WriteContractParameters {
     const returnObj: WriteContractParameters = {
       args: [],
       functionName: '',
@@ -781,13 +807,37 @@ export class IntMaxNodeClient implements INTMAXClient {
 
     if (currentAllowance < amount) {
       try {
-        const approveTx = await this.#walletClient.writeContract({
+        const encodedData = encodeFunctionData({
+          abi: erc20Abi,
+          functionName: 'approve',
+          args: [this.#config.liquidity_contract_address as `0x${string}`, amount],
+        });
+        const { maxFeePerGas, maxPriorityFeePerGas, gas } = await this.#estimateFee({
+          chain: this.#publicClient.chain,
           address: tokenAddress,
           abi: erc20Abi,
           functionName: 'approve',
           args: [this.#config.liquidity_contract_address as `0x${string}`, amount],
-          account: address,
-          chain: this.#walletClient.chain,
+          account: this.#ethAccount.address,
+          value: 0n,
+        });
+
+        const signedTx = await this.#ethAccount.signTransaction({
+          type: 'eip1559',
+          chainId: this.#publicClient.chain?.id as number,
+          data: encodedData,
+          gas,
+          maxFeePerGas,
+          maxPriorityFeePerGas,
+          nonce: await this.#publicClient.getTransactionCount({
+            address: this.#ethAccount.address,
+          }),
+          to: tokenAddress,
+          value: 0n,
+        });
+
+        const approveTx = await this.#publicClient.sendRawTransaction({
+          serializedTransaction: signedTx,
         });
 
         await this.#publicClient.waitForTransactionReceipt({
@@ -812,13 +862,38 @@ export class IntMaxNodeClient implements INTMAXClient {
 
     if (!currentApproval) {
       try {
-        const approveTx = await this.#walletClient.writeContract({
+        const encodedData = encodeFunctionData({
+          abi: erc721Abi,
+          functionName: 'setApprovalForAll',
+          args: [this.#config.liquidity_contract_address as `0x${string}`, true],
+        });
+
+        const { maxFeePerGas, maxPriorityFeePerGas, gas } = await this.#estimateFee({
+          chain: this.#publicClient.chain,
           address: tokenAddress,
           abi: erc721Abi,
           functionName: 'setApprovalForAll',
           args: [this.#config.liquidity_contract_address as `0x${string}`, true],
-          account: address,
-          chain: this.#walletClient.chain,
+          account: this.#ethAccount.address,
+          value: 0n,
+        });
+
+        const signedTx = await this.#ethAccount.signTransaction({
+          type: 'eip1559',
+          chainId: this.#publicClient.chain?.id as number,
+          data: encodedData,
+          gas,
+          maxFeePerGas,
+          maxPriorityFeePerGas,
+          nonce: await this.#publicClient.getTransactionCount({
+            address: this.#ethAccount.address,
+          }),
+          to: tokenAddress,
+          value: 0n,
+        });
+
+        const approveTx = await this.#publicClient.sendRawTransaction({
+          serializedTransaction: signedTx,
         });
 
         await this.#publicClient.waitForTransactionReceipt({
@@ -829,5 +904,32 @@ export class IntMaxNodeClient implements INTMAXClient {
         throw approveError;
       }
     }
+  }
+
+  async #estimateFee(txConfig: WriteContractParameters): Promise<{
+    gas: bigint;
+    maxPriorityFeePerGas: bigint;
+    maxFeePerGas: bigint;
+  }> {
+    const gas = await this.#publicClient.estimateContractGas({
+      address: txConfig.address,
+      abi: txConfig.abi,
+      functionName: txConfig.functionName,
+      args: txConfig.args,
+      account: txConfig.account as `0x${string}`,
+      value: txConfig.value,
+    });
+
+    const block = await this.#publicClient.getBlock();
+    const baseFee = block.baseFeePerGas ?? 0n;
+
+    const maxPriorityFeePerGas = await this.#publicClient.estimateMaxPriorityFeePerGas();
+    const maxFeePerGas = baseFee * 2n + maxPriorityFeePerGas;
+
+    return {
+      gas,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+    };
   }
 }

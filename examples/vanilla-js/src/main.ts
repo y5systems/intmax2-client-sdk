@@ -92,6 +92,59 @@ const showInfo = (wrapper: HTMLDivElement) => {
   wrapper.appendChild(info);
 };
 
+const fetchPendingsWithdrawalsButton = () => {
+  const wrapper = document.createElement('div');
+  wrapper.style.marginTop = '10px';
+  appDiv.appendChild(wrapper);
+
+  const button = document.createElement('button');
+  button.innerHTML = 'Fetch Pending Withdrawals';
+  button.onclick = async () => {
+    button.innerHTML = 'Fetching...';
+    const withdrawals = await client.fetchPendingWithdrawals();
+    wrapper.innerHTML = '';
+    wrapper.appendChild(button);
+
+    let withdrawalsDiv = wrapper.getElementsByTagName('pre')[0];
+    if (!withdrawalsDiv) {
+      withdrawalsDiv = document.createElement('pre');
+    }
+    withdrawalsDiv.style.marginTop = '10px';
+    withdrawalsDiv.innerHTML = JSON.stringify(withdrawals, null, 2);
+    wrapper.appendChild(withdrawalsDiv);
+    button.innerHTML = 'Fetch Pending Withdrawals';
+  };
+  wrapper.appendChild(button);
+};
+
+const claimWithdrawalsButton = async () => {
+  const wrapper = document.createElement('div');
+  wrapper.style.marginTop = '10px';
+  appDiv.appendChild(wrapper);
+
+  const button = document.createElement('button');
+  button.innerHTML = 'Claim Withdrawals (Fetching...)';
+  wrapper.appendChild(button);
+
+  const withdrawals = await client.fetchPendingWithdrawals();
+  const withdrawalsToClaim = withdrawals.needClaim;
+  button.innerHTML = `Claim Withdrawals (${withdrawalsToClaim.length})`;
+
+  button.onclick = async () => {
+    button.innerHTML = 'Claiming...';
+    try {
+      const withdrawals = await client.fetchPendingWithdrawals();
+      const result = await client.claimWithdrawal(withdrawals.needClaim);
+      const resultDiv = document.createElement('pre');
+      resultDiv.style.marginTop = '10px';
+      resultDiv.innerHTML = JSON.stringify(result, null, 2);
+      wrapper.appendChild(resultDiv);
+    } catch (e) {}
+
+    button.innerHTML = `Claim Withdrawals`;
+  };
+};
+
 const createLoginButton = () => {
   const button = document.createElement('button');
   button.innerHTML = 'Login';
@@ -102,6 +155,8 @@ const createLoginButton = () => {
     showPrivateKeyButton();
     fetchBalancesButton();
     createDepositForm();
+    fetchPendingsWithdrawalsButton();
+    await claimWithdrawalsButton();
     await createWithdrawForm();
     fetchHistoryButton();
   };

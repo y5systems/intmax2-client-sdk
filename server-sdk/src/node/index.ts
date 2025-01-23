@@ -57,7 +57,7 @@ import {
   transactionMapper,
   wasmTxToTx,
   MAINNET_ENV,
-  DEVNET_ENV,
+  DEVNET_ENV, FetchWithdrawalsResponse, ClaimWithdrawalTransactionResponse,
 } from '../shared';
 import {
   Config,
@@ -499,6 +499,92 @@ export class IntMaxNodeClient implements INTMAXClient {
       return this.#tokenFetcher.fetchTokens();
     }
     return this.#tokenFetcher.tokens;
+  }
+
+  async fetchPendingWithdrawals(): Promise<FetchWithdrawalsResponse> {
+    return this.#txFetcher.fetchPendingWithdrawals(this.address);
+  }
+
+  async claimWithdrawal(needClaimWithdrawals: ContractWithdrawal[]): Promise<ClaimWithdrawalTransactionResponse> {
+    const address = this.#ethAccount.address;
+
+    const withdrawalsToClaim = needClaimWithdrawals
+      .filter((w) => w.recipient.toLowerCase() === address.toLowerCase())
+      .map((w) => ({
+        ...w,
+        amount: BigInt(w.amount),
+        tokenIndex: BigInt(w.tokenIndex),
+      }));
+    if (withdrawalsToClaim.length === 0) {
+      throw new Error('No withdrawals to claim');
+    }
+
+    await sleep(500);
+
+    try {
+
+      const encodedData = encodeFunctionData({
+        abi: LiquidityAbi,
+        functionName: 'claimWithdrawals',
+        args: [withdrawalsToClaim],
+      });
+
+      const { maxFeePerGas, maxPriorityFeePerGas, gas } = await this.#estimateFee({
+        chain: this.#publicClient.chain,
+        address: this.#config.liquidity_contract_address as `0x${string}`,
+        abi: LiquidityAbi as Abi,
+        functionName: 'claimWithdrawals',
+        args: [withdrawalsToClaim],
+        account: address as `0x${string}`,
+        value: 0n,
+      });
+
+      const signedTx = await this.#ethAccount.signTransaction({
+        type: 'eip1559',
+        chainId: this.#publicClient.chain?.id as number,
+        data: encodedData,
+        gas,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        nonce: await this.#publicClient.getTransactionCount({
+          address: this.#ethAccount.address,
+        }),
+        to: this.#config.liquidity_contract_address as `0x${string}`,
+        value: 0n,
+      });
+
+      const txHash = await this.#publicClient.sendRawTransaction({
+        serializedTransaction: signedTx,
+      });
+
+
+
+      let status: TransactionStatus = TransactionStatus.Processing;
+      while (status === TransactionStatus.Processing) {
+        await sleep(1500);
+        try {
+          const tx = await this.#publicClient.getTransactionReceipt({
+            hash: txHash,
+          });
+          if (tx) {
+            status = tx.status === 'success' ? TransactionStatus.Completed : TransactionStatus.Rejected;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      if (status === TransactionStatus.Rejected) {
+        throw new Error('Transaction rejected');
+      }
+
+      return {
+        status: TransactionStatus.Completed,
+        txHash,
+      };
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   }
 
   // PRIVATE METHODS

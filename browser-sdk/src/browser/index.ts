@@ -42,6 +42,8 @@ import {
   jsTransferToTransfer,
   transactionMapper,
   wasmTxToTx,
+  ClaimWithdrawalTransactionResponse,
+  FetchWithdrawalsResponse,
 } from '../shared';
 import {
   Abi,
@@ -483,6 +485,64 @@ export class IntMaxClient implements INTMAXClient {
       status,
       txHash: depositHash,
     };
+  }
+
+  async fetchPendingWithdrawals(): Promise<FetchWithdrawalsResponse> {
+    return this.#txFetcher.fetchPendingWithdrawals(this.address);
+  }
+
+  async claimWithdrawal(needClaimWithdrawals: ContractWithdrawal[]): Promise<ClaimWithdrawalTransactionResponse> {
+    const [address] = await this.#walletClient.getAddresses();
+
+    const withdrawalsToClaim = needClaimWithdrawals
+      .filter((w) => w.recipient.toLowerCase() === address.toLowerCase())
+      .map((w) => ({
+        ...w,
+        amount: BigInt(w.amount),
+        tokenIndex: BigInt(w.tokenIndex),
+      }));
+    if (withdrawalsToClaim.length === 0) {
+      throw new Error('No withdrawals to claim');
+    }
+
+    await sleep(500);
+
+    try {
+      const txHash = await this.#walletClient.writeContract({
+        address: this.#config.liquidity_contract_address as `0x${string}`,
+        abi: LiquidityAbi,
+        functionName: 'claimWithdrawals',
+        args: [withdrawalsToClaim],
+        account: address as `0x${string}`,
+        chain: this.#walletClient.chain,
+      });
+
+      let status: TransactionStatus = TransactionStatus.Processing;
+      while (status === TransactionStatus.Processing) {
+        await sleep(1500);
+        try {
+          const tx = await this.#publicClient.getTransactionReceipt({
+            hash: txHash,
+          });
+          if (tx) {
+            status = tx.status === 'success' ? TransactionStatus.Completed : TransactionStatus.Rejected;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      if (status === TransactionStatus.Rejected) {
+        throw new Error('Transaction rejected');
+      }
+
+      return {
+        status: TransactionStatus.Completed,
+        txHash,
+      };
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   }
 
   waitForTransactionConfirmation(

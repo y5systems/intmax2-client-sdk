@@ -27,24 +27,13 @@ jobs:
       - name: Install dependencies browser-sdk
         run: cd browser-sdk && pnpm install
 
-      - name: Install dependencies server-sdk
-        run: cd server-sdk && pnpm install
-
       - name: Build browser-sdk
         run: cd browser-sdk && pnpm run prepare
-
-      - name: Build server-sdk
-        run: cd server-sdk && pnpm run prepare
 
       - name: Copy WASM files for browser-sdk
         run: |
           mkdir -p browser-sdk/dist/wasm
           cp -r browser-sdk/src/wasm/* browser-sdk/dist/wasm/
-
-      - name: Copy WASM files for server-sdk
-        run: |
-          mkdir -p server-sdk/dist/wasm
-          cp -r server-sdk/src/wasm/* server-sdk/dist/wasm/
 
       - name: Publish browser-sdk to NPM
         uses: JS-DevTools/npm-publish@v3
@@ -53,14 +42,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_CLIENT_SDK_TOKEN }}
         run: cd browser-sdk && npm publish
-
-      - name: Publish server-sdk to NPM
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_NODE_SDK_TOKEN }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_NODE_SDK_TOKEN }}
-        run: cd server-sdk && npm publish
 
       - name: GitHub Release
         uses: softprops/action-gh-release@v2

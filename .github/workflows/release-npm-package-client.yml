@@ -41,7 +41,6 @@ jobs:
           token: ${{ secrets.NPM_CLIENT_SDK_TOKEN }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_CLIENT_SDK_TOKEN }}
-        run: cd browser-sdk && npm publish
 
       - name: GitHub Release
         uses: softprops/action-gh-release@v2

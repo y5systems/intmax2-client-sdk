@@ -36,11 +36,11 @@ jobs:
           cp -r server-sdk/src/wasm/* server-sdk/dist/wasm/
 
       - name: Publish server-sdk to NPM
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_NODE_SDK_TOKEN }}
+        run: |
+          cd server-sdk
+          pnpm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_NODE_SDK_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_CLIENT_SDK_TOKEN }}
 
       - name: GitHub Release
         uses: softprops/action-gh-release@v2

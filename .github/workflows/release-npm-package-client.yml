@@ -36,9 +36,9 @@ jobs:
           cp -r browser-sdk/src/wasm/* browser-sdk/dist/wasm/
 
       - name: Publish browser-sdk to NPM
-        uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM_CLIENT_SDK_TOKEN }}
+        run: |
+          cd browser-sdk
+          pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_CLIENT_SDK_TOKEN }}
 

@@ -1,23 +1,23 @@
-# INTMAX-NODE-SDK
+# INTMAX-SERVER-SDK
 
 This SDK is a client library for the INTMAX API. It is designed to help you integrate INTMAX services into your applications.
 
 ## Installation for Node.js
 
 ```bash
-  npm install intmax-node-sdk
+  npm install intmax-server-sdk
 ```
 
 or
 
 ```bash
-  pnpm install intmax-node-sdk
+  pnpm install intmax-server-sdk
 ```
 
 or
 
 ```bash
-  yarn add intmax-node-sdk
+  yarn add intmax-server-sdk
 ```
 
 ## Interface
@@ -65,7 +65,7 @@ export interface INTMAXClient {
 ### Initialization
 
 ```javascript
-const { IntmaxNodeClient } = require('intmax-node-sdk');
+const { IntmaxNodeClient } = require('intmax-server-sdk');
 
 const intMaxClient = new IntMaxNodeClient({
   environment: 'devnet', //  'mainnet' | 'devnet' | 'testnet'

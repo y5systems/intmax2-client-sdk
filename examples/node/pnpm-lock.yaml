@@ -1,0 +1,31 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
+      intmax2-client-sdk:
+        specifier: file:../../server-sdk/dist
+        version: dist@file:../../server-sdk/dist
+
+packages:
+
+  dist@file:../../server-sdk/dist:
+    resolution: {directory: ../../server-sdk/dist, type: directory}
+
+  dotenv@16.4.7:
+    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+    engines: {node: '>=12'}
+
+snapshots:
+
+  dist@file:../../server-sdk/dist: {}
+
+  dotenv@16.4.7: {}

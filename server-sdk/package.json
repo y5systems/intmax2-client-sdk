@@ -1,0 +1,51 @@
+{
+  "name": "intmax2-server-sdk",
+  "version": "1.0.3",
+  "description": "Server SDK for Intmax2",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src/wasm",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rimraf dist && tsc && pnpm run copy-wasm",
+    "build:esm": "rimraf dist && tsc -p tsconfig.esm.json && pnpm run copy-wasm",
+    "copy-wasm": "mkdir -p dist/wasm && cp -r src/wasm/* dist/wasm/",
+    "prepare": "pnpm build",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "keywords": [
+    "sdk",
+    "client",
+    "intmax2"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@scure/bip39": "^1.5.1",
+    "axios": "^1.7.9",
+    "viem": "^2.22.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "node": "^22.13.0",
+    "prettier": "^3.4.2",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.5.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

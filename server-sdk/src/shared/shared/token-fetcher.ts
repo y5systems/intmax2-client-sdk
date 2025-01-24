@@ -1,9 +1,10 @@
-import { IntMaxEnvironment, PaginatedResponse, Token, TokenType } from '../types';
-import { axiosClientInit } from '../utils';
-import { DEVNET_ENV, liquidityAbiNft, MAINNET_ENV, TESTNET_ENV } from '../constants';
 import { AxiosInstance } from 'axios';
 import { Abi, createPublicClient, http, PublicClient } from 'viem';
 import { mainnet, sepolia } from 'viem/chains';
+
+import { DEVNET_ENV, liquidityAbiNft, MAINNET_ENV, TESTNET_ENV } from '../constants';
+import { IntMaxEnvironment, PaginatedResponse, Token, TokenType } from '../types';
+import { axiosClientInit } from '../utils';
 
 export class TokenFetcher {
   tokens: Token[] = [];

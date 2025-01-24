@@ -1,16 +1,12 @@
 // General
-export interface Item {
-  [key: string]: any;
-}
-
-export interface FetchItemsRequest<T extends Item> {
+export interface FetchItemsRequest<T> {
   page?: number;
   pageSize?: number;
   sortBy?: keyof T;
   sortOrder?: 'asc' | 'desc';
 }
 
-export interface FetchItemsResponse<T extends Item> {
+export interface FetchItemsResponse<T> {
   items: T[];
   currentPage: number;
   totalPages: number;

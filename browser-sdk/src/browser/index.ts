@@ -1,50 +1,4 @@
-import {
-  BroadcastTransactionRequest,
-  BroadcastTransactionResponse,
-  ConstructorParams,
-  ContractWithdrawal,
-  EncryptedDataItem,
-  FetchTransactionsRequest,
-  INTMAXClient,
-  IntMaxEnvironment,
-  IntMaxTxBroadcast,
-  PrepareDepositTransactionRequest,
-  PrepareDepositTransactionResponse,
-  PrepareEstimateDepositTransactionRequest,
-  SDKUrls,
-  SignMessageResponse,
-  Token,
-  TokenBalance,
-  TokenBalancesResponse,
-  TokenType,
-  Transaction,
-  TransactionStatus,
-  TransactionType,
-  WaitForTransactionConfirmationRequest,
-  WaitForTransactionConfirmationResponse,
-  WithdrawalResponse,
-  WithdrawalsStatus,
-  WithdrawRequest,
-  axiosClientInit,
-  getPkFromMnemonic,
-  localStorageManager,
-  randomBytesHex,
-  retryWithAttempts,
-  sleep,
-  DEVNET_ENV,
-  LiquidityAbi,
-  MAINNET_ENV,
-  networkMessage,
-  TESTNET_ENV,
-  TokenFetcher,
-  TransactionFetcher,
-  decryptedToWASMTx,
-  jsTransferToTransfer,
-  transactionMapper,
-  wasmTxToTx,
-  ClaimWithdrawalTransactionResponse,
-  FetchWithdrawalsResponse,
-} from '../shared';
+import { AxiosInstance } from 'axios';
 import {
   Abi,
   createPublicClient,
@@ -63,6 +17,55 @@ import {
   WalletClient,
   WriteContractParameters,
 } from 'viem';
+import { mainnet, sepolia } from 'viem/chains';
+
+import {
+  axiosClientInit,
+  BroadcastTransactionRequest,
+  BroadcastTransactionResponse,
+  ClaimWithdrawalTransactionResponse,
+  ConstructorParams,
+  ContractWithdrawal,
+  decryptedToWASMTx,
+  DEVNET_ENV,
+  EncryptedDataItem,
+  FetchTransactionsRequest,
+  FetchWithdrawalsResponse,
+  getPkFromMnemonic,
+  INTMAXClient,
+  IntMaxEnvironment,
+  IntMaxTxBroadcast,
+  jsTransferToTransfer,
+  LiquidityAbi,
+  localStorageManager,
+  MAINNET_ENV,
+  networkMessage,
+  PrepareDepositTransactionRequest,
+  PrepareDepositTransactionResponse,
+  PrepareEstimateDepositTransactionRequest,
+  randomBytesHex,
+  retryWithAttempts,
+  SDKUrls,
+  SignMessageResponse,
+  sleep,
+  TESTNET_ENV,
+  Token,
+  TokenBalance,
+  TokenBalancesResponse,
+  TokenFetcher,
+  TokenType,
+  Transaction,
+  TransactionFetcher,
+  transactionMapper,
+  TransactionStatus,
+  TransactionType,
+  WaitForTransactionConfirmationRequest,
+  WaitForTransactionConfirmationResponse,
+  wasmTxToTx,
+  WithdrawalResponse,
+  WithdrawalsStatus,
+  WithdrawRequest,
+} from '../shared';
 import {
   Config,
   decrypt_deposit_data,
@@ -83,8 +86,6 @@ import {
   sync_withdrawals,
 } from '../wasm/browser/intmax2_wasm_lib';
 import wasmBytes from '../wasm/browser/intmax2_wasm_lib_bg.wasm?url';
-import { mainnet, sepolia } from 'viem/chains';
-import { AxiosInstance } from 'axios';
 
 export class IntMaxClient implements INTMAXClient {
   readonly #config: Config;
@@ -146,11 +147,9 @@ export class IntMaxClient implements INTMAXClient {
 
   async login() {
     this.isLoggedIn = false;
-    try {
-      await this.#walletClient.requestAddresses();
-    } catch (e) {
-      throw e;
-    }
+
+    await this.#walletClient.requestAddresses();
+
     const [address] = await this.#walletClient.getAddresses();
     const signNetwork = await this.#walletClient.signMessage({
       account: address,
@@ -367,7 +366,7 @@ export class IntMaxClient implements INTMAXClient {
   }
 
   // Send/Withdrawals
-  async fetchTransactions(params: FetchTransactionsRequest): Promise<Transaction[]> {
+  async fetchTransactions(_params: FetchTransactionsRequest): Promise<Transaction[]> {
     this.#checkAllowanceToExecuteMethod();
 
     const data = await this.#txFetcher.fetchTx({
@@ -379,7 +378,7 @@ export class IntMaxClient implements INTMAXClient {
   }
 
   // Receive
-  async fetchTransfers(params: FetchTransactionsRequest): Promise<Transaction[]> {
+  async fetchTransfers(_params: FetchTransactionsRequest): Promise<Transaction[]> {
     this.#checkAllowanceToExecuteMethod();
 
     const data = await this.#txFetcher.fetchTransfers({
@@ -390,7 +389,7 @@ export class IntMaxClient implements INTMAXClient {
   }
 
   // Deposit
-  async fetchDeposits(params: FetchTransactionsRequest): Promise<Transaction[]> {
+  async fetchDeposits(_params: FetchTransactionsRequest): Promise<Transaction[]> {
     this.#checkAllowanceToExecuteMethod();
 
     const data = await this.#txFetcher.fetchDeposits({
@@ -426,23 +425,19 @@ export class IntMaxClient implements INTMAXClient {
 
     if (txConfig.functionName !== 'depositNativeToken') {
       const isValidApproval = await this.#validateApproval({
-        //@ts-ignore
-        tokenAddress: txConfig.args[0],
-        //@ts-ignore
-        amount: BigInt(txConfig.args[2]),
+        tokenAddress: txConfig.args?.[0] as `0x${string}`,
+        amount: BigInt(txConfig.args?.[2] as string),
         functionName: txConfig.functionName,
       });
 
       if (!isValidApproval) {
         switch (txConfig.functionName) {
           case 'depositERC20':
-            //@ts-ignore
-            await this.#getAllowance(txConfig.args[0], BigInt(txConfig.args[2]));
+            await this.#getAllowance(txConfig.args?.[0] as `0x${string}`, BigInt(txConfig.args?.[2] as string));
             break;
           case 'depositERC721':
           case 'depositERC1155':
-            //@ts-ignore
-            await this.#checkApproval(txConfig.args[0]);
+            await this.#checkApproval(txConfig.args?.[0] as `0x${string}`);
             break;
         }
       }
@@ -546,12 +541,12 @@ export class IntMaxClient implements INTMAXClient {
   }
 
   waitForTransactionConfirmation(
-    params: WaitForTransactionConfirmationRequest,
+    _params: WaitForTransactionConfirmationRequest,
   ): Promise<WaitForTransactionConfirmationResponse> {
     throw Error('Not implemented!');
   }
 
-  signMessage(data: string): Promise<SignMessageResponse> {
+  signMessage(_data: string): Promise<SignMessageResponse> {
     throw Error('Not implemented!');
   }
 

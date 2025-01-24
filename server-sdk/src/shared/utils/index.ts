@@ -1,8 +1,9 @@
 import { entropyToMnemonic } from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
-import { mnemonicToAccount } from 'viem/accounts';
-import { ContractWithdrawal } from '../types';
 import { encodePacked, keccak256 } from 'viem';
+import { mnemonicToAccount } from 'viem/accounts';
+
+import { ContractWithdrawal } from '../types';
 
 export * from './api.utils';
 export * from './mappers';

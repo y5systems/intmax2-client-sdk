@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, CreateAxiosDefaults } from 'axios';
+
 import { sleep } from './index';
 
 export function onResponse(response: AxiosResponse): AxiosResponse {

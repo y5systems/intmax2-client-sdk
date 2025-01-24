@@ -1,5 +1,7 @@
 import { AxiosInstance } from 'axios';
-import { axiosClientInit, getWithdrawHash } from '../utils';
+import { Abi, createPublicClient, hexToBigInt, http, PublicClient } from 'viem';
+import { mainnet, sepolia } from 'viem/chains';
+
 import { DEVNET_ENV, LiquidityAbi, MAINNET_ENV, TESTNET_ENV } from '../constants';
 import {
   ContractWithdrawal,
@@ -8,8 +10,7 @@ import {
   WithdrawalsInfoResponse,
   WithdrawalsStatus,
 } from '../types';
-import { Abi, createPublicClient, hexToBigInt, http, PublicClient } from 'viem';
-import { mainnet, sepolia } from 'viem/chains';
+import { axiosClientInit, getWithdrawHash } from '../utils';
 
 interface GetTxParams {
   address: string;
@@ -134,7 +135,7 @@ export class TransactionFetcher {
         })),
       });
       const updatedWithdrawalsToClaim: ContractWithdrawal[] = [];
-      results.forEach((result: any, i: number) => {
+      results.forEach((result, i: number) => {
         if (result.status === 'success' && result.result) {
           updatedWithdrawalsToClaim.push({
             ...pendingWithdrawals[WithdrawalsStatus.NeedClaim][i],

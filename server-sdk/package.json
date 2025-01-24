@@ -23,7 +23,8 @@
     "build:esm": "rimraf dist && tsc -p tsconfig.esm.json && pnpm run copy-wasm",
     "copy-wasm": "mkdir -p dist/wasm && cp -r src/wasm/* dist/wasm/",
     "prepare": "pnpm build",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint src --max-warnings=0 --fix"
   },
   "keywords": [
     "sdk",
@@ -40,6 +41,13 @@
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.21.0",
+    "@typescript-eslint/parser": "^8.21.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "node": "^22.13.0",
     "prettier": "^3.4.2",
     "rimraf": "^6.0.1",

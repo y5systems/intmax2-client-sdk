@@ -1,3 +1,4 @@
+import { AxiosInstance } from 'axios';
 import {
   Abi,
   createPublicClient,
@@ -15,49 +16,54 @@ import {
   toHex,
   WriteContractParameters,
 } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { mainnet, sepolia } from 'viem/chains';
+
 import {
+  axiosClientInit,
   BroadcastTransactionRequest,
   BroadcastTransactionResponse,
+  ClaimWithdrawalTransactionResponse,
   ConstructorNodeParams,
   ContractWithdrawal,
+  decryptedToWASMTx,
+  DEVNET_ENV,
   EncryptedDataItem,
   FetchTransactionsRequest,
+  FetchWithdrawalsResponse,
+  getPkFromMnemonic,
   INTMAXClient,
   IntMaxEnvironment,
   IntMaxTxBroadcast,
+  jsTransferToTransfer,
+  LiquidityAbi,
+  MAINNET_ENV,
+  networkMessage,
   PrepareDepositTransactionRequest,
   PrepareDepositTransactionResponse,
   PrepareEstimateDepositTransactionRequest,
+  randomBytesHex,
+  retryWithAttempts,
   SDKUrls,
   SignMessageResponse,
+  sleep,
+  TESTNET_ENV,
   Token,
   TokenBalance,
   TokenBalancesResponse,
+  TokenFetcher,
   TokenType,
   Transaction,
+  TransactionFetcher,
+  transactionMapper,
   TransactionStatus,
   TransactionType,
   WaitForTransactionConfirmationRequest,
   WaitForTransactionConfirmationResponse,
+  wasmTxToTx,
   WithdrawalResponse,
   WithdrawalsStatus,
   WithdrawRequest,
-  axiosClientInit,
-  getPkFromMnemonic,
-  randomBytesHex,
-  retryWithAttempts,
-  sleep,
-  LiquidityAbi,
-  networkMessage,
-  TESTNET_ENV,
-  TokenFetcher,
-  TransactionFetcher,
-  decryptedToWASMTx,
-  jsTransferToTransfer,
-  transactionMapper,
-  wasmTxToTx,
-  MAINNET_ENV,
-  DEVNET_ENV, FetchWithdrawalsResponse, ClaimWithdrawalTransactionResponse,
 } from '../shared';
 import {
   Config,
@@ -77,9 +83,6 @@ import {
   sync,
   sync_withdrawals,
 } from '../wasm/node';
-import { mainnet, sepolia } from 'viem/chains';
-import { AxiosInstance } from 'axios';
-import { privateKeyToAccount } from 'viem/accounts';
 
 export class IntMaxNodeClient implements INTMAXClient {
   readonly #config: Config;
@@ -87,6 +90,7 @@ export class IntMaxNodeClient implements INTMAXClient {
   readonly #txFetcher: TransactionFetcher;
   readonly #publicClient: PublicClient;
   readonly #vaultHttpClient: AxiosInstance;
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   readonly #cacheMap: Map<string, any> = new Map();
   readonly #ethAccount: PrivateKeyAccount;
   #privateKey: string = '';
@@ -125,7 +129,7 @@ export class IntMaxNodeClient implements INTMAXClient {
     this.isLoggedIn = false;
 
     const address = this.#ethAccount.address;
-    console.log('address', address);
+
     const signNetwork = await this.#ethAccount.signMessage({
       message: networkMessage(address),
     });
@@ -338,7 +342,7 @@ export class IntMaxNodeClient implements INTMAXClient {
   }
 
   // Send/Withdrawals
-  async fetchTransactions(params: FetchTransactionsRequest): Promise<Transaction[]> {
+  async fetchTransactions(_params: FetchTransactionsRequest): Promise<Transaction[]> {
     this.#checkAllowanceToExecuteMethod();
 
     const data = await this.#txFetcher.fetchTx({
@@ -350,7 +354,7 @@ export class IntMaxNodeClient implements INTMAXClient {
   }
 
   // Receive
-  async fetchTransfers(params: FetchTransactionsRequest): Promise<Transaction[]> {
+  async fetchTransfers(_params: FetchTransactionsRequest): Promise<Transaction[]> {
     this.#checkAllowanceToExecuteMethod();
 
     const data = await this.#txFetcher.fetchTransfers({
@@ -361,7 +365,7 @@ export class IntMaxNodeClient implements INTMAXClient {
   }
 
   // Deposit
-  async fetchDeposits(params: FetchTransactionsRequest): Promise<Transaction[]> {
+  async fetchDeposits(_params: FetchTransactionsRequest): Promise<Transaction[]> {
     this.#checkAllowanceToExecuteMethod();
 
     const data = await this.#txFetcher.fetchDeposits({
@@ -485,12 +489,12 @@ export class IntMaxNodeClient implements INTMAXClient {
   }
 
   waitForTransactionConfirmation(
-    params: WaitForTransactionConfirmationRequest,
+    _params: WaitForTransactionConfirmationRequest,
   ): Promise<WaitForTransactionConfirmationResponse> {
     throw Error('Not implemented!');
   }
 
-  signMessage(data: string): Promise<SignMessageResponse> {
+  signMessage(_data: string): Promise<SignMessageResponse> {
     throw Error('Not implemented!');
   }
 
@@ -522,7 +526,6 @@ export class IntMaxNodeClient implements INTMAXClient {
     await sleep(500);
 
     try {
-
       const encodedData = encodeFunctionData({
         abi: LiquidityAbi,
         functionName: 'claimWithdrawals',
@@ -556,8 +559,6 @@ export class IntMaxNodeClient implements INTMAXClient {
       const txHash = await this.#publicClient.sendRawTransaction({
         serializedTransaction: signedTx,
       });
-
-
 
       let status: TransactionStatus = TransactionStatus.Processing;
       while (status === TransactionStatus.Processing) {

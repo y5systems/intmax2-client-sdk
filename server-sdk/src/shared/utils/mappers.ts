@@ -1,3 +1,5 @@
+import { formatEther, zeroAddress } from 'viem';
+
 import { JsDepositData, JsTransferData, JsTxData, JsUserData } from '../../wasm/node/intmax2_wasm_lib';
 import {
   ContractWithdrawal,
@@ -12,7 +14,6 @@ import {
   TransferData,
   WithdrawalsStatus,
 } from '../types';
-import { formatEther, zeroAddress } from 'viem';
 
 export const jsTransferToTransfer = (td: JsTransferData): TransferData => {
   return {
@@ -37,7 +38,7 @@ export const transactionMapper = (data: EncryptedDataItem, txType: TransactionTy
 export const decryptedToWASMTx = (
   rawTx: JsTxData | JsTransferData | JsDepositData,
   uuid: string,
-  txType: any,
+  txType: TransactionType,
   timestamp: number,
 ): (JsTxData | JsTransferData | JsDepositData) & {
   uuid: string;

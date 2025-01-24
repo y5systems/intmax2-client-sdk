@@ -38,7 +38,7 @@ jobs:
       - name: Publish server-sdk to NPM
         run: |
           cd server-sdk
-          pnpm publish --access public
+          pnpm publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_CLIENT_SDK_TOKEN }}
 

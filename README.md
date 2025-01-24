@@ -19,15 +19,15 @@ or
 ## Installation for Node.js
 
 ```bash 
-  npm install intmax-node-sdk
+  npm install intmax-server-sdk
 ```
 or
 ```bash 
-  pnpm install intmax-node-sdk
+  pnpm install intmax-server-sdk
 ```
 or
 ```bash 
-  yarn add intmax-node-sdk
+  yarn add intmax-server-sdk
 ```
 
 
@@ -88,7 +88,7 @@ const intmaxClient = IntmaxClient.init({
 
 ### Initialization
 ```javascript
-const { IntmaxNodeClient } = require('intmax-node-sdk');
+const { IntmaxNodeClient } = require('intmax-server-sdk');
 
 
 const intMaxClient = new IntMaxNodeClient({

@@ -26,16 +26,13 @@ import {
   ClaimWithdrawalTransactionResponse,
   ConstructorNodeParams,
   ContractWithdrawal,
-  decryptedToWASMTx,
   DEVNET_ENV,
-  EncryptedDataItem,
   FetchTransactionsRequest,
   FetchWithdrawalsResponse,
   getPkFromMnemonic,
   INTMAXClient,
   IntMaxEnvironment,
   IntMaxTxBroadcast,
-  jsTransferToTransfer,
   LiquidityAbi,
   MAINNET_ENV,
   networkMessage,
@@ -55,21 +52,19 @@ import {
   TokenType,
   Transaction,
   TransactionFetcher,
-  transactionMapper,
   TransactionStatus,
   TransactionType,
   WaitForTransactionConfirmationRequest,
   WaitForTransactionConfirmationResponse,
   wasmTxToTx,
   WithdrawalResponse,
-  WithdrawalsStatus,
   WithdrawRequest,
 } from '../shared';
 import {
   Config,
-  decrypt_deposit_data,
-  decrypt_transfer_data,
-  decrypt_tx_data,
+  fetch_deposit_history,
+  fetch_transfer_history,
+  fetch_tx_history,
   generate_intmax_account_from_eth_key,
   get_user_data,
   JsGenericAddress,
@@ -336,8 +331,6 @@ export class IntMaxNodeClient implements INTMAXClient {
       txTreeRoot: tx.tx_tree_root,
       transferUUIDs: tx.transfer_uuids,
       withdrawalUUIDs: tx.withdrawal_uuids,
-      transferData: tx.transfer_data_vec.length > 0 ? tx.transfer_data_vec.map(jsTransferToTransfer) : [],
-      withdrawalData: tx.withdrawal_data_vec.length > 0 ? tx.withdrawal_data_vec.map(jsTransferToTransfer) : [],
     };
   }
 
@@ -345,33 +338,66 @@ export class IntMaxNodeClient implements INTMAXClient {
   async fetchTransactions(_params: FetchTransactionsRequest): Promise<Transaction[]> {
     this.#checkAllowanceToExecuteMethod();
 
-    const data = await this.#txFetcher.fetchTx({
-      address: this.address,
-    });
-    const pendingWithdrawals = await this.#txFetcher.fetchPendingWithdrawals(this.address);
+    const data = await fetch_tx_history(this.#config, this.#privateKey);
 
-    return this.#decryptTransactionData(data, TransactionType.Send, pendingWithdrawals);
+    return data
+      .map((tx) => {
+        return wasmTxToTx(
+          {
+            data: tx.data,
+            meta: tx.meta,
+            status: tx.status,
+            txType: TransactionType.Send,
+            free: tx.free,
+          },
+          this.#tokenFetcher.tokens,
+        );
+      })
+      .filter(Boolean) as Transaction[];
   }
 
   // Receive
   async fetchTransfers(_params: FetchTransactionsRequest): Promise<Transaction[]> {
     this.#checkAllowanceToExecuteMethod();
 
-    const data = await this.#txFetcher.fetchTransfers({
-      address: this.address,
-    });
+    const data = await fetch_transfer_history(this.#config, this.#privateKey);
 
-    return this.#decryptTransactionData(data, TransactionType.Receive);
+    return data
+      .map((tx) => {
+        return wasmTxToTx(
+          {
+            data: tx.data,
+            meta: tx.meta,
+            status: tx.status,
+            txType: TransactionType.Receive,
+            free: tx.free,
+          },
+          this.#tokenFetcher.tokens,
+        );
+      })
+      .filter(Boolean) as Transaction[];
   }
 
   // Deposit
   async fetchDeposits(_params: FetchTransactionsRequest): Promise<Transaction[]> {
     this.#checkAllowanceToExecuteMethod();
 
-    const data = await this.#txFetcher.fetchDeposits({
-      address: this.address,
-    });
-    return this.#decryptTransactionData(data, TransactionType.Deposit);
+    const data = await fetch_deposit_history(this.#config, this.#privateKey);
+
+    return data
+      .map((tx) => {
+        return wasmTxToTx(
+          {
+            data: tx.data,
+            meta: tx.meta,
+            status: tx.status,
+            txType: TransactionType.Deposit,
+            free: tx.free,
+          },
+          this.#tokenFetcher.tokens,
+        );
+      })
+      .filter(Boolean) as Transaction[];
   }
 
   async withdraw({ amount, address, token }: WithdrawRequest): Promise<WithdrawalResponse> {
@@ -506,7 +532,7 @@ export class IntMaxNodeClient implements INTMAXClient {
   }
 
   async fetchPendingWithdrawals(): Promise<FetchWithdrawalsResponse> {
-    return this.#txFetcher.fetchPendingWithdrawals(this.address);
+    return this.#txFetcher.fetchPendingWithdrawals(this.#config, this.#privateKey);
   }
 
   async claimWithdrawal(needClaimWithdrawals: ContractWithdrawal[]): Promise<ClaimWithdrawalTransactionResponse> {
@@ -626,36 +652,6 @@ export class IntMaxNodeClient implements INTMAXClient {
     }
   }
 
-  async #decryptTransactionData(
-    data: EncryptedDataItem[],
-    variant: TransactionType,
-    pendingWithdrawals?: Record<WithdrawalsStatus, ContractWithdrawal[]>,
-  ): Promise<Transaction[]> {
-    const rawTransactions = data.map((t) => transactionMapper(t, variant));
-    const txsPromises = rawTransactions.map(async (tx) => {
-      switch (tx.txType) {
-        case TransactionType.Deposit:
-        case TransactionType.Mining:
-          return await decrypt_deposit_data(this.#privateKey, tx.data);
-        case TransactionType.Send:
-        case TransactionType.Withdraw:
-          return await decrypt_tx_data(this.#privateKey, tx.data);
-        case TransactionType.Receive:
-          return await decrypt_transfer_data(this.#privateKey, tx.data);
-      }
-    });
-    const decryptedData = await Promise.all(txsPromises);
-    const formattedTxs = decryptedData.map((tx, idx) =>
-      decryptedToWASMTx(tx, rawTransactions[idx].uuid, rawTransactions[idx].txType, rawTransactions[idx].timestamp),
-    );
-
-    const tokens = await this.#tokenFetcher.fetchTokens();
-
-    return formattedTxs
-      .map((tx) => wasmTxToTx(tx, this.#userData as unknown as JsUserData, tokens, pendingWithdrawals))
-      .filter(Boolean) as Transaction[];
-  }
-
   async #entropy(networkSignedMessage: `0x${string}`, hashedSignature: string) {
     const securitySeed = sha256(networkSignedMessage);
     const entropyPreImage = (securitySeed + hashedSignature.slice(2)) as Hex;
@@ -743,6 +739,7 @@ export class IntMaxNodeClient implements INTMAXClient {
     const salt = isGasEstimation
       ? randomBytesHex(16)
       : await this.#depositToAccount({
+          depositor: this.#ethAccount.address,
           pubkey: address,
           amountInDecimals:
             token.tokenType === TokenType.NATIVE
@@ -822,14 +819,19 @@ export class IntMaxNodeClient implements INTMAXClient {
     pubkey,
     token_type,
     token_address,
+    depositor,
   }: Required<IntMaxTxBroadcast>) {
     const depositResult = await prepare_deposit(
       this.#config,
+      depositor,
       pubkey,
       amountInDecimals.toString(),
       token_type,
       token_address,
       tokenIndex.toString(),
+      token_type === TokenType.NATIVE
+        ? [0.1, 0.5, 1.0].includes(Number(parseEther(amountInDecimals.toString())))
+        : false,
     );
     if (!depositResult) {
       throw new Error('Failed to prepare deposit');

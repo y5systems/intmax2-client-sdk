@@ -6,29 +6,16 @@
 export function generate_intmax_account_from_eth_key(eth_private_key: string): Promise<IntmaxAccount>;
 /**
  * Function to take a backup before calling the deposit function of the liquidity contract.
- *
  * You can also get the pubkey_salt_hash from the return value.
  */
-export function prepare_deposit(config: Config, recipient: string, amount: string, token_type: number, token_address: string, token_id: string): Promise<JsDepositResult>;
+export function prepare_deposit(config: Config, depositor: string, recipient: string, amount: string, token_type: number, token_address: string, token_id: string, is_mining: boolean): Promise<JsDepositResult>;
 /**
  * Function to send a tx request to the block builder. The return value contains information to take a backup.
  */
 export function send_tx_request(config: Config, block_builder_url: string, private_key: string, transfers: (JsTransfer)[]): Promise<JsTxRequestMemo>;
 /**
- * Function to query the block proposal from the block builder.
- * The return value is the block proposal or null if the proposal is not found.
- * If got an invalid proposal, it will return an error.
- */
-export function query_proposal(config: Config, block_builder_url: string, private_key: string, is_registration_block: boolean, tx: JsTx): Promise<JsBlockProposal | undefined>;
-/**
- * Send the signed tx tree root to the block builder during taking a backup of the tx.
- *
- * You need to call send_tx_request before calling this function.
- * The return value is the tx result, which contains the tx tree root and transfer data.
- */
-export function finalize_tx(config: Config, block_builder_url: string, private_key: string, tx_request_memo: JsTxRequestMemo, proposal: JsBlockProposal): Promise<JsTxResult>;
-/**
- * Batch function of query_proposal and finalize_tx.
+ * Function to query the block proposal from the block builder, and
+ * send the signed tx tree root to the block builder during taking a backup of the tx.
  */
 export function query_and_finalize(config: Config, block_builder_url: string, private_key: string, tx_request_memo: JsTxRequestMemo): Promise<JsTxResult>;
 /**
@@ -41,9 +28,21 @@ export function sync(config: Config, private_key: string): Promise<void>;
  */
 export function sync_withdrawals(config: Config, private_key: string): Promise<void>;
 /**
+ * Synchronize the user's claim of staking mining, and send request to the withdrawal aggregator.
+ * It may take a long time to generate ZKP.
+ */
+export function sync_claim(config: Config, private_key: string, recipient: string): Promise<void>;
+/**
  * Get the user's data. It is recommended to sync before calling this function.
  */
 export function get_user_data(config: Config, private_key: string): Promise<JsUserData>;
+export function get_withdrawal_info(config: Config, private_key: string): Promise<(JsWithdrawalInfo)[]>;
+export function get_withdrawal_info_by_recipient(config: Config, recipient: string): Promise<(JsWithdrawalInfo)[]>;
+export function get_mining_list(config: Config, private_key: string): Promise<(JsMining)[]>;
+export function get_claim_info(config: Config, private_key: string): Promise<(JsClaimInfo)[]>;
+export function fetch_deposit_history(config: Config, private_key: string): Promise<(JsDepositEntry)[]>;
+export function fetch_transfer_history(config: Config, private_key: string): Promise<(JsTransferEntry)[]>;
+export function fetch_tx_history(config: Config, private_key: string): Promise<(JsTxEntry)[]>;
 /**
  * Decrypt the deposit data.
  */
@@ -56,6 +55,8 @@ export function decrypt_transfer_data(private_key: string, data: Uint8Array): Pr
  * Decrypt the tx data.
  */
 export function decrypt_tx_data(private_key: string, data: Uint8Array): Promise<JsTxData>;
+export function generate_auth_for_store_vault(private_key: string): Promise<JsAuth>;
+export function fetch_encrypted_data(config: Config, auth: JsAuth, timestamp: bigint | undefined, uuid: string | undefined, limit: number | undefined, order: string): Promise<(JsEncryptedData)[]>;
 export class Config {
   free(): void;
   constructor(store_vault_server_url: string, balance_prover_url: string, validity_prover_url: string, withdrawal_server_url: string, deposit_timeout: bigint, tx_timeout: bigint, block_builder_request_interval: bigint, block_builder_request_limit: bigint, block_builder_query_wait_time: bigint, block_builder_query_interval: bigint, block_builder_query_limit: bigint, l1_rpc_url: string, l1_chain_id: bigint, liquidity_contract_address: string, l2_rpc_url: string, l2_chain_id: bigint, rollup_contract_address: string, rollup_contract_deployed_block_number: bigint);
@@ -140,10 +141,41 @@ export class IntmaxAccount {
   privkey: string;
   pubkey: string;
 }
+export class JsAuth {
+  private constructor();
+  free(): void;
+  pubkey: string;
+  expiry: bigint;
+  signature: JsFlatG2;
+}
+export class JsBlock {
+  private constructor();
+  free(): void;
+  prev_block_hash: string;
+  deposit_tree_root: string;
+  signature_hash: string;
+  timestamp: bigint;
+  block_number: number;
+}
 export class JsBlockProposal {
   private constructor();
   free(): void;
   tx_tree_root(): string;
+}
+export class JsClaim {
+  private constructor();
+  free(): void;
+  recipient: string;
+  amount: string;
+  nullifier: string;
+  block_hash: string;
+  block_number: number;
+}
+export class JsClaimInfo {
+  private constructor();
+  free(): void;
+  status: string;
+  claim: JsClaim;
 }
 export class JsContractWithdrawal {
   free(): void;
@@ -158,17 +190,57 @@ export class JsDepositData {
   private constructor();
   free(): void;
   deposit_salt: string;
+  depositor: string;
   pubkey_salt_hash: string;
   amount: string;
+  is_eligible: boolean;
   token_type: number;
   token_address: string;
   token_id: string;
+  is_mining: boolean;
+  token_index?: number;
+}
+export class JsDepositEntry {
+  private constructor();
+  free(): void;
+  data: JsDepositData;
+  status: JsEntryStatusWithBlockNumber;
+  meta: JsMetaData;
 }
 export class JsDepositResult {
   private constructor();
   free(): void;
   deposit_data: JsDepositData;
   deposit_uuid: string;
+}
+export class JsEncryptedData {
+  private constructor();
+  free(): void;
+  data: Uint8Array;
+  uuid: string;
+  timestamp: bigint;
+  /**
+   * Deposit, Transfer(Receive), Tx(Send)
+   */
+  data_type: string;
+}
+export class JsEntryStatusWithBlockNumber {
+  private constructor();
+  free(): void;
+  /**
+   * The status of the entry
+   * - "settled": The entry has been on-chain but not yet incorporated into the proof
+   * - "processed": The entry has been incorporated into the proof
+   * - "pending": The entry is not yet on-chain
+   * - "timeout": The entry is not yet on-chain and has timed out
+   */
+  status: string;
+  block_number?: number;
+}
+export class JsFlatG2 {
+  private constructor();
+  free(): void;
+  elements: (string)[];
 }
 export class JsGenericAddress {
   free(): void;
@@ -181,6 +253,21 @@ export class JsGenericAddress {
    * hex string of 32 bytes (pubkey) or 20 bytes (ethereum address)
    */
   data: string;
+}
+export class JsMetaData {
+  private constructor();
+  free(): void;
+  timestamp: bigint;
+  uuid: string;
+}
+export class JsMining {
+  private constructor();
+  free(): void;
+  meta: JsMetaData;
+  deposit_data: JsDepositData;
+  block: JsBlock;
+  maturity: bigint;
+  status: string;
 }
 export class JsTransfer {
   free(): void;
@@ -197,6 +284,13 @@ export class JsTransferData {
   sender: string;
   transfer: JsTransfer;
 }
+export class JsTransferEntry {
+  private constructor();
+  free(): void;
+  data: JsTransferData;
+  status: JsEntryStatusWithBlockNumber;
+  meta: JsMetaData;
+}
 export class JsTx {
   private constructor();
   free(): void;
@@ -209,6 +303,13 @@ export class JsTxData {
   tx: JsTx;
   transfers: (JsTransfer)[];
 }
+export class JsTxEntry {
+  private constructor();
+  free(): void;
+  data: JsTxData;
+  status: JsEntryStatusWithBlockNumber;
+  meta: JsMetaData;
+}
 export class JsTxRequestMemo {
   private constructor();
   free(): void;
@@ -219,8 +320,6 @@ export class JsTxResult {
   private constructor();
   free(): void;
   tx_tree_root: string;
-  transfer_data_vec: (JsTransferData)[];
-  withdrawal_data_vec: (JsTransferData)[];
   transfer_uuids: (string)[];
   withdrawal_uuids: (string)[];
 }
@@ -231,10 +330,6 @@ export class JsUserData {
    * The user public key
    */
   pubkey: string;
-  /**
-   * The block number of the user data
-   */
-  block_number: number;
   /**
    * The token balances of the user
    */
@@ -275,6 +370,12 @@ export class JsUserData {
    * Uuids of processed withdrawals
    */
   processed_withdrawal_uuids: (string)[];
+}
+export class JsWithdrawalInfo {
+  private constructor();
+  free(): void;
+  status: string;
+  contract_withdrawal: JsContractWithdrawal;
 }
 export class TokenBalance {
   private constructor();

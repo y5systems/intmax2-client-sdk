@@ -36,7 +36,6 @@
   "dependencies": {
     "@scure/bip39": "^1.5.1",
     "axios": "^1.7.9",
-    "rollup-plugin-dts": "^6.1.1",
     "viem": "^2.22.8"
   },
   "devDependencies": {
@@ -56,6 +55,7 @@
     "prettier": "^3.4.2",
     "rimraf": "^6.0.1",
     "rollup": "^4.32.1",
+    "rollup-plugin-dts": "^6.1.1",
     "tslib": "^2.8.1",
     "typescript": "^5.5.3"
   },

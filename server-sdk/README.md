@@ -1,4 +1,4 @@
-# intmax2-SERVER-SDK
+# INTMAX2-SERVER-SDK
 
 This SDK is a client library for the INTMAX API. It is designed to help you integrate INTMAX services into your applications.
 

@@ -1,5 +1,4 @@
 // General
-import { JsDerive } from '../../wasm/node/intmax2_wasm_lib';
 
 export interface FetchItemsRequest<T> {
   page?: number;
@@ -75,11 +74,6 @@ export interface TokenBalance {
 }
 
 export type SignMessageResponse = [string, string, string, string];
-
-export interface DerivePath {
-  derive_path: number;
-  redeposit_path: number;
-}
 
 // Transaction
 export interface Transaction {
@@ -157,8 +151,6 @@ export interface PrepareDepositTransactionRequest {
   amount: number;
   address: string;
   isMining: boolean;
-  derivationPath?: number;
-  redepositPath?: number;
 }
 
 export interface PrepareEstimateDepositTransactionRequest extends PrepareDepositTransactionRequest {
@@ -189,8 +181,8 @@ export interface WithdrawRequest {
   token: Token;
   amount: number;
   claim_beneficiary?: `0x${string}`;
-  derivations?: JsDerive;
 }
+
 export interface LoginResponse {
   address: string;
   isLoggedIn: boolean;
@@ -218,7 +210,6 @@ export interface INTMAXClient {
   fetchTokenBalances: () => Promise<TokenBalancesResponse>;
   getPrivateKey: () => Promise<string | undefined>;
   signMessage: (data: string) => Promise<SignMessageResponse>;
-  getDerivationPathList: () => Promise<DerivePath[]>;
 
   // transaction
   fetchTransactions: (params: FetchTransactionsRequest) => Promise<Transaction[]>;
@@ -304,7 +295,6 @@ export interface IntMaxTxBroadcast {
   token_type?: TokenType;
   token_address?: `0x${string}`;
   depositor?: `0x${string}`;
-  isMining?: boolean;
 }
 
 interface Fee {

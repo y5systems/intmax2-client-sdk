@@ -156,9 +156,6 @@ export interface PrepareDepositTransactionRequest {
   token: Token;
   amount: number;
   address: string;
-  isMining: boolean;
-  derivationPath?: number;
-  redepositPath?: number;
 }
 
 export interface PrepareEstimateDepositTransactionRequest extends PrepareDepositTransactionRequest {
@@ -218,7 +215,6 @@ export interface INTMAXClient {
   fetchTokenBalances: () => Promise<TokenBalancesResponse>;
   getPrivateKey: () => Promise<string | undefined>;
   signMessage: (data: string) => Promise<SignMessageResponse>;
-  getDerivationPathList: () => Promise<DerivePath[]>;
 
   // transaction
   fetchTransactions: (params: FetchTransactionsRequest) => Promise<Transaction[]>;
@@ -304,7 +300,6 @@ export interface IntMaxTxBroadcast {
   token_type?: TokenType;
   token_address?: `0x${string}`;
   depositor?: `0x${string}`;
-  isMining?: boolean;
 }
 
 interface Fee {

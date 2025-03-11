@@ -127,14 +127,14 @@ const claimWithdrawalsButton = async () => {
   wrapper.appendChild(button);
 
   const withdrawals = await client.fetchPendingWithdrawals();
-  const withdrawalsToClaim = withdrawals.need_claim;
+  const withdrawalsToClaim = withdrawals.needClaim;
   button.innerHTML = `Claim Withdrawals (${withdrawalsToClaim.length})`;
 
   button.onclick = async () => {
     button.innerHTML = 'Claiming...';
     try {
       const withdrawals = await client.fetchPendingWithdrawals();
-      const result = await client.claimWithdrawal(withdrawals.need_claim);
+      const result = await client.claimWithdrawal(withdrawals.needClaim);
       const resultDiv = document.createElement('pre');
       resultDiv.style.marginTop = '10px';
       resultDiv.innerHTML = JSON.stringify(result, null, 2);

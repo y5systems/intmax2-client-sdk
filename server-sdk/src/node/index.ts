@@ -502,8 +502,12 @@ export class IntMaxNodeClient implements INTMAXClient {
     return parseEther((gasPrice ?? 0n * estimatedGas).toString());
   }
 
-  async deposit({ ...params }: PrepareDepositTransactionRequest): Promise<PrepareDepositTransactionResponse> {
+  async deposit(params: PrepareDepositTransactionRequest): Promise<PrepareDepositTransactionResponse> {
     const address = params.address;
+    if (params.token.tokenType === TokenType.ERC20) {
+      // eslint-disable-next-line no-param-reassign
+      params.token = await this.#tokenFetcher.getTokenChainInfo(params.token.contractAddress as `0x${string}`);
+    }
 
     const txConfig = await this.#prepareDepositToken({ ...params, address, isGasEstimation: false });
     const { gas, maxPriorityFeePerGas, maxFeePerGas } = await this.#estimateFee(txConfig);

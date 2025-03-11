@@ -529,6 +529,10 @@ export class IntMaxClient implements INTMAXClient {
 
   async deposit(params: PrepareDepositTransactionRequest): Promise<PrepareDepositTransactionResponse> {
     const address = params.address;
+    if (params.token.tokenType === TokenType.ERC20) {
+      // eslint-disable-next-line no-param-reassign
+      params.token = await this.#tokenFetcher.getTokenChainInfo(params.token.contractAddress as `0x${string}`);
+    }
 
     const txConfig = await this.#prepareDepositToken({ ...params, address, isGasEstimation: false });
 

@@ -1,12 +1,32 @@
 /* tslint:disable */
 /* eslint-disable */
-export function generate_withdrawal_transfers(config: Config, withdrawal_transfer: JsTransfer, fee_token_index: number, with_claim_fee: boolean): Promise<JsWithdrawalTransfers>;
+export function generate_withdrawal_transfers(
+  config: Config,
+  withdrawal_transfer: JsTransfer,
+  fee_token_index: number,
+  with_claim_fee: boolean,
+): Promise<JsWithdrawalTransfers>;
 /**
  * Generate fee payment memo from given transfers and fee transfer indices
  */
-export function generate_fee_payment_memo(transfers: JsTransfer[], withdrawal_fee_transfer_index?: number | null, claim_fee_transfer_index?: number | null): JsPaymentMemoEntry[];
+export function generate_fee_payment_memo(
+  transfers: JsTransfer[],
+  withdrawal_fee_transfer_index?: number | null,
+  claim_fee_transfer_index?: number | null,
+): JsPaymentMemoEntry[];
 export function save_derive_path(config: Config, private_key: string, derive: JsDerive): Promise<string>;
 export function get_derive_path_list(config: Config, private_key: string): Promise<JsDerive[]>;
+export function fetch_deposit_history(
+  config: Config,
+  private_key: string,
+  cursor: JsMetaDataCursor,
+): Promise<JsDepositHistory>;
+export function fetch_transfer_history(
+  config: Config,
+  private_key: string,
+  cursor: JsMetaDataCursor,
+): Promise<JsTransferHistory>;
+export function fetch_tx_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsTxHistory>;
 /**
  * Generate a new key pair from the given ethereum private key (32bytes hex string).
  */
@@ -14,21 +34,50 @@ export function generate_intmax_account_from_eth_key(eth_private_key: string): P
 /**
  * Get the hash of the deposit.
  */
-export function get_deposit_hash(depositor: string, recipient_salt_hash: string, token_index: number, amount: string, is_eligible: boolean): string;
+export function get_deposit_hash(
+  depositor: string,
+  recipient_salt_hash: string,
+  token_index: number,
+  amount: string,
+  is_eligible: boolean,
+): string;
 /**
  * Function to take a backup before calling the deposit function of the liquidity contract.
  * You can also get the pubkey_salt_hash from the return value.
  */
-export function prepare_deposit(config: Config, depositor: string, recipient: string, amount: string, token_type: number, token_address: string, token_id: string, is_mining: boolean): Promise<JsDepositResult>;
+export function prepare_deposit(
+  config: Config,
+  depositor: string,
+  recipient: string,
+  amount: string,
+  token_type: number,
+  token_address: string,
+  token_id: string,
+  is_mining: boolean,
+): Promise<JsDepositResult>;
 /**
  * Function to send a tx request to the block builder. The return value contains information to take a backup.
  */
-export function send_tx_request(config: Config, block_builder_url: string, private_key: string, transfers: JsTransfer[], payment_memos: JsPaymentMemoEntry[], beneficiary?: string | null, fee?: JsFee | null, collateral_fee?: JsFee | null): Promise<JsTxRequestMemo>;
+export function send_tx_request(
+  config: Config,
+  block_builder_url: string,
+  private_key: string,
+  transfers: JsTransfer[],
+  payment_memos: JsPaymentMemoEntry[],
+  beneficiary?: string | null,
+  fee?: JsFee | null,
+  collateral_fee?: JsFee | null,
+): Promise<JsTxRequestMemo>;
 /**
  * Function to query the block proposal from the block builder, and
  * send the signed tx tree root to the block builder during taking a backup of the tx.
  */
-export function query_and_finalize(config: Config, block_builder_url: string, private_key: string, tx_request_memo: JsTxRequestMemo): Promise<JsTxResult>;
+export function query_and_finalize(
+  config: Config,
+  block_builder_url: string,
+  private_key: string,
+  tx_request_memo: JsTxRequestMemo,
+): Promise<JsTxResult>;
 export function get_tx_status(config: Config, pubkey: string, tx_tree_root: string): Promise<string>;
 /**
  * Synchronize the user's balance proof. It may take a long time to generate ZKP.
@@ -47,7 +96,12 @@ export function sync_withdrawals(config: Config, private_key: string, fee_token_
  * Synchronize the user's claim of staking mining, and send request to the withdrawal aggregator.
  * It may take a long time to generate ZKP.
  */
-export function sync_claims(config: Config, private_key: string, recipient: string, fee_token_index: number): Promise<void>;
+export function sync_claims(
+  config: Config,
+  private_key: string,
+  recipient: string,
+  fee_token_index: number,
+): Promise<void>;
 /**
  * Get the user's data. It is recommended to sync before calling this function.
  */
@@ -56,12 +110,18 @@ export function get_withdrawal_info(config: Config, private_key: string): Promis
 export function get_withdrawal_info_by_recipient(config: Config, recipient: string): Promise<JsWithdrawalInfo[]>;
 export function get_mining_list(config: Config, private_key: string): Promise<JsMining[]>;
 export function get_claim_info(config: Config, private_key: string): Promise<JsClaimInfo[]>;
-export function quote_transfer_fee(config: Config, block_builder_url: string, pubkey: string, fee_token_index: number): Promise<JsFeeQuote>;
-export function quote_withdrawal_fee(config: Config, withdrawal_token_index: number, fee_token_index: number): Promise<JsFeeQuote>;
+export function quote_transfer_fee(
+  config: Config,
+  block_builder_url: string,
+  pubkey: string,
+  fee_token_index: number,
+): Promise<JsFeeQuote>;
+export function quote_withdrawal_fee(
+  config: Config,
+  withdrawal_token_index: number,
+  fee_token_index: number,
+): Promise<JsFeeQuote>;
 export function quote_claim_fee(config: Config, fee_token_index: number): Promise<JsFeeQuote>;
-export function fetch_deposit_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsDepositHistory>;
-export function fetch_transfer_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsTransferHistory>;
-export function fetch_tx_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsTxHistory>;
 /**
  * Decrypt the deposit data.
  */
@@ -74,14 +134,40 @@ export function decrypt_transfer_data(private_key: string, data: Uint8Array): Pr
  * Decrypt the tx data.
  */
 export function decrypt_tx_data(private_key: string, data: Uint8Array): Promise<JsTxData>;
-export function generate_auth_for_store_vault(private_key: string): Promise<JsAuth>;
-export function fetch_encrypted_data(config: Config, auth: JsAuth, cursor: JsMetaDataCursor): Promise<JsEncryptedData[]>;
+export function generate_auth_for_store_vault(private_key: string, use_s3: boolean): Promise<JsAuth>;
+export function fetch_encrypted_data(
+  config: Config,
+  auth: JsAuth,
+  cursor: JsMetaDataCursor,
+): Promise<JsEncryptedData[]>;
 export function sign_message(private_key: string, message: Uint8Array): Promise<JsFlatG2>;
 export function verify_signature(signature: JsFlatG2, public_key: string, message: Uint8Array): Promise<boolean>;
 export function get_account_info(config: Config, public_key: string): Promise<JsAccountInfo>;
 export class Config {
   free(): void;
-  constructor(store_vault_server_url: string, balance_prover_url: string, validity_prover_url: string, withdrawal_server_url: string, deposit_timeout: bigint, tx_timeout: bigint, block_builder_request_interval: bigint, block_builder_request_limit: bigint, block_builder_query_wait_time: bigint, block_builder_query_interval: bigint, block_builder_query_limit: bigint, l1_rpc_url: string, l1_chain_id: bigint, liquidity_contract_address: string, l2_rpc_url: string, l2_chain_id: bigint, rollup_contract_address: string, rollup_contract_deployed_block_number: bigint, withdrawal_contract_address: string, use_private_zkp_server: boolean);
+  constructor(
+    store_vault_server_url: string,
+    balance_prover_url: string,
+    validity_prover_url: string,
+    withdrawal_server_url: string,
+    deposit_timeout: bigint,
+    tx_timeout: bigint,
+    block_builder_request_interval: bigint,
+    block_builder_request_limit: bigint,
+    block_builder_query_wait_time: bigint,
+    block_builder_query_interval: bigint,
+    block_builder_query_limit: bigint,
+    l1_rpc_url: string,
+    l1_chain_id: bigint,
+    liquidity_contract_address: string,
+    l2_rpc_url: string,
+    l2_chain_id: bigint,
+    rollup_contract_address: string,
+    rollup_contract_deployed_block_number: bigint,
+    withdrawal_contract_address: string,
+    use_private_zkp_server: boolean,
+    use_s3: boolean,
+  );
   /**
    * URL of the store vault server
    */
@@ -161,6 +247,7 @@ export class Config {
    */
   withdrawal_contract_address: string;
   use_private_zkp_server: boolean;
+  use_s3: boolean;
 }
 export class IntmaxAccount {
   private constructor();
@@ -253,7 +340,7 @@ export class JsDepositResult {
   private constructor();
   free(): void;
   deposit_data: JsDepositData;
-  deposit_uuid: string;
+  deposit_digest: string;
 }
 export class JsDerive {
   free(): void;
@@ -265,7 +352,7 @@ export class JsEncryptedData {
   private constructor();
   free(): void;
   data: Uint8Array;
-  uuid: string;
+  digest: string;
   timestamp: bigint;
   /**
    * Deposit, Transfer(Receive), Tx(Send)
@@ -337,7 +424,7 @@ export class JsMetaData {
   private constructor();
   free(): void;
   timestamp: bigint;
-  uuid: string;
+  digest: string;
 }
 export class JsMetaDataCursor {
   free(): void;
@@ -435,8 +522,8 @@ export class JsTxResult {
   private constructor();
   free(): void;
   tx_tree_root: string;
-  transfer_uuids: string[];
-  withdrawal_uuids: string[];
+  transfer_digests: string[];
+  withdrawal_digests: string[];
 }
 export class JsUserData {
   private constructor();
@@ -470,21 +557,21 @@ export class JsUserData {
    */
   withdrawal_lpt: bigint;
   /**
-   * Uuids of processed deposits
+   * Digests of processed deposits
    */
-  processed_deposit_uuids: string[];
+  processed_deposit_digests: string[];
   /**
-   * Uuids of processed transfers
+   * Digests of processed transfers
    */
-  processed_transfer_uuids: string[];
+  processed_transfer_digests: string[];
   /**
-   * Uuids of processed txs
+   * Digests of processed txs
    */
-  processed_tx_uuids: string[];
+  processed_tx_digests: string[];
   /**
-   * Uuids of processed withdrawals
+   * Digests of processed withdrawals
    */
-  processed_withdrawal_uuids: string[];
+  processed_withdrawal_digests: string[];
 }
 export class JsWithdrawalInfo {
   private constructor();
@@ -533,6 +620,20 @@ export interface InitOutput {
   readonly jsderive_new: (a: number, b: number) => number;
   readonly save_derive_path: (a: number, b: number, c: number, d: number) => any;
   readonly get_derive_path_list: (a: number, b: number, c: number) => any;
+  readonly __wbg_jsdeposithistory_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsdeposithistory_history: (a: number) => [number, number];
+  readonly __wbg_set_jsdeposithistory_history: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsdeposithistory_cursor_response: (a: number) => number;
+  readonly __wbg_set_jsdeposithistory_cursor_response: (a: number, b: number) => void;
+  readonly __wbg_jstransferhistory_free: (a: number, b: number) => void;
+  readonly __wbg_get_jstransferhistory_history: (a: number) => [number, number];
+  readonly __wbg_set_jstransferhistory_history: (a: number, b: number, c: number) => void;
+  readonly __wbg_jstxhistory_free: (a: number, b: number) => void;
+  readonly __wbg_get_jstxhistory_history: (a: number) => [number, number];
+  readonly __wbg_set_jstxhistory_history: (a: number, b: number, c: number) => void;
+  readonly fetch_deposit_history: (a: number, b: number, c: number, d: number) => any;
+  readonly fetch_transfer_history: (a: number, b: number, c: number, d: number) => any;
+  readonly fetch_tx_history: (a: number, b: number, c: number, d: number) => any;
   readonly __wbg_jsaccountinfo_free: (a: number, b: number) => void;
   readonly __wbg_get_jsaccountinfo_account_id: (a: number) => [number, bigint];
   readonly __wbg_set_jsaccountinfo_account_id: (a: number, b: number, c: bigint) => void;
@@ -540,84 +641,21 @@ export interface InitOutput {
   readonly __wbg_set_jsaccountinfo_block_number: (a: number, b: number) => void;
   readonly __wbg_get_jsaccountinfo_last_block_number: (a: number) => number;
   readonly __wbg_set_jsaccountinfo_last_block_number: (a: number, b: number) => void;
-  readonly __wbg_jsentrystatuswithblocknumber_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsentrystatuswithblocknumber_status: (a: number) => [number, number];
-  readonly __wbg_set_jsentrystatuswithblocknumber_status: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsentrystatuswithblocknumber_block_number: (a: number) => number;
-  readonly __wbg_set_jsentrystatuswithblocknumber_block_number: (a: number, b: number) => void;
-  readonly __wbg_jsdepositentry_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsdepositentry_data: (a: number) => number;
-  readonly __wbg_set_jsdepositentry_data: (a: number, b: number) => void;
-  readonly __wbg_get_jsdepositentry_status: (a: number) => number;
-  readonly __wbg_set_jsdepositentry_status: (a: number, b: number) => void;
-  readonly __wbg_get_jsdepositentry_meta: (a: number) => number;
-  readonly __wbg_set_jsdepositentry_meta: (a: number, b: number) => void;
-  readonly __wbg_jstransferentry_free: (a: number, b: number) => void;
-  readonly __wbg_get_jstransferentry_data: (a: number) => number;
-  readonly __wbg_set_jstransferentry_data: (a: number, b: number) => void;
-  readonly __wbg_get_jstransferentry_status: (a: number) => number;
-  readonly __wbg_set_jstransferentry_status: (a: number, b: number) => void;
-  readonly __wbg_get_jstransferentry_meta: (a: number) => number;
-  readonly __wbg_set_jstransferentry_meta: (a: number, b: number) => void;
-  readonly __wbg_jstxentry_free: (a: number, b: number) => void;
-  readonly __wbg_get_jstxentry_data: (a: number) => number;
-  readonly __wbg_set_jstxentry_data: (a: number, b: number) => void;
-  readonly __wbg_get_jstxentry_status: (a: number) => number;
-  readonly __wbg_set_jstxentry_status: (a: number, b: number) => void;
-  readonly __wbg_get_jstxentry_meta: (a: number) => number;
-  readonly __wbg_set_jstxentry_meta: (a: number, b: number) => void;
-  readonly __wbg_jsgenericaddress_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsgenericaddress_is_pubkey: (a: number) => number;
-  readonly __wbg_set_jsgenericaddress_is_pubkey: (a: number, b: number) => void;
-  readonly jsgenericaddress_new: (a: number, b: number, c: number) => [number, number, number];
-  readonly __wbg_jstransfer_free: (a: number, b: number) => void;
-  readonly __wbg_get_jstransfer_recipient: (a: number) => number;
-  readonly __wbg_set_jstransfer_recipient: (a: number, b: number) => void;
-  readonly __wbg_get_jstransfer_token_index: (a: number) => number;
-  readonly __wbg_set_jstransfer_token_index: (a: number, b: number) => void;
-  readonly __wbg_get_jstransfer_amount: (a: number) => [number, number];
-  readonly __wbg_set_jstransfer_amount: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jstransfer_salt: (a: number) => [number, number];
-  readonly __wbg_set_jstransfer_salt: (a: number, b: number, c: number) => void;
-  readonly jstransfer_new: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
-  readonly jstransfer_to_withdrawal: (a: number) => [number, number, number];
-  readonly __wbg_get_jstx_nonce: (a: number) => number;
-  readonly __wbg_set_jstx_nonce: (a: number, b: number) => void;
-  readonly __wbg_jscontractwithdrawal_free: (a: number, b: number) => void;
-  readonly __wbg_get_jscontractwithdrawal_token_index: (a: number) => number;
-  readonly __wbg_set_jscontractwithdrawal_token_index: (a: number, b: number) => void;
-  readonly jscontractwithdrawal_new: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => number;
-  readonly jscontractwithdrawal_hash: (a: number) => [number, number, number, number];
-  readonly __wbg_jsclaim_free: (a: number, b: number) => void;
-  readonly __wbg_set_jsclaim_block_hash: (a: number, b: number, c: number) => void;
-  readonly __wbg_jsmetadata_free: (a: number, b: number) => void;
-  readonly __wbg_jswithdrawalinfo_free: (a: number, b: number) => void;
-  readonly __wbg_get_jswithdrawalinfo_contract_withdrawal: (a: number) => number;
-  readonly __wbg_set_jswithdrawalinfo_contract_withdrawal: (a: number, b: number) => void;
-  readonly __wbg_jsclaiminfo_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsclaiminfo_claim: (a: number) => number;
-  readonly __wbg_set_jsclaiminfo_claim: (a: number, b: number) => void;
-  readonly __wbg_jsblock_free: (a: number, b: number) => void;
-  readonly __wbg_set_jsblock_prev_block_hash: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsblock_deposit_tree_root: (a: number) => [number, number];
-  readonly __wbg_set_jsblock_deposit_tree_root: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsblock_signature_hash: (a: number) => [number, number];
-  readonly __wbg_set_jsblock_signature_hash: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsblock_timestamp: (a: number) => bigint;
-  readonly __wbg_set_jsblock_timestamp: (a: number, b: bigint) => void;
-  readonly __wbg_get_jsblock_block_number: (a: number) => number;
-  readonly __wbg_set_jsblock_block_number: (a: number, b: number) => void;
-  readonly __wbg_jsmining_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsmining_meta: (a: number) => number;
-  readonly __wbg_set_jsmining_meta: (a: number, b: number) => void;
-  readonly __wbg_get_jsmining_deposit_data: (a: number) => number;
-  readonly __wbg_set_jsmining_deposit_data: (a: number, b: number) => void;
-  readonly __wbg_get_jsmining_block: (a: number) => number;
-  readonly __wbg_set_jsmining_block: (a: number, b: number) => void;
-  readonly __wbg_get_jsmining_maturity: (a: number) => bigint;
-  readonly __wbg_set_jsmining_maturity: (a: number, b: bigint) => void;
-  readonly __wbg_get_jsmining_status: (a: number) => [number, number];
-  readonly __wbg_set_jsmining_status: (a: number, b: number, c: number) => void;
+  readonly __wbg_jsflatg2_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsflatg2_elements: (a: number) => [number, number];
+  readonly __wbg_set_jsflatg2_elements: (a: number, b: number, c: number) => void;
+  readonly jsflatg2_new: (a: number, b: number) => number;
+  readonly __wbg_jsauth_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsauth_pubkey: (a: number) => [number, number];
+  readonly __wbg_set_jsauth_pubkey: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsauth_expiry: (a: number) => bigint;
+  readonly __wbg_set_jsauth_expiry: (a: number, b: bigint) => void;
+  readonly __wbg_get_jsauth_signature: (a: number) => number;
+  readonly __wbg_set_jsauth_signature: (a: number, b: number) => void;
+  readonly __wbg_get_jstransferhistory_cursor_response: (a: number) => number;
+  readonly __wbg_get_jstxhistory_cursor_response: (a: number) => number;
+  readonly __wbg_set_jstransferhistory_cursor_response: (a: number, b: number) => void;
+  readonly __wbg_set_jstxhistory_cursor_response: (a: number, b: number) => void;
   readonly __wbg_jsmetadatacursor_free: (a: number, b: number) => void;
   readonly __wbg_get_jsmetadatacursor_cursor: (a: number) => number;
   readonly __wbg_set_jsmetadatacursor_cursor: (a: number, b: number) => void;
@@ -658,18 +696,19 @@ export interface InitOutput {
   readonly __wbg_set_jstransferdata_transfer: (a: number, b: number) => void;
   readonly __wbg_jstxdata_free: (a: number, b: number) => void;
   readonly __wbg_get_jstxdata_tx: (a: number) => number;
+  readonly __wbg_set_jstxdata_tx: (a: number, b: number) => void;
   readonly __wbg_get_jstxdata_transfers: (a: number) => [number, number];
   readonly __wbg_set_jstxdata_transfers: (a: number, b: number, c: number) => void;
   readonly __wbg_jsdepositresult_free: (a: number, b: number) => void;
   readonly __wbg_get_jsdepositresult_deposit_data: (a: number) => number;
   readonly __wbg_set_jsdepositresult_deposit_data: (a: number, b: number) => void;
-  readonly __wbg_get_jsdepositresult_deposit_uuid: (a: number) => [number, number];
-  readonly __wbg_set_jsdepositresult_deposit_uuid: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsdepositresult_deposit_digest: (a: number) => [number, number];
+  readonly __wbg_set_jsdepositresult_deposit_digest: (a: number, b: number, c: number) => void;
   readonly __wbg_jstxresult_free: (a: number, b: number) => void;
-  readonly __wbg_get_jstxresult_transfer_uuids: (a: number) => [number, number];
-  readonly __wbg_set_jstxresult_transfer_uuids: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jstxresult_withdrawal_uuids: (a: number) => [number, number];
-  readonly __wbg_set_jstxresult_withdrawal_uuids: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jstxresult_transfer_digests: (a: number) => [number, number];
+  readonly __wbg_set_jstxresult_transfer_digests: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jstxresult_withdrawal_digests: (a: number) => [number, number];
+  readonly __wbg_set_jstxresult_withdrawal_digests: (a: number, b: number, c: number) => void;
   readonly __wbg_jsuserdata_free: (a: number, b: number) => void;
   readonly __wbg_get_jsuserdata_balances: (a: number) => [number, number];
   readonly __wbg_set_jsuserdata_balances: (a: number, b: number, c: number) => void;
@@ -681,26 +720,143 @@ export interface InitOutput {
   readonly __wbg_set_jsuserdata_tx_lpt: (a: number, b: bigint) => void;
   readonly __wbg_get_jsuserdata_withdrawal_lpt: (a: number) => bigint;
   readonly __wbg_set_jsuserdata_withdrawal_lpt: (a: number, b: bigint) => void;
-  readonly __wbg_get_jsuserdata_processed_deposit_uuids: (a: number) => [number, number];
-  readonly __wbg_set_jsuserdata_processed_deposit_uuids: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsuserdata_processed_transfer_uuids: (a: number) => [number, number];
-  readonly __wbg_set_jsuserdata_processed_transfer_uuids: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsuserdata_processed_tx_uuids: (a: number) => [number, number];
-  readonly __wbg_set_jsuserdata_processed_tx_uuids: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsuserdata_processed_withdrawal_uuids: (a: number) => [number, number];
-  readonly __wbg_set_jsuserdata_processed_withdrawal_uuids: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsuserdata_processed_deposit_digests: (a: number) => [number, number];
+  readonly __wbg_set_jsuserdata_processed_deposit_digests: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsuserdata_processed_transfer_digests: (a: number) => [number, number];
+  readonly __wbg_set_jsuserdata_processed_transfer_digests: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsuserdata_processed_tx_digests: (a: number) => [number, number];
+  readonly __wbg_set_jsuserdata_processed_tx_digests: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsuserdata_processed_withdrawal_digests: (a: number) => [number, number];
+  readonly __wbg_set_jsuserdata_processed_withdrawal_digests: (a: number, b: number, c: number) => void;
   readonly __wbg_tokenbalance_free: (a: number, b: number) => void;
   readonly __wbg_get_tokenbalance_is_insufficient: (a: number) => number;
   readonly __wbg_set_tokenbalance_is_insufficient: (a: number, b: number) => void;
+  readonly __wbg_jsencrypteddata_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsencrypteddata_data: (a: number) => [number, number];
+  readonly __wbg_set_jsencrypteddata_data: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsencrypteddata_digest: (a: number) => [number, number];
+  readonly __wbg_set_jsencrypteddata_digest: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsencrypteddata_timestamp: (a: number) => bigint;
+  readonly __wbg_set_jsencrypteddata_timestamp: (a: number, b: bigint) => void;
+  readonly __wbg_get_jsencrypteddata_data_type: (a: number) => [number, number];
+  readonly __wbg_set_jsencrypteddata_data_type: (a: number, b: number, c: number) => void;
+  readonly __wbg_jsfee_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsfee_amount: (a: number) => [number, number];
+  readonly __wbg_set_jsfee_amount: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsfee_token_index: (a: number) => number;
+  readonly __wbg_set_jsfee_token_index: (a: number, b: number) => void;
+  readonly jsfee_new: (a: number, b: number, c: number) => number;
+  readonly __wbg_jsfeequote_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsfeequote_fee: (a: number) => number;
+  readonly __wbg_set_jsfeequote_fee: (a: number, b: number) => void;
+  readonly __wbg_get_jsfeequote_collateral_fee: (a: number) => number;
+  readonly __wbg_set_jsfeequote_collateral_fee: (a: number, b: number) => void;
+  readonly __wbg_jsfeeinfo_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsfeeinfo_beneficiary: (a: number) => [number, number];
+  readonly __wbg_set_jsfeeinfo_beneficiary: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsfeeinfo_registration_fee: (a: number) => [number, number];
+  readonly __wbg_set_jsfeeinfo_registration_fee: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsfeeinfo_non_registration_fee: (a: number) => [number, number];
+  readonly __wbg_set_jsfeeinfo_non_registration_fee: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsfeeinfo_registration_collateral_fee: (a: number) => [number, number];
+  readonly __wbg_set_jsfeeinfo_registration_collateral_fee: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsfeeinfo_non_registration_collateral_fee: (a: number) => [number, number];
+  readonly __wbg_set_jsfeeinfo_non_registration_collateral_fee: (a: number, b: number, c: number) => void;
+  readonly __wbg_jswithdrawaltransfers_free: (a: number, b: number) => void;
+  readonly __wbg_get_jswithdrawaltransfers_claim_fee_transfer_index: (a: number) => number;
+  readonly __wbg_set_jswithdrawaltransfers_claim_fee_transfer_index: (a: number, b: number) => void;
+  readonly __wbg_jsentrystatuswithblocknumber_free: (a: number, b: number) => void;
+  readonly __wbg_jsdepositentry_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsdepositentry_data: (a: number) => number;
+  readonly __wbg_set_jsdepositentry_data: (a: number, b: number) => void;
+  readonly __wbg_get_jsdepositentry_status: (a: number) => number;
+  readonly __wbg_set_jsdepositentry_status: (a: number, b: number) => void;
+  readonly __wbg_get_jsdepositentry_meta: (a: number) => number;
+  readonly __wbg_set_jsdepositentry_meta: (a: number, b: number) => void;
+  readonly __wbg_jstransferentry_free: (a: number, b: number) => void;
+  readonly __wbg_get_jstransferentry_data: (a: number) => number;
+  readonly __wbg_set_jstransferentry_data: (a: number, b: number) => void;
+  readonly __wbg_get_jstransferentry_status: (a: number) => number;
+  readonly __wbg_set_jstransferentry_status: (a: number, b: number) => void;
+  readonly __wbg_get_jstransferentry_meta: (a: number) => number;
+  readonly __wbg_set_jstransferentry_meta: (a: number, b: number) => void;
+  readonly __wbg_jstxentry_free: (a: number, b: number) => void;
+  readonly __wbg_get_jstxentry_data: (a: number) => number;
+  readonly __wbg_set_jstxentry_data: (a: number, b: number) => void;
+  readonly __wbg_get_jstxentry_status: (a: number) => number;
+  readonly __wbg_set_jstxentry_status: (a: number, b: number) => void;
+  readonly __wbg_set_jswithdrawaltransfers_transfers: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsuserdata_deposit_lpt: (a: number) => bigint;
+  readonly __wbg_get_tokenbalance_token_index: (a: number) => number;
+  readonly __wbg_get_jswithdrawaltransfers_transfers: (a: number) => [number, number];
+  readonly __wbg_set_jstxresult_tx_tree_root: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jsuserdata_pubkey: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_tokenbalance_amount: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jsmetadatacursor_order: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jstransferdata_sender: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jsentrystatuswithblocknumber_status: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jsfeequote_beneficiary: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jstxentry_meta: (a: number) => number;
+  readonly __wbg_get_jswithdrawaltransfers_withdrawal_fee_transfer_index: (a: number) => number;
+  readonly __wbg_get_jsentrystatuswithblocknumber_block_number: (a: number) => number;
+  readonly __wbg_set_jstxentry_meta: (a: number, b: number) => void;
+  readonly __wbg_set_jswithdrawaltransfers_withdrawal_fee_transfer_index: (a: number, b: number) => void;
+  readonly __wbg_set_jsentrystatuswithblocknumber_block_number: (a: number, b: number) => void;
+  readonly __wbg_get_jsfeequote_beneficiary: (a: number) => [number, number];
+  readonly __wbg_set_jsuserdata_deposit_lpt: (a: number, b: bigint) => void;
+  readonly __wbg_set_tokenbalance_token_index: (a: number, b: number) => void;
+  readonly __wbg_get_jstxresult_tx_tree_root: (a: number) => [number, number];
+  readonly __wbg_get_jsuserdata_pubkey: (a: number) => [number, number];
+  readonly __wbg_get_tokenbalance_amount: (a: number) => [number, number];
+  readonly __wbg_get_jsmetadatacursor_order: (a: number) => [number, number];
+  readonly __wbg_get_jstransferdata_sender: (a: number) => [number, number];
+  readonly __wbg_get_jsentrystatuswithblocknumber_status: (a: number) => [number, number];
   readonly __wbg_intmaxaccount_free: (a: number, b: number) => void;
   readonly __wbg_get_intmaxaccount_privkey: (a: number) => [number, number];
   readonly __wbg_set_intmaxaccount_privkey: (a: number, b: number, c: number) => void;
   readonly __wbg_get_intmaxaccount_pubkey: (a: number) => [number, number];
   readonly __wbg_set_intmaxaccount_pubkey: (a: number, b: number, c: number) => void;
   readonly generate_intmax_account_from_eth_key: (a: number, b: number) => any;
-  readonly get_deposit_hash: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => [number, number, number, number];
-  readonly prepare_deposit: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number) => any;
-  readonly send_tx_request: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number) => any;
+  readonly get_deposit_hash: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number,
+    g: number,
+    h: number,
+  ) => [number, number, number, number];
+  readonly prepare_deposit: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number,
+    g: number,
+    h: number,
+    i: number,
+    j: number,
+    k: number,
+    l: number,
+    m: number,
+  ) => any;
+  readonly send_tx_request: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number,
+    g: number,
+    h: number,
+    i: number,
+    j: number,
+    k: number,
+    l: number,
+    m: number,
+  ) => any;
   readonly query_and_finalize: (a: number, b: number, c: number, d: number, e: number, f: number) => any;
   readonly get_tx_status: (a: number, b: number, c: number, d: number, e: number) => any;
   readonly sync: (a: number, b: number, c: number) => any;
@@ -715,50 +871,13 @@ export interface InitOutput {
   readonly quote_transfer_fee: (a: number, b: number, c: number, d: number, e: number, f: number) => any;
   readonly quote_withdrawal_fee: (a: number, b: number, c: number) => any;
   readonly quote_claim_fee: (a: number, b: number) => any;
-  readonly __wbg_jstx_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsmetadata_timestamp: (a: number) => bigint;
-  readonly __wbg_get_jsclaim_block_number: (a: number) => number;
-  readonly __wbg_get_jsuserdata_deposit_lpt: (a: number) => bigint;
-  readonly __wbg_get_tokenbalance_token_index: (a: number) => number;
-  readonly __wbg_set_jstx_transfer_tree_root: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jsgenericaddress_data: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jscontractwithdrawal_recipient: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jscontractwithdrawal_amount: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jscontractwithdrawal_nullifier: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jswithdrawalinfo_status: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jsclaiminfo_status: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jsmetadata_uuid: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jsclaim_nullifier: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jsmetadatacursor_order: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jstransferdata_sender: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jstxresult_tx_tree_root: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jsuserdata_pubkey: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_tokenbalance_amount: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jsclaim_recipient: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jsclaim_amount: (a: number, b: number, c: number) => void;
-  readonly __wbg_set_jstxdata_tx: (a: number, b: number) => void;
-  readonly __wbg_set_jsmetadata_timestamp: (a: number, b: bigint) => void;
-  readonly __wbg_set_jsclaim_block_number: (a: number, b: number) => void;
-  readonly __wbg_set_jsuserdata_deposit_lpt: (a: number, b: bigint) => void;
-  readonly __wbg_set_tokenbalance_token_index: (a: number, b: number) => void;
-  readonly __wbg_get_jstx_transfer_tree_root: (a: number) => [number, number];
-  readonly __wbg_get_jsgenericaddress_data: (a: number) => [number, number];
-  readonly __wbg_get_jscontractwithdrawal_recipient: (a: number) => [number, number];
-  readonly __wbg_get_jscontractwithdrawal_amount: (a: number) => [number, number];
-  readonly __wbg_get_jscontractwithdrawal_nullifier: (a: number) => [number, number];
-  readonly __wbg_get_jsmetadata_uuid: (a: number) => [number, number];
-  readonly __wbg_get_jswithdrawalinfo_status: (a: number) => [number, number];
-  readonly __wbg_get_jsclaiminfo_status: (a: number) => [number, number];
-  readonly __wbg_get_jsclaim_amount: (a: number) => [number, number];
-  readonly __wbg_get_jsclaim_nullifier: (a: number) => [number, number];
-  readonly __wbg_get_jsclaim_block_hash: (a: number) => [number, number];
-  readonly __wbg_get_jsmetadatacursor_order: (a: number) => [number, number];
-  readonly __wbg_get_jstransferdata_sender: (a: number) => [number, number];
-  readonly __wbg_get_jstxresult_tx_tree_root: (a: number) => [number, number];
-  readonly __wbg_get_jsuserdata_pubkey: (a: number) => [number, number];
-  readonly __wbg_get_tokenbalance_amount: (a: number) => [number, number];
-  readonly __wbg_get_jsclaim_recipient: (a: number) => [number, number];
-  readonly __wbg_get_jsblock_prev_block_hash: (a: number) => [number, number];
+  readonly __wbg_jspaymentmemoentry_free: (a: number, b: number) => void;
+  readonly __wbg_get_jspaymentmemoentry_transfer_index: (a: number) => number;
+  readonly __wbg_set_jspaymentmemoentry_transfer_index: (a: number, b: number) => void;
+  readonly __wbg_get_jspaymentmemoentry_topic: (a: number) => [number, number];
+  readonly __wbg_set_jspaymentmemoentry_topic: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jspaymentmemoentry_memo: (a: number) => [number, number];
+  readonly __wbg_set_jspaymentmemoentry_memo: (a: number, b: number, c: number) => void;
   readonly __wbg_config_free: (a: number, b: number) => void;
   readonly __wbg_get_config_store_vault_server_url: (a: number) => [number, number];
   readonly __wbg_set_config_store_vault_server_url: (a: number, b: number, c: number) => void;
@@ -800,96 +919,142 @@ export interface InitOutput {
   readonly __wbg_set_config_withdrawal_contract_address: (a: number, b: number, c: number) => void;
   readonly __wbg_get_config_use_private_zkp_server: (a: number) => number;
   readonly __wbg_set_config_use_private_zkp_server: (a: number, b: number) => void;
-  readonly config_new: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: bigint, j: bigint, k: bigint, l: bigint, m: bigint, n: bigint, o: bigint, p: number, q: number, r: bigint, s: number, t: number, u: number, v: number, w: bigint, x: number, y: number, z: bigint, a1: number, b1: number, c1: number) => number;
-  readonly __wbg_jspaymentmemoentry_free: (a: number, b: number) => void;
-  readonly __wbg_get_jspaymentmemoentry_transfer_index: (a: number) => number;
-  readonly __wbg_set_jspaymentmemoentry_transfer_index: (a: number, b: number) => void;
-  readonly __wbg_get_jspaymentmemoentry_topic: (a: number) => [number, number];
-  readonly __wbg_set_jspaymentmemoentry_topic: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jspaymentmemoentry_memo: (a: number) => [number, number];
-  readonly __wbg_set_jspaymentmemoentry_memo: (a: number, b: number, c: number) => void;
-  readonly __wbg_jsdeposithistory_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsdeposithistory_history: (a: number) => [number, number];
-  readonly __wbg_set_jsdeposithistory_history: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsdeposithistory_cursor_response: (a: number) => number;
-  readonly __wbg_set_jsdeposithistory_cursor_response: (a: number, b: number) => void;
-  readonly __wbg_jstransferhistory_free: (a: number, b: number) => void;
-  readonly __wbg_get_jstransferhistory_history: (a: number) => [number, number];
-  readonly __wbg_set_jstransferhistory_history: (a: number, b: number, c: number) => void;
-  readonly __wbg_jstxhistory_free: (a: number, b: number) => void;
-  readonly __wbg_get_jstxhistory_history: (a: number) => [number, number];
-  readonly __wbg_set_jstxhistory_history: (a: number, b: number, c: number) => void;
-  readonly fetch_deposit_history: (a: number, b: number, c: number, d: number) => any;
-  readonly fetch_transfer_history: (a: number, b: number, c: number, d: number) => any;
-  readonly fetch_tx_history: (a: number, b: number, c: number, d: number) => any;
-  readonly __wbg_jsflatg2_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsflatg2_elements: (a: number) => [number, number];
-  readonly __wbg_set_jsflatg2_elements: (a: number, b: number, c: number) => void;
-  readonly jsflatg2_new: (a: number, b: number) => number;
-  readonly __wbg_jsauth_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsauth_pubkey: (a: number) => [number, number];
-  readonly __wbg_set_jsauth_pubkey: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsauth_expiry: (a: number) => bigint;
-  readonly __wbg_set_jsauth_expiry: (a: number, b: bigint) => void;
-  readonly __wbg_get_jsauth_signature: (a: number) => number;
-  readonly __wbg_set_jsauth_signature: (a: number, b: number) => void;
-  readonly __wbg_get_jstransferhistory_cursor_response: (a: number) => number;
-  readonly __wbg_get_jstxhistory_cursor_response: (a: number) => number;
-  readonly __wbg_set_jstransferhistory_cursor_response: (a: number, b: number) => void;
-  readonly __wbg_set_jstxhistory_cursor_response: (a: number, b: number) => void;
-  readonly __wbg_jsencrypteddata_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsencrypteddata_data: (a: number) => [number, number];
-  readonly __wbg_set_jsencrypteddata_data: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsencrypteddata_uuid: (a: number) => [number, number];
-  readonly __wbg_set_jsencrypteddata_uuid: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsencrypteddata_timestamp: (a: number) => bigint;
-  readonly __wbg_set_jsencrypteddata_timestamp: (a: number, b: bigint) => void;
-  readonly __wbg_get_jsencrypteddata_data_type: (a: number) => [number, number];
-  readonly __wbg_set_jsencrypteddata_data_type: (a: number, b: number, c: number) => void;
-  readonly __wbg_jsfee_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsfee_amount: (a: number) => [number, number];
-  readonly __wbg_set_jsfee_amount: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsfee_token_index: (a: number) => number;
-  readonly __wbg_set_jsfee_token_index: (a: number, b: number) => void;
-  readonly jsfee_new: (a: number, b: number, c: number) => number;
-  readonly __wbg_jsfeequote_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsfeequote_fee: (a: number) => number;
-  readonly __wbg_set_jsfeequote_fee: (a: number, b: number) => void;
-  readonly __wbg_get_jsfeequote_collateral_fee: (a: number) => number;
-  readonly __wbg_set_jsfeequote_collateral_fee: (a: number, b: number) => void;
-  readonly __wbg_jsfeeinfo_free: (a: number, b: number) => void;
-  readonly __wbg_get_jsfeeinfo_beneficiary: (a: number) => [number, number];
-  readonly __wbg_set_jsfeeinfo_beneficiary: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsfeeinfo_registration_fee: (a: number) => [number, number];
-  readonly __wbg_set_jsfeeinfo_registration_fee: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsfeeinfo_non_registration_fee: (a: number) => [number, number];
-  readonly __wbg_set_jsfeeinfo_non_registration_fee: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsfeeinfo_registration_collateral_fee: (a: number) => [number, number];
-  readonly __wbg_set_jsfeeinfo_registration_collateral_fee: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsfeeinfo_non_registration_collateral_fee: (a: number) => [number, number];
-  readonly __wbg_set_jsfeeinfo_non_registration_collateral_fee: (a: number, b: number, c: number) => void;
-  readonly __wbg_jswithdrawaltransfers_free: (a: number, b: number) => void;
-  readonly __wbg_get_jswithdrawaltransfers_transfers: (a: number) => [number, number];
-  readonly __wbg_set_jswithdrawaltransfers_transfers: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jswithdrawaltransfers_withdrawal_fee_transfer_index: (a: number) => number;
-  readonly __wbg_set_jswithdrawaltransfers_withdrawal_fee_transfer_index: (a: number, b: number) => void;
-  readonly __wbg_get_jswithdrawaltransfers_claim_fee_transfer_index: (a: number) => number;
-  readonly __wbg_set_jswithdrawaltransfers_claim_fee_transfer_index: (a: number, b: number) => void;
-  readonly __wbg_set_jsfeequote_beneficiary: (a: number, b: number, c: number) => void;
-  readonly __wbg_get_jsfeequote_beneficiary: (a: number) => [number, number];
-  readonly jstxrequestmemo_tx: (a: number) => [number, number, number];
-  readonly jstxrequestmemo_is_registration_block: (a: number) => [number, number, number];
-  readonly __wbg_jsblockproposal_free: (a: number, b: number) => void;
-  readonly jsblockproposal_tx_tree_root: (a: number) => [number, number, number, number];
-  readonly __wbg_jstxrequestmemo_free: (a: number, b: number) => void;
+  readonly __wbg_get_config_use_s3: (a: number) => number;
+  readonly __wbg_set_config_use_s3: (a: number, b: number) => void;
+  readonly config_new: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number,
+    g: number,
+    h: number,
+    i: bigint,
+    j: bigint,
+    k: bigint,
+    l: bigint,
+    m: bigint,
+    n: bigint,
+    o: bigint,
+    p: number,
+    q: number,
+    r: bigint,
+    s: number,
+    t: number,
+    u: number,
+    v: number,
+    w: bigint,
+    x: number,
+    y: number,
+    z: bigint,
+    a1: number,
+    b1: number,
+    c1: number,
+    d1: number,
+  ) => number;
   readonly decrypt_deposit_data: (a: number, b: number, c: number, d: number) => any;
   readonly decrypt_transfer_data: (a: number, b: number, c: number, d: number) => any;
   readonly decrypt_tx_data: (a: number, b: number, c: number, d: number) => any;
-  readonly generate_auth_for_store_vault: (a: number, b: number) => any;
+  readonly generate_auth_for_store_vault: (a: number, b: number, c: number) => any;
   readonly fetch_encrypted_data: (a: number, b: number, c: number) => any;
   readonly sign_message: (a: number, b: number, c: number, d: number) => any;
   readonly verify_signature: (a: number, b: number, c: number, d: number, e: number) => any;
   readonly get_account_info: (a: number, b: number, c: number) => any;
+  readonly __wbg_jsgenericaddress_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsgenericaddress_is_pubkey: (a: number) => number;
+  readonly __wbg_set_jsgenericaddress_is_pubkey: (a: number, b: number) => void;
+  readonly jsgenericaddress_new: (a: number, b: number, c: number) => [number, number, number];
+  readonly __wbg_jstransfer_free: (a: number, b: number) => void;
+  readonly __wbg_get_jstransfer_recipient: (a: number) => number;
+  readonly __wbg_set_jstransfer_recipient: (a: number, b: number) => void;
+  readonly __wbg_get_jstransfer_token_index: (a: number) => number;
+  readonly __wbg_set_jstransfer_token_index: (a: number, b: number) => void;
+  readonly __wbg_get_jstransfer_amount: (a: number) => [number, number];
+  readonly __wbg_set_jstransfer_amount: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jstransfer_salt: (a: number) => [number, number];
+  readonly __wbg_set_jstransfer_salt: (a: number, b: number, c: number) => void;
+  readonly jstransfer_new: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
+  readonly jstransfer_to_withdrawal: (a: number) => [number, number, number];
+  readonly __wbg_get_jstx_nonce: (a: number) => number;
+  readonly __wbg_set_jstx_nonce: (a: number, b: number) => void;
+  readonly __wbg_jscontractwithdrawal_free: (a: number, b: number) => void;
+  readonly __wbg_get_jscontractwithdrawal_token_index: (a: number) => number;
+  readonly __wbg_set_jscontractwithdrawal_token_index: (a: number, b: number) => void;
+  readonly jscontractwithdrawal_new: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number,
+    g: number,
+  ) => number;
+  readonly jscontractwithdrawal_hash: (a: number) => [number, number, number, number];
+  readonly __wbg_jsclaim_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsclaim_recipient: (a: number) => [number, number];
+  readonly __wbg_set_jsclaim_recipient: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jsclaim_amount: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jsclaim_block_hash: (a: number, b: number, c: number) => void;
+  readonly __wbg_jsmetadata_free: (a: number, b: number) => void;
+  readonly __wbg_jswithdrawalinfo_free: (a: number, b: number) => void;
+  readonly __wbg_get_jswithdrawalinfo_contract_withdrawal: (a: number) => number;
+  readonly __wbg_set_jswithdrawalinfo_contract_withdrawal: (a: number, b: number) => void;
+  readonly __wbg_jsclaiminfo_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsclaiminfo_claim: (a: number) => number;
+  readonly __wbg_set_jsclaiminfo_claim: (a: number, b: number) => void;
+  readonly __wbg_jsblock_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsblock_prev_block_hash: (a: number) => [number, number];
+  readonly __wbg_set_jsblock_prev_block_hash: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsblock_deposit_tree_root: (a: number) => [number, number];
+  readonly __wbg_set_jsblock_deposit_tree_root: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsblock_signature_hash: (a: number) => [number, number];
+  readonly __wbg_set_jsblock_signature_hash: (a: number, b: number, c: number) => void;
+  readonly __wbg_get_jsblock_timestamp: (a: number) => bigint;
+  readonly __wbg_set_jsblock_timestamp: (a: number, b: bigint) => void;
+  readonly __wbg_get_jsblock_block_number: (a: number) => number;
+  readonly __wbg_set_jsblock_block_number: (a: number, b: number) => void;
+  readonly __wbg_jsmining_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsmining_meta: (a: number) => number;
+  readonly __wbg_set_jsmining_meta: (a: number, b: number) => void;
+  readonly __wbg_get_jsmining_deposit_data: (a: number) => number;
+  readonly __wbg_set_jsmining_deposit_data: (a: number, b: number) => void;
+  readonly __wbg_get_jsmining_block: (a: number) => number;
+  readonly __wbg_set_jsmining_block: (a: number, b: number) => void;
+  readonly __wbg_get_jsmining_maturity: (a: number) => bigint;
+  readonly __wbg_set_jsmining_maturity: (a: number, b: bigint) => void;
+  readonly __wbg_get_jsmining_status: (a: number) => [number, number];
+  readonly __wbg_set_jsmining_status: (a: number, b: number, c: number) => void;
+  readonly jstxrequestmemo_tx: (a: number) => [number, number, number];
+  readonly jstxrequestmemo_is_registration_block: (a: number) => [number, number, number];
+  readonly __wbg_jsblockproposal_free: (a: number, b: number) => void;
+  readonly jsblockproposal_tx_tree_root: (a: number) => [number, number, number, number];
+  readonly __wbg_jstx_free: (a: number, b: number) => void;
+  readonly __wbg_jstxrequestmemo_free: (a: number, b: number) => void;
+  readonly __wbg_get_jsmetadata_timestamp: (a: number) => bigint;
+  readonly __wbg_get_jsclaim_block_number: (a: number) => number;
+  readonly __wbg_set_jstx_transfer_tree_root: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jsgenericaddress_data: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jscontractwithdrawal_recipient: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jscontractwithdrawal_amount: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jscontractwithdrawal_nullifier: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jswithdrawalinfo_status: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jsclaiminfo_status: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jsmetadata_digest: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jsclaim_nullifier: (a: number, b: number, c: number) => void;
+  readonly __wbg_set_jsmetadata_timestamp: (a: number, b: bigint) => void;
+  readonly __wbg_set_jsclaim_block_number: (a: number, b: number) => void;
+  readonly __wbg_get_jstx_transfer_tree_root: (a: number) => [number, number];
+  readonly __wbg_get_jsgenericaddress_data: (a: number) => [number, number];
+  readonly __wbg_get_jscontractwithdrawal_recipient: (a: number) => [number, number];
+  readonly __wbg_get_jscontractwithdrawal_amount: (a: number) => [number, number];
+  readonly __wbg_get_jscontractwithdrawal_nullifier: (a: number) => [number, number];
+  readonly __wbg_get_jsmetadata_digest: (a: number) => [number, number];
+  readonly __wbg_get_jswithdrawalinfo_status: (a: number) => [number, number];
+  readonly __wbg_get_jsclaiminfo_status: (a: number) => [number, number];
+  readonly __wbg_get_jsclaim_amount: (a: number) => [number, number];
+  readonly __wbg_get_jsclaim_nullifier: (a: number) => [number, number];
+  readonly __wbg_get_jsclaim_block_hash: (a: number) => [number, number];
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
@@ -899,29 +1064,34 @@ export interface InitOutput {
   readonly __wbindgen_export_6: WebAssembly.Table;
   readonly __externref_table_dealloc: (a: number) => void;
   readonly __externref_drop_slice: (a: number, b: number) => void;
-  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h9573329347911503: (a: number, b: number) => void;
-  readonly closure866_externref_shim: (a: number, b: number, c: any) => void;
-  readonly closure1685_externref_shim: (a: number, b: number, c: any, d: any) => void;
+  readonly _dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h9573329347911503: (
+    a: number,
+    b: number,
+  ) => void;
+  readonly closure887_externref_shim: (a: number, b: number, c: any) => void;
+  readonly closure1725_externref_shim: (a: number, b: number, c: any, d: any) => void;
   readonly __wbindgen_start: () => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
 /**
-* Instantiates the given `module`, which can either be bytes or
-* a precompiled `WebAssembly.Module`.
-*
-* @param {{ module: SyncInitInput }} module - Passing `SyncInitInput` directly is deprecated.
-*
-* @returns {InitOutput}
-*/
+ * Instantiates the given `module`, which can either be bytes or
+ * a precompiled `WebAssembly.Module`.
+ *
+ * @param {{ module: SyncInitInput }} module - Passing `SyncInitInput` directly is deprecated.
+ *
+ * @returns {InitOutput}
+ */
 export function initSync(module: { module: SyncInitInput } | SyncInitInput): InitOutput;
 
 /**
-* If `module_or_path` is {RequestInfo} or {URL}, makes a request and
-* for everything else, calls `WebAssembly.instantiate` directly.
-*
-* @param {{ module_or_path: InitInput | Promise<InitInput> }} module_or_path - Passing `InitInput` directly is deprecated.
-*
-* @returns {Promise<InitOutput>}
-*/
-export default function __wbg_init (module_or_path?: { module_or_path: InitInput | Promise<InitInput> } | InitInput | Promise<InitInput>): Promise<InitOutput>;
+ * If `module_or_path` is {RequestInfo} or {URL}, makes a request and
+ * for everything else, calls `WebAssembly.instantiate` directly.
+ *
+ * @param {{ module_or_path: InitInput | Promise<InitInput> }} module_or_path - Passing `InitInput` directly is deprecated.
+ *
+ * @returns {Promise<InitOutput>}
+ */
+export default function __wbg_init(
+  module_or_path?: { module_or_path: InitInput | Promise<InitInput> } | InitInput | Promise<InitInput>,
+): Promise<InitOutput>;

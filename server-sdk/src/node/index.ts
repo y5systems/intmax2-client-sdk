@@ -371,8 +371,8 @@ export class IntMaxNodeClient implements INTMAXClient {
 
     return {
       txTreeRoot: tx.tx_tree_root,
-      transferUUIDs: tx.transfer_uuids,
-      withdrawalUUIDs: tx.withdrawal_uuids,
+      transferDigests: tx.transfer_digests,
+      withdrawalDigests: tx.withdrawal_digests,
     };
   }
 
@@ -730,6 +730,7 @@ export class IntMaxNodeClient implements INTMAXClient {
       BigInt(urls.rollup_contract_deployed_block_number), // Rollup Contract Deployed Block Number
       urls.withdrawal_contract_address, // Withdrawal Contract Address
       true, // use_private_zkp_server
+      true, // use_s3
     );
   }
 

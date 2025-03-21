@@ -83,7 +83,7 @@ export interface DerivePath {
 
 // Transaction
 export interface Transaction {
-  uuid: string;
+  digest: string;
   amount: string;
   from: string;
   to: string;
@@ -108,8 +108,8 @@ export interface BroadcastTransactionResponse extends TransactionResult {}
 
 export interface TransactionResult {
   txTreeRoot: string;
-  transferUUIDs: string[];
-  withdrawalUUIDs: string[];
+  transferDigests: string[];
+  withdrawalDigests: string[];
 }
 
 export interface TransferData {

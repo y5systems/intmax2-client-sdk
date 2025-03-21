@@ -1,5 +1,3 @@
-import { formatEther, zeroAddress } from 'viem';
-
 import {
   JsDepositData,
   JsDepositEntry,
@@ -28,7 +26,7 @@ export const wasmTxToTx = (
 ): Transaction | null => {
   if (rawTx.txType === TransactionType.Receive) {
     const tx = rawTx.data as JsTransferData;
-    const { timestamp, uuid } = rawTx.meta as JsMetaData;
+    const { timestamp, digest } = rawTx.meta as JsMetaData;
     const token = tokens.find((t) => t.tokenIndex === tx.transfer.token_index);
 
     return {
@@ -41,11 +39,11 @@ export const wasmTxToTx = (
       tokenIndex: tx.transfer.token_index,
       transfers: [],
       txType: rawTx.txType,
-      uuid: uuid,
+      digest: digest,
     };
   } else if (rawTx.txType === TransactionType.Deposit) {
     const tx = rawTx.data as JsDepositData;
-    const { timestamp, uuid } = rawTx.meta as JsMetaData;
+    const { timestamp, digest } = rawTx.meta as JsMetaData;
     const token = tokens.find((t) => t.contractAddress.toLowerCase() === tx.token_address.toLowerCase());
 
     const transaction: Transaction = {
@@ -58,20 +56,14 @@ export const wasmTxToTx = (
       tokenIndex: token?.tokenIndex ?? 0,
       transfers: [],
       txType: rawTx.txType,
-      uuid: uuid,
+      digest: digest,
       tokenAddress: tx.token_address,
     };
-
-    const isNativeToken = transaction.tokenAddress === zeroAddress && transaction.tokenIndex === 0;
-
-    if (isNativeToken && [0.1, 0.5, 1.0].includes(Number(formatEther(BigInt(tx.amount))))) {
-      transaction.txType = TransactionType.Mining;
-    }
 
     return transaction;
   } else if (rawTx.txType === TransactionType.Send || rawTx.txType === TransactionType.Withdraw) {
     const tx = rawTx.data as JsTxData;
-    const { timestamp, uuid } = rawTx.meta as JsMetaData;
+    const { timestamp, digest } = rawTx.meta as JsMetaData;
 
     let transaction: Transaction = {
       amount: '',
@@ -82,7 +74,7 @@ export const wasmTxToTx = (
       tokenIndex: 0,
       transfers: [],
       txType: rawTx.txType,
-      uuid: uuid,
+      digest: digest,
     };
 
     const transfers = tx.transfers

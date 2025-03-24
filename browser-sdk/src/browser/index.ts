@@ -709,6 +709,8 @@ export class IntMaxClient implements INTMAXClient {
       urls.withdrawal_contract_address, // Withdrawal Contract Address
       true, // use_private_zkp_server
       true, // use_s3
+      25, // private_zkp_server_max_retries
+      5n, // private_zkp_server_retry_interval
     );
   }
 

@@ -86,6 +86,12 @@ const main = async () => {
     //
     // if (availableTokens.length > 0) {
     //   const withdrawToken = availableTokens.find((tb)=>tb.token.tokenIndex===0);
+
+    //   const withrawalFee = await client.getWithdrawalFee(withdrawToken);
+    //   const trasnferFee = await client.getTransferFee();
+    //   console.log('withrawalFee', withrawalFee);
+    //   console.log('trasnferFee', trasnferFee);
+
     //   console.log('Performing withdrawal...');
     //   const withdraw = await client.withdraw({
     //     amount: 0.001,

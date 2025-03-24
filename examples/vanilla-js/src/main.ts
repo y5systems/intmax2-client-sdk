@@ -127,14 +127,14 @@ const claimWithdrawalsButton = async () => {
   wrapper.appendChild(button);
 
   const withdrawals = await client.fetchPendingWithdrawals();
-  const withdrawalsToClaim = withdrawals.needClaim;
+  const withdrawalsToClaim = withdrawals.need_claim;
   button.innerHTML = `Claim Withdrawals (${withdrawalsToClaim.length})`;
 
   button.onclick = async () => {
     button.innerHTML = 'Claiming...';
     try {
       const withdrawals = await client.fetchPendingWithdrawals();
-      const result = await client.claimWithdrawal(withdrawals.needClaim);
+      const result = await client.claimWithdrawal(withdrawals.need_claim);
       const resultDiv = document.createElement('pre');
       resultDiv.style.marginTop = '10px';
       resultDiv.innerHTML = JSON.stringify(result, null, 2);
@@ -321,6 +321,10 @@ const createWithdrawForm = async () => {
 
     // @ts-ignore
     const token = balances.find((b) => b.token.tokenIndex === Number(tokenInputValue)).token;
+    const withrawalFee = await client.getWithdrawalFee(token);
+    const trasnferFee = await client.getTransferFee();
+    console.log('withrawalFee', withrawalFee);
+    console.log('trasnferFee', trasnferFee);
 
     try {
       const withdraw = await client.withdraw({

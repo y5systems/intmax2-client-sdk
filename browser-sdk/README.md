@@ -55,8 +55,8 @@ export interface INTMAXClient {
   claimWithdrawal: (params: ContractWithdrawal[]) => Promise<ClaimWithdrawalTransactionResponse>;
 
   // Fees
-  getTransferFee: (token: Token) => Promise<FeeResponse>;
-  getWithdrawalFee: () => Promise<FeeResponse>;
+  getTransferFee: () => Promise<FeeResponse>;
+  getWithdrawalFee: (token: Token) => Promise<FeeResponse>;
   getClaimFee: () => Promise<FeeResponse>;
 
   // additional services
@@ -266,8 +266,8 @@ const withdraw = await intmaxClient.withdraw({
 //   txTreeRoot: string;
 //   transferData: TransferData[];
 //   withdrawalData: TransferData[];
-//   transferUUIDs: string[];
-//   withdrawalUUIDs: string[];
+//   transferDigests: string[];
+//   withdrawalDigests: string[];
 // }
 ```
 

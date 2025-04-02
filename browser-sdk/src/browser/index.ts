@@ -31,6 +31,7 @@ import {
   FetchTransactionsRequest,
   FetchWithdrawalsResponse,
   getPkFromMnemonic,
+  IndexerFetcher,
   INTMAXClient,
   IntMaxEnvironment,
   IntMaxTxBroadcast,
@@ -38,6 +39,7 @@ import {
   localStorageManager,
   MAINNET_ENV,
   networkMessage,
+  PredicateFetcher,
   PrepareDepositTransactionRequest,
   PrepareDepositTransactionResponse,
   PrepareEstimateDepositTransactionRequest,
@@ -99,13 +101,15 @@ import wasmBytes from '../wasm/browser/intmax2_wasm_lib_bg.wasm?url';
 export class IntMaxClient implements INTMAXClient {
   readonly #config: Config;
   readonly #tokenFetcher: TokenFetcher;
+  readonly #indexerFetcher: IndexerFetcher;
   readonly #txFetcher: TransactionFetcher;
   readonly #walletClient: WalletClient;
   readonly #publicClient: PublicClient;
   readonly #vaultHttpClient: AxiosInstance;
+  readonly #predicateFetcher: PredicateFetcher;
+  readonly #urls: SDKUrls;
   #privateKey: string = '';
   #userData: JsUserData | undefined;
-  #urls: SDKUrls;
 
   isLoggedIn: boolean = false;
   address: string = '';
@@ -127,6 +131,8 @@ export class IntMaxClient implements INTMAXClient {
       transport: http(),
     });
 
+    this.#urls = environment === 'mainnet' ? MAINNET_ENV : environment === 'testnet' ? TESTNET_ENV : DEVNET_ENV;
+
     this.#vaultHttpClient = axiosClientInit({
       baseURL:
         environment === 'mainnet'
@@ -136,10 +142,11 @@ export class IntMaxClient implements INTMAXClient {
             : DEVNET_ENV.key_vault_url,
     });
 
-    this.#urls = environment === 'mainnet' ? MAINNET_ENV : environment === 'testnet' ? TESTNET_ENV : DEVNET_ENV;
     this.#config = this.#generateConfig(environment);
     this.#txFetcher = new TransactionFetcher(environment);
     this.#tokenFetcher = new TokenFetcher(environment);
+    this.#indexerFetcher = new IndexerFetcher(environment);
+    this.#predicateFetcher = new PredicateFetcher(environment);
   }
 
   static async init({ environment }: ConstructorParams): Promise<IntMaxClient> {
@@ -338,7 +345,12 @@ export class IntMaxClient implements INTMAXClient {
 
     let memo: JsTxRequestMemo;
     try {
-      const fee = (await quote_transfer_fee(this.#config, this.#urls.block_builder_url, pubKey, 0)) as JsFeeQuote;
+      const fee = (await quote_transfer_fee(
+        this.#config,
+        await this.#indexerFetcher.getBlockBuilderUrl(),
+        pubKey,
+        0,
+      )) as JsFeeQuote;
 
       let withdrawalTransfers: JsWithdrawalTransfers | undefined;
 
@@ -349,7 +361,7 @@ export class IntMaxClient implements INTMAXClient {
       // send the tx request
       memo = (await send_tx_request(
         this.#config,
-        this.#urls.block_builder_url,
+        await this.#indexerFetcher.getBlockBuilderUrl(),
         privateKey,
         withdrawalTransfers ? withdrawalTransfers.transfers : transfers,
         generate_fee_payment_memo(
@@ -374,7 +386,8 @@ export class IntMaxClient implements INTMAXClient {
 
     let tx: JsTxResult | undefined;
     try {
-      tx = await query_and_finalize(this.#config, this.#urls.block_builder_url, privateKey, memo);
+      tx = await query_and_finalize(this.#config, await this.#indexerFetcher.getBlockBuilderUrl(), privateKey, memo);
+      await this.#indexerFetcher.fetchBlockBuilderUrl();
     } catch (e) {
       console.error(e);
       throw new Error('Failed to finalize tx');
@@ -651,7 +664,7 @@ export class IntMaxClient implements INTMAXClient {
   async getTransferFee(): Promise<FeeResponse> {
     const transferFee = (await quote_transfer_fee(
       this.#config,
-      this.#urls.block_builder_url,
+      await this.#indexerFetcher.getBlockBuilderUrl(),
       this.address as string,
       0,
     )) as JsFeeQuote;
@@ -688,7 +701,7 @@ export class IntMaxClient implements INTMAXClient {
     return new Config(
       urls.store_vault_server_url,
       urls.balance_prover_url,
-      urls.block_validity_prover_url,
+      urls.validity_prover_url,
       urls.withdrawal_aggregator_url,
       BigInt(60), // Deposit Timeout
       BigInt(60), // Tx timeout
@@ -810,15 +823,16 @@ export class IntMaxClient implements INTMAXClient {
 
   async #prepareDepositToken({ token, isGasEstimation, amount, address }: PrepareEstimateDepositTransactionRequest) {
     const accounts = await this.#walletClient.getAddresses();
+    const amountInDecimals =
+      token.tokenType === TokenType.NATIVE
+        ? parseEther(`${amount}`)
+        : token.tokenType === TokenType.ERC20
+          ? parseUnits(`${amount}`, token.decimals ?? 18)
+          : BigInt(amount);
     const salt = isGasEstimation
       ? randomBytesHex(16)
       : await this.#depositToAccount({
-          amountInDecimals:
-            token.tokenType === TokenType.NATIVE
-              ? parseEther(`${amount}`)
-              : token.tokenType === TokenType.ERC20
-                ? parseUnits(`${amount}`, token.decimals ?? 18)
-                : BigInt(amount),
+          amountInDecimals,
           depositor: accounts[0],
           pubkey: address,
           tokenIndex: token.tokenIndex,
@@ -826,36 +840,54 @@ export class IntMaxClient implements INTMAXClient {
           token_type: token.tokenType,
         });
 
+    let amlPermission: `0x${string}` = '0x';
+    if (!isGasEstimation) {
+      const predicateBody = this.#predicateFetcher.generateBody({
+        recipientSaltHash: salt,
+        tokenType: token.tokenType,
+        amountInWei: amountInDecimals,
+        tokenAddress: token.contractAddress,
+        tokenId: token.tokenIndex,
+      });
+      const predicateMessage = await this.#predicateFetcher.fetchPredicateSignature({
+        data: predicateBody,
+        from: address as `0x${string}`,
+        to: this.#urls.predicate_contract_address as `0x${string}`,
+        msg_value: token.tokenType === TokenType.NATIVE ? amountInDecimals.toString() : '0',
+      });
+      amlPermission = this.#predicateFetcher.encodePredicateSignature(predicateMessage);
+    }
+
     return this.#prepareTransaction({
-      salt,
+      recipientSaltHash: salt,
       tokenType: token.tokenType,
-      amountInWei:
-        token.tokenType === TokenType.NATIVE
-          ? parseEther(`${amount}`)
-          : token.tokenType === TokenType.ERC20
-            ? parseUnits(`${amount}`, token.decimals ?? 18)
-            : BigInt(amount),
+      amountInWei: amountInDecimals,
       tokenAddress: token.contractAddress,
       tokenId: token.tokenIndex,
       account: accounts[0],
+      amlPermission,
     });
   }
 
   #prepareTransaction({
-    salt,
+    recipientSaltHash,
     tokenType,
     amountInWei,
     tokenAddress,
     tokenId,
     account,
+    amlPermission,
   }: {
-    salt: string;
+    recipientSaltHash: string;
     tokenType: TokenType;
     amountInWei: bigint | string;
     tokenAddress: string;
     tokenId: number;
     account: `0x${string}`;
+    amlPermission: `0x${string}`;
   }) {
+    const eligibilityPermission = '0x';
+
     const returnObj: WriteContractParameters = {
       args: [],
       functionName: '',
@@ -868,20 +900,20 @@ export class IntMaxClient implements INTMAXClient {
     switch (tokenType) {
       case TokenType.NATIVE:
         returnObj.functionName = 'depositNativeToken';
-        returnObj.args = [salt];
+        returnObj.args = [recipientSaltHash, amlPermission, eligibilityPermission];
         returnObj.value = BigInt(amountInWei);
         break;
       case TokenType.ERC20:
         returnObj.functionName = 'depositERC20';
-        returnObj.args = [tokenAddress, salt, amountInWei];
+        returnObj.args = [tokenAddress, recipientSaltHash, amountInWei, amlPermission, eligibilityPermission];
         break;
       case TokenType.ERC721:
         returnObj.functionName = 'depositERC721';
-        returnObj.args = [tokenAddress, salt, tokenId];
+        returnObj.args = [tokenAddress, recipientSaltHash, tokenId, amlPermission, eligibilityPermission];
         break;
       case TokenType.ERC1155:
         returnObj.functionName = 'depositERC1155';
-        returnObj.args = [tokenAddress, salt, tokenId, amountInWei];
+        returnObj.args = [tokenAddress, recipientSaltHash, tokenId, amountInWei, amlPermission, eligibilityPermission];
         break;
     }
     return returnObj;

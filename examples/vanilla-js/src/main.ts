@@ -1,5 +1,6 @@
 import './style.css';
-import { IntMaxClient, TokenBalance, TokenType } from 'intmax2-client-sdk';
+// import { IntMaxClient, TokenBalance, TokenType } from 'intmax2-client-sdk';
+import { IntMaxClient, TokenBalance, TokenType } from '../../../browser-sdk/src';
 
 let client: IntMaxClient;
 let appDiv: HTMLDivElement;

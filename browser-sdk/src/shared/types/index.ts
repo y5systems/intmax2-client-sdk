@@ -254,8 +254,9 @@ export interface PaginatedResponse<T> {
 
 export interface SDKUrls {
   balance_prover_url: string;
-  block_builder_url: string;
-  block_validity_prover_url: string;
+  indexer_url: string;
+  predicate_url: string;
+  validity_prover_url: string;
   chain_id_l1: number;
   chain_id_l2: number;
   key_vault_url: string;
@@ -268,6 +269,7 @@ export interface SDKUrls {
   tokens_url: string;
   withdrawal_aggregator_url: string;
   withdrawal_contract_address: string;
+  predicate_contract_address: string;
 }
 
 export interface MetadataItem {
@@ -311,4 +313,24 @@ export interface FeeResponse {
   beneficiary: string | undefined;
   fee: Fee | undefined;
   collateral_fee: Fee | undefined;
+}
+
+export interface BlockBuilderResponse {
+  address: `0x${string}`;
+  url: string;
+}
+
+export interface PredicateSignatureRequest {
+  from: `0x${string}`;
+  to: `0x${string}`;
+  data: string;
+  msg_value: string;
+}
+
+export interface PredicateSignatureResponse {
+  is_compliant: boolean;
+  signers: string[];
+  signature: string[];
+  expiry_block: number;
+  task_id: string;
 }

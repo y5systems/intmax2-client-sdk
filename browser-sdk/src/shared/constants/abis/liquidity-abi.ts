@@ -1,90 +1,236 @@
 export const LiquidityAbi = [
-  { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
-  { inputs: [], name: 'AccessControlBadConfirmation', type: 'error' },
+  {
+    inputs: [],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    inputs: [],
+    name: 'AccessControlBadConfirmation',
+    type: 'error',
+  },
   {
     inputs: [
-      { internalType: 'address', name: 'account', type: 'address' },
-      { internalType: 'bytes32', name: 'neededRole', type: 'bytes32' },
+      {
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes32',
+        name: 'neededRole',
+        type: 'bytes32',
+      },
     ],
     name: 'AccessControlUnauthorizedAccount',
     type: 'error',
   },
   {
-    inputs: [{ internalType: 'address', name: 'target', type: 'address' }],
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'target',
+        type: 'address',
+      },
+    ],
     name: 'AddressEmptyCode',
     type: 'error',
   },
-  { inputs: [], name: 'AddressZero', type: 'error' },
-  { inputs: [], name: 'AlreadyAnalyzed', type: 'error' },
+  {
+    inputs: [],
+    name: 'AddressZero',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'AlreadyRelayed',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'AmlValidationFailed',
+    type: 'error',
+  },
   {
     inputs: [
-      { internalType: 'uint256', name: 'depositAmount', type: 'uint256' },
-      { internalType: 'uint256', name: 'limit', type: 'uint256' },
+      {
+        internalType: 'uint256',
+        name: 'depositAmount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'limit',
+        type: 'uint256',
+      },
     ],
     name: 'DepositAmountExceedsLimit',
     type: 'error',
   },
   {
-    inputs: [{ internalType: 'bytes32', name: 'depositHash', type: 'bytes32' }],
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'depositHash',
+        type: 'bytes32',
+      },
+    ],
     name: 'DepositHashAlreadyExists',
     type: 'error',
   },
   {
-    inputs: [{ internalType: 'address', name: 'implementation', type: 'address' }],
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'implementation',
+        type: 'address',
+      },
+    ],
     name: 'ERC1967InvalidImplementation',
     type: 'error',
   },
-  { inputs: [], name: 'ERC1967NonPayable', type: 'error' },
-  { inputs: [], name: 'EnforcedPause', type: 'error' },
-  { inputs: [], name: 'ExpectedPause', type: 'error' },
-  { inputs: [], name: 'FailedCall', type: 'error' },
+  {
+    inputs: [],
+    name: 'ERC1967NonPayable',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'EligibilityValidationFailed',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'EnforcedPause',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ExpectedPause',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'FailedCall',
+    type: 'error',
+  },
   {
     inputs: [
-      { internalType: 'bytes32', name: 'depositDataHash', type: 'bytes32' },
-      { internalType: 'bytes32', name: 'calculatedHash', type: 'bytes32' },
+      {
+        internalType: 'bytes32',
+        name: 'depositDataHash',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'bytes32',
+        name: 'calculatedHash',
+        type: 'bytes32',
+      },
     ],
     name: 'InvalidDepositHash',
     type: 'error',
   },
-  { inputs: [], name: 'InvalidInitialization', type: 'error' },
-  { inputs: [], name: 'InvalidWithdrawalAddress', type: 'error' },
-  { inputs: [], name: 'NotInitializing', type: 'error' },
-  { inputs: [], name: 'OnlySenderCanCancelDeposit', type: 'error' },
   {
-    inputs: [{ internalType: 'address', name: 'token', type: 'address' }],
+    inputs: [],
+    name: 'InvalidInitialization',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidWithdrawalAddress',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'NotInitializing',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'OnlySenderCanCancelDeposit',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'upToDepositId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'firstDepositId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'lastDepositId',
+        type: 'uint256',
+      },
+    ],
+    name: 'OutOfRange',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'token',
+        type: 'address',
+      },
+    ],
     name: 'SafeERC20FailedOperation',
     type: 'error',
   },
-  { inputs: [], name: 'SenderIsNotScrollMessenger', type: 'error' },
-  { inputs: [], name: 'TokenAddressIsZero', type: 'error' },
   {
-    inputs: [
-      { internalType: 'uint256', name: 'upToDepositId', type: 'uint256' },
-      { internalType: 'uint256', name: 'firstDepositId', type: 'uint256' },
-      { internalType: 'uint256', name: 'lastDepositId', type: 'uint256' },
-    ],
-    name: 'TriedAnalyzeOutOfRange',
+    inputs: [],
+    name: 'SenderIsNotScrollMessenger',
     type: 'error',
   },
-  { inputs: [], name: 'TriedToDepositZero', type: 'error' },
   {
-    inputs: [
-      { internalType: 'uint256', name: 'rejectIndex', type: 'uint256' },
-      { internalType: 'uint256', name: 'front', type: 'uint256' },
-      { internalType: 'uint256', name: 'upToDepositId', type: 'uint256' },
-    ],
-    name: 'TriedToRejectOutOfRange',
+    inputs: [],
+    name: 'TokenAddressIsZero',
     type: 'error',
   },
-  { inputs: [], name: 'UUPSUnauthorizedCallContext', type: 'error' },
   {
-    inputs: [{ internalType: 'bytes32', name: 'slot', type: 'bytes32' }],
+    inputs: [],
+    name: 'TriedToDepositZero',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'UUPSUnauthorizedCallContext',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'slot',
+        type: 'bytes32',
+      },
+    ],
     name: 'UUPSUnsupportedProxiableUUID',
     type: 'error',
   },
-  { inputs: [], name: 'WithdrawalAddressNotSet', type: 'error' },
   {
-    inputs: [{ internalType: 'bytes32', name: 'withdrawalHash', type: 'bytes32' }],
+    inputs: [],
+    name: 'WithdrawalAddressNotSet',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'WithdrawalFeeRatioExceedsLimit',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'withdrawalHash',
+        type: 'bytes32',
+      },
+    ],
     name: 'WithdrawalNotFound',
     type: 'error',
   },
@@ -155,6 +301,12 @@ export const LiquidityAbi = [
       },
       {
         indexed: false,
+        internalType: 'bool',
+        name: 'isEligible',
+        type: 'bool',
+      },
+      {
+        indexed: false,
         internalType: 'uint256',
         name: 'depositedAt',
         type: 'uint256',
@@ -174,19 +326,18 @@ export const LiquidityAbi = [
       },
       {
         indexed: false,
-        internalType: 'uint256[]',
-        name: 'rejectedIndices',
-        type: 'uint256[]',
-      },
-      {
-        indexed: false,
         internalType: 'uint256',
         name: 'gasLimit',
         type: 'uint256',
       },
-      { indexed: false, internalType: 'bytes', name: 'message', type: 'bytes' },
+      {
+        indexed: false,
+        internalType: 'bytes',
+        name: 'message',
+        type: 'bytes',
+      },
     ],
-    name: 'DepositsAnalyzedAndRelayed',
+    name: 'DepositsRelayed',
     type: 'event',
   },
   {
@@ -200,10 +351,26 @@ export const LiquidityAbi = [
       },
       {
         components: [
-          { internalType: 'address', name: 'recipient', type: 'address' },
-          { internalType: 'uint32', name: 'tokenIndex', type: 'uint32' },
-          { internalType: 'uint256', name: 'amount', type: 'uint256' },
-          { internalType: 'bytes32', name: 'nullifier', type: 'bytes32' },
+          {
+            internalType: 'address',
+            name: 'recipient',
+            type: 'address',
+          },
+          {
+            internalType: 'uint32',
+            name: 'tokenIndex',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'amount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'bytes32',
+            name: 'nullifier',
+            type: 'bytes32',
+          },
         ],
         indexed: false,
         internalType: 'struct WithdrawalLib.Withdrawal',
@@ -262,7 +429,31 @@ export const LiquidityAbi = [
   {
     anonymous: false,
     inputs: [
-      { indexed: true, internalType: 'bytes32', name: 'role', type: 'bytes32' },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'amlPermitter',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'eligibilityPermitter',
+        type: 'address',
+      },
+    ],
+    name: 'PermitterSet',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'bytes32',
+        name: 'role',
+        type: 'bytes32',
+      },
       {
         indexed: true,
         internalType: 'bytes32',
@@ -282,7 +473,12 @@ export const LiquidityAbi = [
   {
     anonymous: false,
     inputs: [
-      { indexed: true, internalType: 'bytes32', name: 'role', type: 'bytes32' },
+      {
+        indexed: true,
+        internalType: 'bytes32',
+        name: 'role',
+        type: 'bytes32',
+      },
       {
         indexed: true,
         internalType: 'address',
@@ -302,7 +498,12 @@ export const LiquidityAbi = [
   {
     anonymous: false,
     inputs: [
-      { indexed: true, internalType: 'bytes32', name: 'role', type: 'bytes32' },
+      {
+        indexed: true,
+        internalType: 'bytes32',
+        name: 'role',
+        type: 'bytes32',
+      },
       {
         indexed: true,
         internalType: 'address',
@@ -359,62 +560,180 @@ export const LiquidityAbi = [
     type: 'event',
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'token',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'WithdrawalFeeCollected',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'tokenIndex',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'feeRatio',
+        type: 'uint256',
+      },
+    ],
+    name: 'WithdrawalFeeRatioSet',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'recipient',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'token',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'WithdrawalFeeWithdrawn',
+    type: 'event',
+  },
+  {
     inputs: [],
-    name: 'ANALYZER',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    name: 'DEFAULT_ADMIN_ROLE',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
-    name: 'DEFAULT_ADMIN_ROLE',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    name: 'RELAYER',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'UPGRADE_INTERFACE_VERSION',
-    outputs: [{ internalType: 'string', name: '', type: 'string' }],
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'WITHDRAWAL',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'WITHDRAWAL_FEE_RATIO_LIMIT',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'amlPermitter',
+    outputs: [
+      {
+        internalType: 'contract IPermitter',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [
-      { internalType: 'uint256', name: 'upToDepositId', type: 'uint256' },
       {
-        internalType: 'uint256[]',
-        name: 'rejectDepositIds',
-        type: 'uint256[]',
+        internalType: 'uint256',
+        name: 'depositId',
+        type: 'uint256',
       },
-      { internalType: 'uint256', name: 'gasLimit', type: 'uint256' },
-    ],
-    name: 'analyzeAndRelayDeposits',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'uint256', name: 'depositId', type: 'uint256' },
       {
         components: [
-          { internalType: 'address', name: 'depositor', type: 'address' },
+          {
+            internalType: 'address',
+            name: 'depositor',
+            type: 'address',
+          },
           {
             internalType: 'bytes32',
             name: 'recipientSaltHash',
             type: 'bytes32',
           },
-          { internalType: 'uint256', name: 'amount', type: 'uint256' },
-          { internalType: 'uint32', name: 'tokenIndex', type: 'uint32' },
-          { internalType: 'bool', name: 'isEligible', type: 'bool' },
+          {
+            internalType: 'uint256',
+            name: 'amount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint32',
+            name: 'tokenIndex',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'isEligible',
+            type: 'bool',
+          },
         ],
         internalType: 'struct DepositLib.Deposit',
         name: 'deposit',
@@ -430,10 +749,26 @@ export const LiquidityAbi = [
     inputs: [
       {
         components: [
-          { internalType: 'address', name: 'recipient', type: 'address' },
-          { internalType: 'uint32', name: 'tokenIndex', type: 'uint32' },
-          { internalType: 'uint256', name: 'amount', type: 'uint256' },
-          { internalType: 'bytes32', name: 'nullifier', type: 'bytes32' },
+          {
+            internalType: 'address',
+            name: 'recipient',
+            type: 'address',
+          },
+          {
+            internalType: 'uint32',
+            name: 'tokenIndex',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'amount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'bytes32',
+            name: 'nullifier',
+            type: 'bytes32',
+          },
         ],
         internalType: 'struct WithdrawalLib.Withdrawal[]',
         name: 'withdrawals',
@@ -446,18 +781,88 @@ export const LiquidityAbi = [
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     name: 'claimableWithdrawals',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [
-      { internalType: 'address', name: 'tokenAddress', type: 'address' },
-      { internalType: 'bytes32', name: 'recipientSaltHash', type: 'bytes32' },
-      { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
-      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      {
+        internalType: 'uint32',
+        name: '',
+        type: 'uint32',
+      },
+    ],
+    name: 'collectedWithdrawalFees',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'deploymentTime',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'tokenAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes32',
+        name: 'recipientSaltHash',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes',
+        name: 'amlPermission',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: 'eligibilityPermission',
+        type: 'bytes',
+      },
     ],
     name: 'depositERC1155',
     outputs: [],
@@ -466,9 +871,31 @@ export const LiquidityAbi = [
   },
   {
     inputs: [
-      { internalType: 'address', name: 'tokenAddress', type: 'address' },
-      { internalType: 'bytes32', name: 'recipientSaltHash', type: 'bytes32' },
-      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      {
+        internalType: 'address',
+        name: 'tokenAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes32',
+        name: 'recipientSaltHash',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes',
+        name: 'amlPermission',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: 'eligibilityPermission',
+        type: 'bytes',
+      },
     ],
     name: 'depositERC20',
     outputs: [],
@@ -477,9 +904,31 @@ export const LiquidityAbi = [
   },
   {
     inputs: [
-      { internalType: 'address', name: 'tokenAddress', type: 'address' },
-      { internalType: 'bytes32', name: 'recipientSaltHash', type: 'bytes32' },
-      { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
+      {
+        internalType: 'address',
+        name: 'tokenAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes32',
+        name: 'recipientSaltHash',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes',
+        name: 'amlPermission',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: 'eligibilityPermission',
+        type: 'bytes',
+      },
     ],
     name: 'depositERC721',
     outputs: [],
@@ -487,21 +936,63 @@ export const LiquidityAbi = [
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'bytes32', name: 'recipientSaltHash', type: 'bytes32' }],
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'recipientSaltHash',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'bytes',
+        name: 'amlPermission',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: 'eligibilityPermission',
+        type: 'bytes',
+      },
+    ],
     name: 'depositNativeToken',
     outputs: [],
     stateMutability: 'payable',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'uint256', name: 'depositId', type: 'uint256' }],
+    inputs: [],
+    name: 'eligibilityPermitter',
+    outputs: [
+      {
+        internalType: 'contract IPermitter',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'depositId',
+        type: 'uint256',
+      },
+    ],
     name: 'getDepositData',
     outputs: [
       {
         components: [
-          { internalType: 'bytes32', name: 'depositHash', type: 'bytes32' },
-          { internalType: 'address', name: 'sender', type: 'address' },
-          { internalType: 'bool', name: 'isRejected', type: 'bool' },
+          {
+            internalType: 'bytes32',
+            name: 'depositHash',
+            type: 'bytes32',
+          },
+          {
+            internalType: 'address',
+            name: 'sender',
+            type: 'address',
+          },
         ],
         internalType: 'struct DepositQueueLib.DepositData',
         name: '',
@@ -512,14 +1003,27 @@ export const LiquidityAbi = [
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'uint256[]', name: 'depositIds', type: 'uint256[]' }],
+    inputs: [
+      {
+        internalType: 'uint256[]',
+        name: 'depositIds',
+        type: 'uint256[]',
+      },
+    ],
     name: 'getDepositDataBatch',
     outputs: [
       {
         components: [
-          { internalType: 'bytes32', name: 'depositHash', type: 'bytes32' },
-          { internalType: 'address', name: 'sender', type: 'address' },
-          { internalType: 'bool', name: 'isRejected', type: 'bool' },
+          {
+            internalType: 'bytes32',
+            name: 'depositHash',
+            type: 'bytes32',
+          },
+          {
+            internalType: 'address',
+            name: 'sender',
+            type: 'address',
+          },
         ],
         internalType: 'struct DepositQueueLib.DepositData[]',
         name: '',
@@ -530,37 +1034,79 @@ export const LiquidityAbi = [
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'uint256', name: 'depositId', type: 'uint256' }],
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'depositId',
+        type: 'uint256',
+      },
+    ],
     name: 'getDepositDataHash',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'getLastDepositId',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'getLastRelayedDepositId',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
     name: 'getNativeTokenIndex',
-    outputs: [{ internalType: 'uint32', name: '', type: 'uint32' }],
+    outputs: [
+      {
+        internalType: 'uint32',
+        name: '',
+        type: 'uint32',
+      },
+    ],
     stateMutability: 'pure',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'bytes32', name: 'role', type: 'bytes32' }],
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'role',
+        type: 'bytes32',
+      },
+    ],
     name: 'getRoleAdmin',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -571,19 +1117,41 @@ export const LiquidityAbi = [
         name: 'tokenType',
         type: 'uint8',
       },
-      { internalType: 'address', name: 'tokenAddress', type: 'address' },
-      { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
+      {
+        internalType: 'address',
+        name: 'tokenAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'tokenId',
+        type: 'uint256',
+      },
     ],
     name: 'getTokenIndex',
     outputs: [
-      { internalType: 'bool', name: '', type: 'bool' },
-      { internalType: 'uint32', name: '', type: 'uint32' },
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+      {
+        internalType: 'uint32',
+        name: '',
+        type: 'uint32',
+      },
     ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'uint32', name: 'tokenIndex', type: 'uint32' }],
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'tokenIndex',
+        type: 'uint32',
+      },
+    ],
     name: 'getTokenInfo',
     outputs: [
       {
@@ -593,8 +1161,16 @@ export const LiquidityAbi = [
             name: 'tokenType',
             type: 'uint8',
           },
-          { internalType: 'address', name: 'tokenAddress', type: 'address' },
-          { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
+          {
+            internalType: 'address',
+            name: 'tokenAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'tokenId',
+            type: 'uint256',
+          },
         ],
         internalType: 'struct ITokenData.TokenInfo',
         name: '',
@@ -606,8 +1182,16 @@ export const LiquidityAbi = [
   },
   {
     inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'address', name: 'account', type: 'address' },
+      {
+        internalType: 'bytes32',
+        name: 'role',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
+      },
     ],
     name: 'grantRole',
     outputs: [],
@@ -616,23 +1200,65 @@ export const LiquidityAbi = [
   },
   {
     inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'address', name: 'account', type: 'address' },
+      {
+        internalType: 'bytes32',
+        name: 'role',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
+      },
     ],
     name: 'hasRole',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [
-      { internalType: 'address', name: '_admin', type: 'address' },
-      { internalType: 'address', name: '_l1ScrollMessenger', type: 'address' },
-      { internalType: 'address', name: '_rollup', type: 'address' },
-      { internalType: 'address', name: '_withdrawal', type: 'address' },
-      { internalType: 'address', name: '_claim', type: 'address' },
-      { internalType: 'address', name: '_analyzer', type: 'address' },
-      { internalType: 'address', name: '_contribution', type: 'address' },
+      {
+        internalType: 'address',
+        name: '_admin',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_l1ScrollMessenger',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_rollup',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_withdrawal',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_claim',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_relayer',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_contribution',
+        type: 'address',
+      },
       {
         internalType: 'address[]',
         name: 'initialERC20Tokens',
@@ -646,28 +1272,84 @@ export const LiquidityAbi = [
   },
   {
     inputs: [
-      { internalType: 'uint256', name: 'depositId', type: 'uint256' },
-      { internalType: 'bytes32', name: 'recipientSaltHash', type: 'bytes32' },
-      { internalType: 'uint32', name: 'tokenIndex', type: 'uint32' },
-      { internalType: 'uint256', name: 'amount', type: 'uint256' },
-      { internalType: 'bool', name: 'isEligible', type: 'bool' },
-      { internalType: 'address', name: 'sender', type: 'address' },
+      {
+        internalType: 'uint256',
+        name: 'depositId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes32',
+        name: 'recipientSaltHash',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'uint32',
+        name: 'tokenIndex',
+        type: 'uint32',
+      },
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bool',
+        name: 'isEligible',
+        type: 'bool',
+      },
+      {
+        internalType: 'address',
+        name: 'sender',
+        type: 'address',
+      },
     ],
     name: 'isDepositValid',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [
-      { internalType: 'address', name: '', type: 'address' },
-      { internalType: 'address', name: '', type: 'address' },
-      { internalType: 'uint256', name: '', type: 'uint256' },
-      { internalType: 'uint256', name: '', type: 'uint256' },
-      { internalType: 'bytes', name: '', type: 'bytes' },
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
     ],
     name: 'onERC1155Received',
-    outputs: [{ internalType: 'bytes4', name: '', type: 'bytes4' }],
+    outputs: [
+      {
+        internalType: 'bytes4',
+        name: '',
+        type: 'bytes4',
+      },
+    ],
     stateMutability: 'pure',
     type: 'function',
   },
@@ -681,7 +1363,13 @@ export const LiquidityAbi = [
   {
     inputs: [],
     name: 'paused',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -689,10 +1377,26 @@ export const LiquidityAbi = [
     inputs: [
       {
         components: [
-          { internalType: 'address', name: 'recipient', type: 'address' },
-          { internalType: 'uint32', name: 'tokenIndex', type: 'uint32' },
-          { internalType: 'uint256', name: 'amount', type: 'uint256' },
-          { internalType: 'bytes32', name: 'nullifier', type: 'bytes32' },
+          {
+            internalType: 'address',
+            name: 'recipient',
+            type: 'address',
+          },
+          {
+            internalType: 'uint32',
+            name: 'tokenIndex',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'amount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'bytes32',
+            name: 'nullifier',
+            type: 'bytes32',
+          },
         ],
         internalType: 'struct WithdrawalLib.Withdrawal[]',
         name: 'withdrawals',
@@ -712,14 +1416,46 @@ export const LiquidityAbi = [
   {
     inputs: [],
     name: 'proxiableUUID',
-    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'address', name: 'callerConfirmation', type: 'address' },
+      {
+        internalType: 'uint256',
+        name: 'upToDepositId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'gasLimit',
+        type: 'uint256',
+      },
+    ],
+    name: 'relayDeposits',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: 'role',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'address',
+        name: 'callerConfirmation',
+        type: 'address',
+      },
     ],
     name: 'renounceRole',
     outputs: [],
@@ -728,8 +1464,16 @@ export const LiquidityAbi = [
   },
   {
     inputs: [
-      { internalType: 'bytes32', name: 'role', type: 'bytes32' },
-      { internalType: 'address', name: 'account', type: 'address' },
+      {
+        internalType: 'bytes32',
+        name: 'role',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
+      },
     ],
     name: 'revokeRole',
     outputs: [],
@@ -737,9 +1481,57 @@ export const LiquidityAbi = [
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'bytes4', name: 'interfaceId', type: 'bytes4' }],
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_amlPermitter',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_eligibilityPermitter',
+        type: 'address',
+      },
+    ],
+    name: 'setPermitter',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'tokenIndex',
+        type: 'uint32',
+      },
+      {
+        internalType: 'uint256',
+        name: 'feeRatio',
+        type: 'uint256',
+      },
+    ],
+    name: 'setWithdrawalFeeRatio',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes4',
+        name: 'interfaceId',
+        type: 'bytes4',
+      },
+    ],
     name: 'supportsInterface',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -752,12 +1544,57 @@ export const LiquidityAbi = [
   },
   {
     inputs: [
-      { internalType: 'address', name: 'newImplementation', type: 'address' },
-      { internalType: 'bytes', name: 'data', type: 'bytes' },
+      {
+        internalType: 'address',
+        name: 'newImplementation',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes',
+        name: 'data',
+        type: 'bytes',
+      },
     ],
     name: 'upgradeToAndCall',
     outputs: [],
     stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'recipient',
+        type: 'address',
+      },
+      {
+        internalType: 'uint32[]',
+        name: 'tokenIndices',
+        type: 'uint32[]',
+      },
+    ],
+    name: 'withdrawCollectedFees',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: '',
+        type: 'uint32',
+      },
+    ],
+    name: 'withdrawalFeeRatio',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
 ];

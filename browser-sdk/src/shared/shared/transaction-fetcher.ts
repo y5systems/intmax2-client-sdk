@@ -1,7 +1,7 @@
 import { Abi, createPublicClient, http, PublicClient } from 'viem';
 import { mainnet, sepolia } from 'viem/chains';
 
-import { Config, get_withdrawal_info } from '../../wasm/browser/intmax2_wasm_lib';
+import { Config, get_withdrawal_info, JsWithdrawalInfo } from '../../wasm/browser/intmax2_wasm_lib';
 import { DEVNET_ENV, LiquidityAbi, MAINNET_ENV, TESTNET_ENV } from '../constants';
 import { ContractWithdrawal, IntMaxEnvironment, WithdrawalsStatus } from '../types';
 import { getWithdrawHash } from '../utils';
@@ -35,8 +35,13 @@ export class TransactionFetcher {
       [WithdrawalsStatus.Requested]: [] as ContractWithdrawal[],
       [WithdrawalsStatus.Success]: [] as ContractWithdrawal[],
     };
-
-    const withdrawalInfo = await get_withdrawal_info(config, privateKey);
+    let withdrawalInfo: JsWithdrawalInfo[];
+    try {
+      withdrawalInfo = await get_withdrawal_info(config, privateKey);
+    } catch (e) {
+      console.error(e);
+      throw new Error('Failed to fetch withdrawal info');
+    }
 
     withdrawalInfo.forEach(({ contract_withdrawal, status }) => {
       pendingWithdrawals[status as WithdrawalsStatus].push({

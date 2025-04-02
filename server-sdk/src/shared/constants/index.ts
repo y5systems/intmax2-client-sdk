@@ -5,18 +5,22 @@ export * from './abis';
 export const networkMessage = (address: string) =>
   `\nThis signature on this message will be used to access the INTMAX network. \nYour address: ${address}\nCaution: Do not sign if requested on any domain other than intmax.io`;
 
-export const MAINNET_ENV = {
+export const MAINNET_ENV: SDKUrls = {
   balance_prover_url: 'https://dev.private.zkp.intmax.xyz',
-  block_builder_url: 'https://dev.builder.node.intmax.xyz',
-  block_validity_prover_url: 'https://dev.prover.intmax.xyz/v1/validity-prover',
-  store_vault_server_url: 'https://dev.storevault.node.intmax.xyz',
-  withdrawal_aggregator_url: 'https://dev.withdrawal.node.intmax.xyz',
+  indexer_url: 'https://dev.indexer.intmax.xyz/v1/indexer',
+  validity_prover_url: 'https://dev.node.api.intmax.xyz/validity-prover',
+  store_vault_server_url: 'https://dev.node.api.intmax.xyz/store-vault-server',
+  withdrawal_aggregator_url: 'https://dev.node.api.intmax.xyz/withdrawal-server',
+  predicate_url: 'https://dev.predicate.intmax.xyz/v1/predicate',
   chain_id_l1: 11155111,
   chain_id_l2: 534351,
-  liquidity_contract: '0x91eDF393F1Bda1f29fb6705F410e31a24078E627',
-  rollup_contract: '0x860AE2Fb3bAa580c992E2aFf047E96741aD9E3e3',
-  withdrawal_contract_address: '0x2801BE131c514ec30C37b202b230CBFAEB561167',
-  rollup_contract_deployed_block_number: 8310254,
+  //
+  liquidity_contract: '0x9e60b235CF6d6cb63670b3fFC4f98fB56ba91409',
+  rollup_contract: '0xD315383e78E8dDee60e3BdaD8b278e5f10386557',
+  withdrawal_contract_address: '0xC2AD2B9720330D005B137f3A841F343C60A7a2F6',
+  predicate_contract_address: '0x4D9B3CF9Cb04B27C5D221c82B428D9dE990D3e3a',
+  //
+  rollup_contract_deployed_block_number: 8803282,
   rpc_url_l1: 'https://sepolia.gateway.tenderly.co',
   rpc_url_l2: 'https://sepolia-rpc.scroll.io',
   key_vault_url: 'https://oimhddprvflxjsumnmmg.supabase.co/functions/v1/keyvault',
@@ -24,35 +28,43 @@ export const MAINNET_ENV = {
 };
 
 export const TESTNET_ENV: SDKUrls = {
-  balance_prover_url: 'https://alpha.stage.balance.prover.intmax.xyz',
-  block_builder_url: 'https://stage.builder.node.intmax.io',
-  block_validity_prover_url: 'https://stage.prover.intmax.io/v1/validity-prover',
-  store_vault_server_url: 'https://stage.storevault.node.intmax.io',
-  withdrawal_aggregator_url: 'https://stage.withdrawal.node.intmax.io',
+  balance_prover_url: 'https://stage.private.zkp.intmax.io',
+  indexer_url: 'https://beta.stage.indexer.intmax.io/v1/indexer',
+  validity_prover_url: 'https://stage.node.api.intmax.io/validity-prover',
+  store_vault_server_url: 'https://stage.node.api.intmax.io/store-vault-server',
+  withdrawal_aggregator_url: 'https://stage.node.api.intmax.io/withdrawal-server',
+  predicate_url: 'https://beta.stage.predicate.intmax.io/v1/predicate',
   chain_id_l1: 11155111,
   chain_id_l2: 534351,
-  liquidity_contract: '0x2e14c08Fcdfa0fcBf7557598cDe780D8C0F15dc0',
-  rollup_contract: '0xc824c47C7c9038034b57bEb67B41e362581D8C3E',
-  withdrawal_contract_address: '0xe10d0de8e7f8bf83af823ae7ff5905096c0808e8',
-  rollup_contract_deployed_block_number: 7525872,
+  //
+  liquidity_contract: '0xB1a7C44026114812E29258C9c9B5CBd79BEF6206',
+  rollup_contract: '0xd9F57161f8f4517D0904A64cDf88F96F129761c6',
+  withdrawal_contract_address: '0x55Fb56231c95886F94097d246123dCfE3d7b3Fc9',
+  predicate_contract_address: '0x4D9B3CF9Cb04B27C5D221c82B428D9dE990D3e3a',
+  //
+  rollup_contract_deployed_block_number: 8835495,
   rpc_url_l1: 'https://sepolia.gateway.tenderly.co',
   rpc_url_l2: 'https://sepolia-rpc.scroll.io',
-  key_vault_url: 'https://rnnqrmgdfhixidkoxlim.supabase.co/functions/v1/keyvault',
-  tokens_url: 'https://stage.token.intmax.io/v1',
+  key_vault_url: 'https://slxcnfhgxpfokwtathje.supabase.co/functions/v1/keyvault',
+  tokens_url: 'https://beta.stage.token.intmax.io',
 };
 
 export const DEVNET_ENV: SDKUrls = {
   balance_prover_url: 'https://dev.private.zkp.intmax.xyz',
-  block_builder_url: 'https://dev.builder.node.intmax.xyz',
-  block_validity_prover_url: 'https://dev.prover.intmax.xyz/v1/validity-prover',
-  store_vault_server_url: 'https://dev.storevault.node.intmax.xyz',
-  withdrawal_aggregator_url: 'https://dev.withdrawal.node.intmax.xyz',
+  indexer_url: 'https://dev.indexer.intmax.xyz/v1/indexer',
+  validity_prover_url: 'https://dev.node.api.intmax.xyz/validity-prover',
+  store_vault_server_url: 'https://dev.node.api.intmax.xyz/store-vault-server',
+  withdrawal_aggregator_url: 'https://dev.node.api.intmax.xyz/withdrawal-server',
+  predicate_url: 'https://dev.predicate.intmax.xyz/v1/predicate',
   chain_id_l1: 11155111,
   chain_id_l2: 534351,
-  liquidity_contract: '0x91eDF393F1Bda1f29fb6705F410e31a24078E627',
-  rollup_contract: '0x860AE2Fb3bAa580c992E2aFf047E96741aD9E3e3',
-  withdrawal_contract_address: '0x2801BE131c514ec30C37b202b230CBFAEB561167',
-  rollup_contract_deployed_block_number: 8310254,
+  //
+  liquidity_contract: '0x9e60b235CF6d6cb63670b3fFC4f98fB56ba91409',
+  rollup_contract: '0xD315383e78E8dDee60e3BdaD8b278e5f10386557',
+  withdrawal_contract_address: '0xC2AD2B9720330D005B137f3A841F343C60A7a2F6',
+  predicate_contract_address: '0x4D9B3CF9Cb04B27C5D221c82B428D9dE990D3e3a',
+  //
+  rollup_contract_deployed_block_number: 8803282,
   rpc_url_l1: 'https://sepolia.gateway.tenderly.co',
   rpc_url_l2: 'https://sepolia-rpc.scroll.io',
   key_vault_url: 'https://oimhddprvflxjsumnmmg.supabase.co/functions/v1/keyvault',

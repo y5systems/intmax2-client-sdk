@@ -202,10 +202,135 @@ function debugString(val) {
     return className;
 }
 
+function passArray8ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 1, 1) >>> 0;
+    getUint8ArrayMemory0().set(arg, ptr / 1);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
+}
+/**
+ * Decrypt the deposit data.
+ * @param {string} private_key
+ * @param {Uint8Array} data
+ * @returns {Promise<JsDepositData>}
+ */
+module.exports.decrypt_deposit_data = function(private_key, data) {
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.decrypt_deposit_data(ptr0, len0, ptr1, len1);
+    return ret;
+};
+
+/**
+ * Decrypt the transfer data. This is also used to decrypt the withdrawal data.
+ * @param {string} private_key
+ * @param {Uint8Array} data
+ * @returns {Promise<JsTransferData>}
+ */
+module.exports.decrypt_transfer_data = function(private_key, data) {
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.decrypt_transfer_data(ptr0, len0, ptr1, len1);
+    return ret;
+};
+
+/**
+ * Decrypt the tx data.
+ * @param {string} private_key
+ * @param {Uint8Array} data
+ * @returns {Promise<JsTxData>}
+ */
+module.exports.decrypt_tx_data = function(private_key, data) {
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.decrypt_tx_data(ptr0, len0, ptr1, len1);
+    return ret;
+};
+
+/**
+ * @param {string} private_key
+ * @param {boolean} use_s3
+ * @returns {Promise<JsAuth>}
+ */
+module.exports.generate_auth_for_store_vault = function(private_key, use_s3) {
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.generate_auth_for_store_vault(ptr0, len0, use_s3);
+    return ret;
+};
+
 function _assertClass(instance, klass) {
     if (!(instance instanceof klass)) {
         throw new Error(`expected instance of ${klass.name}`);
     }
+}
+/**
+ * @param {Config} config
+ * @param {JsAuth} auth
+ * @param {JsMetaDataCursor} cursor
+ * @returns {Promise<JsEncryptedData[]>}
+ */
+module.exports.fetch_encrypted_data = function(config, auth, cursor) {
+    _assertClass(config, Config);
+    _assertClass(auth, JsAuth);
+    _assertClass(cursor, JsMetaDataCursor);
+    const ret = wasm.fetch_encrypted_data(config.__wbg_ptr, auth.__wbg_ptr, cursor.__wbg_ptr);
+    return ret;
+};
+
+/**
+ * @param {string} private_key
+ * @param {Uint8Array} message
+ * @returns {Promise<JsFlatG2>}
+ */
+module.exports.sign_message = function(private_key, message) {
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.sign_message(ptr0, len0, ptr1, len1);
+    return ret;
+};
+
+/**
+ * @param {JsFlatG2} signature
+ * @param {string} public_key
+ * @param {Uint8Array} message
+ * @returns {Promise<boolean>}
+ */
+module.exports.verify_signature = function(signature, public_key, message) {
+    _assertClass(signature, JsFlatG2);
+    const ptr0 = passStringToWasm0(public_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.verify_signature(signature.__wbg_ptr, ptr0, len0, ptr1, len1);
+    return ret;
+};
+
+/**
+ * @param {Config} config
+ * @param {string} public_key
+ * @returns {Promise<JsAccountInfo>}
+ */
+module.exports.get_account_info = function(config, public_key) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(public_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.get_account_info(config.__wbg_ptr, ptr0, len0);
+    return ret;
+};
+
+function takeFromExternrefTable0(idx) {
+    const value = wasm.__wbindgen_export_2.get(idx);
+    wasm.__externref_table_dealloc(idx);
+    return value;
 }
 /**
  * @param {Config} config
@@ -229,12 +354,6 @@ function passArrayJsValueToWasm0(array, malloc) {
     }
     WASM_VECTOR_LEN = array.length;
     return ptr;
-}
-
-function takeFromExternrefTable0(idx) {
-    const value = wasm.__wbindgen_export_2.get(idx);
-    wasm.__externref_table_dealloc(idx);
-    return value;
 }
 
 function getArrayJsValueFromWasm0(ptr, len) {
@@ -291,6 +410,51 @@ module.exports.get_derive_path_list = function(config, private_key) {
     const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
     const ret = wasm.get_derive_path_list(config.__wbg_ptr, ptr0, len0);
+    return ret;
+};
+
+/**
+ * @param {Config} config
+ * @param {string} private_key
+ * @param {JsMetaDataCursor} cursor
+ * @returns {Promise<JsDepositHistory>}
+ */
+module.exports.fetch_deposit_history = function(config, private_key, cursor) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    _assertClass(cursor, JsMetaDataCursor);
+    const ret = wasm.fetch_deposit_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
+    return ret;
+};
+
+/**
+ * @param {Config} config
+ * @param {string} private_key
+ * @param {JsMetaDataCursor} cursor
+ * @returns {Promise<JsTransferHistory>}
+ */
+module.exports.fetch_transfer_history = function(config, private_key, cursor) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    _assertClass(cursor, JsMetaDataCursor);
+    const ret = wasm.fetch_transfer_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
+    return ret;
+};
+
+/**
+ * @param {Config} config
+ * @param {string} private_key
+ * @param {JsMetaDataCursor} cursor
+ * @returns {Promise<JsTxHistory>}
+ */
+module.exports.fetch_tx_history = function(config, private_key, cursor) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    _assertClass(cursor, JsMetaDataCursor);
+    const ret = wasm.fetch_tx_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
     return ret;
 };
 
@@ -613,185 +777,20 @@ module.exports.quote_claim_fee = function(config, fee_token_index) {
     return ret;
 };
 
-/**
- * @param {Config} config
- * @param {string} private_key
- * @param {JsMetaDataCursor} cursor
- * @returns {Promise<JsDepositHistory>}
- */
-module.exports.fetch_deposit_history = function(config, private_key, cursor) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    _assertClass(cursor, JsMetaDataCursor);
-    const ret = wasm.fetch_deposit_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
-    return ret;
-};
-
-/**
- * @param {Config} config
- * @param {string} private_key
- * @param {JsMetaDataCursor} cursor
- * @returns {Promise<JsTransferHistory>}
- */
-module.exports.fetch_transfer_history = function(config, private_key, cursor) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    _assertClass(cursor, JsMetaDataCursor);
-    const ret = wasm.fetch_transfer_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
-    return ret;
-};
-
-/**
- * @param {Config} config
- * @param {string} private_key
- * @param {JsMetaDataCursor} cursor
- * @returns {Promise<JsTxHistory>}
- */
-module.exports.fetch_tx_history = function(config, private_key, cursor) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    _assertClass(cursor, JsMetaDataCursor);
-    const ret = wasm.fetch_tx_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
-    return ret;
-};
-
-function passArray8ToWasm0(arg, malloc) {
-    const ptr = malloc(arg.length * 1, 1) >>> 0;
-    getUint8ArrayMemory0().set(arg, ptr / 1);
-    WASM_VECTOR_LEN = arg.length;
-    return ptr;
-}
-/**
- * Decrypt the deposit data.
- * @param {string} private_key
- * @param {Uint8Array} data
- * @returns {Promise<JsDepositData>}
- */
-module.exports.decrypt_deposit_data = function(private_key, data) {
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
-    const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.decrypt_deposit_data(ptr0, len0, ptr1, len1);
-    return ret;
-};
-
-/**
- * Decrypt the transfer data. This is also used to decrypt the withdrawal data.
- * @param {string} private_key
- * @param {Uint8Array} data
- * @returns {Promise<JsTransferData>}
- */
-module.exports.decrypt_transfer_data = function(private_key, data) {
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
-    const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.decrypt_transfer_data(ptr0, len0, ptr1, len1);
-    return ret;
-};
-
-/**
- * Decrypt the tx data.
- * @param {string} private_key
- * @param {Uint8Array} data
- * @returns {Promise<JsTxData>}
- */
-module.exports.decrypt_tx_data = function(private_key, data) {
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passArray8ToWasm0(data, wasm.__wbindgen_malloc);
-    const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.decrypt_tx_data(ptr0, len0, ptr1, len1);
-    return ret;
-};
-
-/**
- * @param {string} private_key
- * @param {boolean} use_s3
- * @returns {Promise<JsAuth>}
- */
-module.exports.generate_auth_for_store_vault = function(private_key, use_s3) {
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.generate_auth_for_store_vault(ptr0, len0, use_s3);
-    return ret;
-};
-
-/**
- * @param {Config} config
- * @param {JsAuth} auth
- * @param {JsMetaDataCursor} cursor
- * @returns {Promise<JsEncryptedData[]>}
- */
-module.exports.fetch_encrypted_data = function(config, auth, cursor) {
-    _assertClass(config, Config);
-    _assertClass(auth, JsAuth);
-    _assertClass(cursor, JsMetaDataCursor);
-    const ret = wasm.fetch_encrypted_data(config.__wbg_ptr, auth.__wbg_ptr, cursor.__wbg_ptr);
-    return ret;
-};
-
-/**
- * @param {string} private_key
- * @param {Uint8Array} message
- * @returns {Promise<JsFlatG2>}
- */
-module.exports.sign_message = function(private_key, message) {
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
-    const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.sign_message(ptr0, len0, ptr1, len1);
-    return ret;
-};
-
-/**
- * @param {JsFlatG2} signature
- * @param {string} public_key
- * @param {Uint8Array} message
- * @returns {Promise<boolean>}
- */
-module.exports.verify_signature = function(signature, public_key, message) {
-    _assertClass(signature, JsFlatG2);
-    const ptr0 = passStringToWasm0(public_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
-    const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.verify_signature(signature.__wbg_ptr, ptr0, len0, ptr1, len1);
-    return ret;
-};
-
-/**
- * @param {Config} config
- * @param {string} public_key
- * @returns {Promise<JsAccountInfo>}
- */
-module.exports.get_account_info = function(config, public_key) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(public_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.get_account_info(config.__wbg_ptr, ptr0, len0);
-    return ret;
-};
-
 function getArrayU8FromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
 }
 function __wbg_adapter_34(arg0, arg1) {
-    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h9573329347911503(arg0, arg1);
+    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h90993d513fc36744(arg0, arg1);
 }
 
 function __wbg_adapter_37(arg0, arg1, arg2) {
-    wasm.closure889_externref_shim(arg0, arg1, arg2);
+    wasm.closure843_externref_shim(arg0, arg1, arg2);
 }
 
 function __wbg_adapter_535(arg0, arg1, arg2, arg3) {
-    wasm.closure1727_externref_shim(arg0, arg1, arg2, arg3);
+    wasm.closure1678_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 const __wbindgen_enum_RequestCredentials = ["omit", "same-origin", "include"];
@@ -1408,7 +1407,7 @@ class JsAccountInfo {
      * @param {bigint | null} [arg0]
      */
     set account_id(arg0) {
-        wasm.__wbg_set_jsaccountinfo_account_id(this.__wbg_ptr, !isLikeNone(arg0), isLikeNone(arg0) ? BigInt(0) : arg0);
+        wasm.__wbg_set_config_private_zkp_server_retry_interval(this.__wbg_ptr, !isLikeNone(arg0), isLikeNone(arg0) ? BigInt(0) : arg0);
     }
     /**
      * @returns {number}
@@ -2558,7 +2557,7 @@ class JsEncryptedData {
     set data(arg0) {
         const ptr0 = passArray8ToWasm0(arg0, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsencrypteddata_data(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsauth_pubkey(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {string}
@@ -2587,14 +2586,14 @@ class JsEncryptedData {
      * @returns {bigint}
      */
     get timestamp() {
-        const ret = wasm.__wbg_get_jsencrypteddata_timestamp(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_jsauth_expiry(this.__wbg_ptr);
         return BigInt.asUintN(64, ret);
     }
     /**
      * @param {bigint} arg0
      */
     set timestamp(arg0) {
-        wasm.__wbg_set_jsencrypteddata_timestamp(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_jsauth_expiry(this.__wbg_ptr, arg0);
     }
     /**
      * Deposit, Transfer(Receive), Tx(Send)
@@ -3442,14 +3441,14 @@ class JsMining {
      * @returns {bigint}
      */
     get maturity() {
-        const ret = wasm.__wbg_get_jsmining_maturity(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_config_block_builder_query_limit(this.__wbg_ptr);
         return BigInt.asUintN(64, ret);
     }
     /**
      * @param {bigint} arg0
      */
     set maturity(arg0) {
-        wasm.__wbg_set_jsmining_maturity(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_config_block_builder_query_limit(this.__wbg_ptr, arg0);
     }
     /**
      * @returns {string}
@@ -3472,7 +3471,7 @@ class JsMining {
     set status(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsmining_status(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_config_liquidity_contract_address(this.__wbg_ptr, ptr0, len0);
     }
 }
 module.exports.JsMining = JsMining;
@@ -3543,7 +3542,7 @@ class JsPaymentMemoEntry {
     set topic(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jspaymentmemoentry_topic(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_intmaxaccount_privkey(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {string}
@@ -3566,7 +3565,7 @@ class JsPaymentMemoEntry {
     set memo(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jspaymentmemoentry_memo(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_intmaxaccount_pubkey(this.__wbg_ptr, ptr0, len0);
     }
 }
 module.exports.JsPaymentMemoEntry = JsPaymentMemoEntry;
@@ -4410,7 +4409,7 @@ class JsUserData {
      * @returns {bigint}
      */
     get deposit_lpt() {
-        const ret = wasm.__wbg_get_jsencrypteddata_timestamp(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_jsauth_expiry(this.__wbg_ptr);
         return BigInt.asUintN(64, ret);
     }
     /**
@@ -4418,7 +4417,7 @@ class JsUserData {
      * @param {bigint} arg0
      */
     set deposit_lpt(arg0) {
-        wasm.__wbg_set_jsencrypteddata_timestamp(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_jsauth_expiry(this.__wbg_ptr, arg0);
     }
     /**
      * The last unix timestamp of processed transfers
@@ -5313,13 +5312,13 @@ module.exports.__wbindgen_cb_drop = function(arg0) {
     return ret;
 };
 
-module.exports.__wbindgen_closure_wrapper3121 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 747, __wbg_adapter_34);
+module.exports.__wbindgen_closure_wrapper3054 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 701, __wbg_adapter_34);
     return ret;
 };
 
-module.exports.__wbindgen_closure_wrapper3357 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 890, __wbg_adapter_37);
+module.exports.__wbindgen_closure_wrapper3290 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 844, __wbg_adapter_37);
     return ret;
 };
 

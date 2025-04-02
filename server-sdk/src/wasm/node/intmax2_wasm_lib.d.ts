@@ -1,5 +1,22 @@
 /* tslint:disable */
 /* eslint-disable */
+/**
+ * Decrypt the deposit data.
+ */
+export function decrypt_deposit_data(private_key: string, data: Uint8Array): Promise<JsDepositData>;
+/**
+ * Decrypt the transfer data. This is also used to decrypt the withdrawal data.
+ */
+export function decrypt_transfer_data(private_key: string, data: Uint8Array): Promise<JsTransferData>;
+/**
+ * Decrypt the tx data.
+ */
+export function decrypt_tx_data(private_key: string, data: Uint8Array): Promise<JsTxData>;
+export function generate_auth_for_store_vault(private_key: string, use_s3: boolean): Promise<JsAuth>;
+export function fetch_encrypted_data(config: Config, auth: JsAuth, cursor: JsMetaDataCursor): Promise<JsEncryptedData[]>;
+export function sign_message(private_key: string, message: Uint8Array): Promise<JsFlatG2>;
+export function verify_signature(signature: JsFlatG2, public_key: string, message: Uint8Array): Promise<boolean>;
+export function get_account_info(config: Config, public_key: string): Promise<JsAccountInfo>;
 export function generate_withdrawal_transfers(config: Config, withdrawal_transfer: JsTransfer, fee_token_index: number, with_claim_fee: boolean): Promise<JsWithdrawalTransfers>;
 /**
  * Generate fee payment memo from given transfers and fee transfer indices
@@ -7,6 +24,9 @@ export function generate_withdrawal_transfers(config: Config, withdrawal_transfe
 export function generate_fee_payment_memo(transfers: JsTransfer[], withdrawal_fee_transfer_index?: number | null, claim_fee_transfer_index?: number | null): JsPaymentMemoEntry[];
 export function save_derive_path(config: Config, private_key: string, derive: JsDerive): Promise<string>;
 export function get_derive_path_list(config: Config, private_key: string): Promise<JsDerive[]>;
+export function fetch_deposit_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsDepositHistory>;
+export function fetch_transfer_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsTransferHistory>;
+export function fetch_tx_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsTxHistory>;
 /**
  * Generate a new key pair from the given ethereum private key (32bytes hex string).
  */
@@ -59,26 +79,6 @@ export function get_claim_info(config: Config, private_key: string): Promise<JsC
 export function quote_transfer_fee(config: Config, block_builder_url: string, pubkey: string, fee_token_index: number): Promise<JsFeeQuote>;
 export function quote_withdrawal_fee(config: Config, withdrawal_token_index: number, fee_token_index: number): Promise<JsFeeQuote>;
 export function quote_claim_fee(config: Config, fee_token_index: number): Promise<JsFeeQuote>;
-export function fetch_deposit_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsDepositHistory>;
-export function fetch_transfer_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsTransferHistory>;
-export function fetch_tx_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsTxHistory>;
-/**
- * Decrypt the deposit data.
- */
-export function decrypt_deposit_data(private_key: string, data: Uint8Array): Promise<JsDepositData>;
-/**
- * Decrypt the transfer data. This is also used to decrypt the withdrawal data.
- */
-export function decrypt_transfer_data(private_key: string, data: Uint8Array): Promise<JsTransferData>;
-/**
- * Decrypt the tx data.
- */
-export function decrypt_tx_data(private_key: string, data: Uint8Array): Promise<JsTxData>;
-export function generate_auth_for_store_vault(private_key: string, use_s3: boolean): Promise<JsAuth>;
-export function fetch_encrypted_data(config: Config, auth: JsAuth, cursor: JsMetaDataCursor): Promise<JsEncryptedData[]>;
-export function sign_message(private_key: string, message: Uint8Array): Promise<JsFlatG2>;
-export function verify_signature(signature: JsFlatG2, public_key: string, message: Uint8Array): Promise<boolean>;
-export function get_account_info(config: Config, public_key: string): Promise<JsAccountInfo>;
 export class Config {
   free(): void;
   constructor(store_vault_server_url: string, balance_prover_url: string, validity_prover_url: string, withdrawal_server_url: string, deposit_timeout: bigint, tx_timeout: bigint, block_builder_request_interval: bigint, block_builder_request_limit: bigint, block_builder_query_wait_time: bigint, block_builder_query_interval: bigint, block_builder_query_limit: bigint, l1_rpc_url: string, l1_chain_id: bigint, liquidity_contract_address: string, l2_rpc_url: string, l2_chain_id: bigint, rollup_contract_address: string, rollup_contract_deployed_block_number: bigint, withdrawal_contract_address: string, use_private_zkp_server: boolean, use_s3: boolean, private_zkp_server_max_retires?: number | null, private_zkp_server_retry_interval?: bigint | null);

@@ -49,7 +49,7 @@ export const TESTNET_ENV: SDKUrls = {
   rpc_url_l1: 'https://sepolia.gateway.tenderly.co',
   rpc_url_l2: 'https://sepolia-rpc.scroll.io',
   key_vault_url: 'https://slxcnfhgxpfokwtathje.supabase.co/functions/v1/keyvault',
-  tokens_url: 'https://stage.api.token.intmax.io',
+  tokens_url: 'https://stage.api.token.intmax.io/v1',
 };
 
 export const DEVNET_ENV: SDKUrls = {

@@ -26,7 +26,7 @@ export const MAINNET_ENV: SDKUrls = {
   rollup_contract_deployed_block_number: 8803282,
   rpc_url_l1: 'https://sepolia.gateway.tenderly.co',
   rpc_url_l2: 'https://sepolia-rpc.scroll.io',
-  key_vault_url: 'https://oimhddprvflxjsumnmmg.supabase.co/functions/v1/keyvault',
+  key_vault_url: 'https://oimhddprvflxjsumnmmg.supabase.co/functions/v1/keyvault/external',
   tokens_url: 'https://dev.token.intmax.xyz/v1',
 };
 
@@ -48,7 +48,7 @@ export const TESTNET_ENV: SDKUrls = {
   rollup_contract_deployed_block_number: 8835495,
   rpc_url_l1: 'https://sepolia.gateway.tenderly.co',
   rpc_url_l2: 'https://sepolia-rpc.scroll.io',
-  key_vault_url: 'https://slxcnfhgxpfokwtathje.supabase.co/functions/v1/keyvault',
+  key_vault_url: 'https://slxcnfhgxpfokwtathje.supabase.co/functions/v1/keyvault/external',
   tokens_url: 'https://stage.api.token.intmax.io/v1',
 };
 

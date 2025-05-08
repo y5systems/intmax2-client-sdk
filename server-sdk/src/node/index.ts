@@ -720,6 +720,7 @@ export class IntMaxNodeClient implements INTMAXClient {
   #generateConfig(env: IntMaxEnvironment): Config {
     const urls = env === 'mainnet' ? MAINNET_ENV : env === 'testnet' ? TESTNET_ENV : DEVNET_ENV;
 
+    const isFasterMining = env === 'devnet';
     return new Config(
       urls.store_vault_server_url,
       urls.balance_prover_url,
@@ -728,6 +729,7 @@ export class IntMaxNodeClient implements INTMAXClient {
       BigInt(60), // Deposit Timeout
       BigInt(60), // Tx timeout
       // ---------------------
+      isFasterMining,
       BigInt(10), // Block Builder Request Interval
       BigInt(6), // Block Builder Request Limit
       BigInt(5), // Block Builder Query Wait Time
@@ -740,7 +742,6 @@ export class IntMaxNodeClient implements INTMAXClient {
       urls.rpc_url_l2, // L2 RPC URL
       BigInt(urls.chain_id_l2), // L2 Chain ID
       urls.rollup_contract, // Rollup Contract Address
-      BigInt(urls.rollup_contract_deployed_block_number), // Rollup Contract Deployed Block Number
       urls.withdrawal_contract_address, // Withdrawal Contract Address
       true, // use_private_zkp_server
       true, // use_s3
@@ -857,13 +858,13 @@ export class IntMaxNodeClient implements INTMAXClient {
     const salt = isGasEstimation
       ? randomBytesHex(16)
       : await this.#depositToAccount({
-          depositor: this.#ethAccount.address,
-          pubkey: address,
-          amountInDecimals,
-          tokenIndex: token.tokenIndex,
-          token_type: token.tokenType,
-          token_address: token.contractAddress as `0x${string}`,
-        });
+        depositor: this.#ethAccount.address,
+        pubkey: address,
+        amountInDecimals,
+        tokenIndex: token.tokenIndex,
+        token_type: token.tokenType,
+        token_address: token.contractAddress as `0x${string}`,
+      });
 
     let amlPermission: `0x${string}` = '0x';
     if (!isGasEstimation) {

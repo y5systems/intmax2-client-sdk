@@ -823,12 +823,17 @@ export class IntMaxClient implements INTMAXClient {
 
   async #prepareDepositToken({ token, isGasEstimation, amount, address }: PrepareEstimateDepositTransactionRequest) {
     const accounts = await this.#walletClient.getAddresses();
+    const amountStr = amount.toLocaleString("en-us", {
+      maximumFractionDigits: token.decimals ?? 18,
+      minimumFractionDigits: 0,
+    });
+
     const amountInDecimals =
       token.tokenType === TokenType.NATIVE
-        ? parseEther(`${amount}`)
+        ? parseEther(`${amountStr}`)
         : token.tokenType === TokenType.ERC20
-          ? parseUnits(`${amount}`, token.decimals ?? 18)
-          : BigInt(amount);
+          ? parseUnits(`${amountStr}`, token.decimals ?? 18)
+          : BigInt(amountStr);
     const salt = isGasEstimation
       ? randomBytesHex(16)
       : await this.#depositToAccount({
@@ -849,9 +854,10 @@ export class IntMaxClient implements INTMAXClient {
         tokenAddress: token.contractAddress,
         tokenId: token.tokenIndex,
       });
+      const [from] = await this.#walletClient.getAddresses();
       const predicateMessage = await this.#predicateFetcher.fetchPredicateSignature({
         data: predicateBody,
-        from: address as `0x${string}`,
+        from: from as `0x${string}`,
         to: this.#urls.predicate_contract_address as `0x${string}`,
         msg_value: token.tokenType === TokenType.NATIVE ? amountInDecimals.toString() : '0',
       });

@@ -275,6 +275,79 @@ export function generate_fee_payment_memo(transfers, withdrawal_fee_transfer_ind
 }
 
 /**
+ * @param {Config} config
+ * @param {string} private_key
+ * @param {JsDerive} derive
+ * @returns {Promise<string>}
+ */
+export function save_derive_path(config, private_key, derive) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    _assertClass(derive, JsDerive);
+    const ret = wasm.save_derive_path(config.__wbg_ptr, ptr0, len0, derive.__wbg_ptr);
+    return ret;
+}
+
+/**
+ * @param {Config} config
+ * @param {string} private_key
+ * @returns {Promise<JsDerive[]>}
+ */
+export function get_derive_path_list(config, private_key) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.get_derive_path_list(config.__wbg_ptr, ptr0, len0);
+    return ret;
+}
+
+/**
+ * @param {Config} config
+ * @param {string} private_key
+ * @param {JsMetaDataCursor} cursor
+ * @returns {Promise<JsDepositHistory>}
+ */
+export function fetch_deposit_history(config, private_key, cursor) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    _assertClass(cursor, JsMetaDataCursor);
+    const ret = wasm.fetch_deposit_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
+    return ret;
+}
+
+/**
+ * @param {Config} config
+ * @param {string} private_key
+ * @param {JsMetaDataCursor} cursor
+ * @returns {Promise<JsTransferHistory>}
+ */
+export function fetch_transfer_history(config, private_key, cursor) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    _assertClass(cursor, JsMetaDataCursor);
+    const ret = wasm.fetch_transfer_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
+    return ret;
+}
+
+/**
+ * @param {Config} config
+ * @param {string} private_key
+ * @param {JsMetaDataCursor} cursor
+ * @returns {Promise<JsTxHistory>}
+ */
+export function fetch_tx_history(config, private_key, cursor) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    _assertClass(cursor, JsMetaDataCursor);
+    const ret = wasm.fetch_tx_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
+    return ret;
+}
+
+/**
  * Decrypt the deposit data.
  * @param {string} private_key
  * @param {Uint8Array} data
@@ -913,102 +986,6 @@ export function validate_transfer_receipt(config, private_key, transfer_receipt)
     return ret;
 }
 
-/**
- * @param {Config} config
- * @param {string} private_key
- * @returns {Promise<TokenBalance[]>}
- */
-export function get_balances_without_sync(config, private_key) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.get_balances_without_sync(config.__wbg_ptr, ptr0, len0);
-    return ret;
-}
-
-/**
- * @param {Config} config
- * @returns {Promise<void>}
- */
-export function check_validity_prover(config) {
-    _assertClass(config, Config);
-    const ret = wasm.check_validity_prover(config.__wbg_ptr);
-    return ret;
-}
-
-/**
- * @param {Config} config
- * @param {string} private_key
- * @param {JsMetaDataCursor} cursor
- * @returns {Promise<JsDepositHistory>}
- */
-export function fetch_deposit_history(config, private_key, cursor) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    _assertClass(cursor, JsMetaDataCursor);
-    const ret = wasm.fetch_deposit_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
-    return ret;
-}
-
-/**
- * @param {Config} config
- * @param {string} private_key
- * @param {JsMetaDataCursor} cursor
- * @returns {Promise<JsTransferHistory>}
- */
-export function fetch_transfer_history(config, private_key, cursor) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    _assertClass(cursor, JsMetaDataCursor);
-    const ret = wasm.fetch_transfer_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
-    return ret;
-}
-
-/**
- * @param {Config} config
- * @param {string} private_key
- * @param {JsMetaDataCursor} cursor
- * @returns {Promise<JsTxHistory>}
- */
-export function fetch_tx_history(config, private_key, cursor) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    _assertClass(cursor, JsMetaDataCursor);
-    const ret = wasm.fetch_tx_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
-    return ret;
-}
-
-/**
- * @param {Config} config
- * @param {string} private_key
- * @param {JsDerive} derive
- * @returns {Promise<string>}
- */
-export function save_derive_path(config, private_key, derive) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    _assertClass(derive, JsDerive);
-    const ret = wasm.save_derive_path(config.__wbg_ptr, ptr0, len0, derive.__wbg_ptr);
-    return ret;
-}
-
-/**
- * @param {Config} config
- * @param {string} private_key
- * @returns {Promise<JsDerive[]>}
- */
-export function get_derive_path_list(config, private_key) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.get_derive_path_list(config.__wbg_ptr, ptr0, len0);
-    return ret;
-}
-
 function __wbg_adapter_34(arg0, arg1) {
     wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__he3409dd9cfd30035(arg0, arg1);
 }
@@ -1018,11 +995,11 @@ function __wbg_adapter_37(arg0, arg1) {
 }
 
 function __wbg_adapter_40(arg0, arg1, arg2) {
-    wasm.closure1012_externref_shim(arg0, arg1, arg2);
+    wasm.closure951_externref_shim(arg0, arg1, arg2);
 }
 
-function __wbg_adapter_620(arg0, arg1, arg2, arg3) {
-    wasm.closure2036_externref_shim(arg0, arg1, arg2, arg3);
+function __wbg_adapter_614(arg0, arg1, arg2, arg3) {
+    wasm.closure1941_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 const __wbindgen_enum_RequestCredentials = ["omit", "same-origin", "include"];
@@ -2100,26 +2077,6 @@ export class JsClaimInfo {
         var ptr0 = arg0.__destroy_into_raw();
         wasm.__wbg_set_jsclaiminfo_claim(this.__wbg_ptr, ptr0);
     }
-    /**
-     * @returns {string | undefined}
-     */
-    get l1_tx_hash() {
-        const ret = wasm.__wbg_get_jsclaiminfo_l1_tx_hash(this.__wbg_ptr);
-        let v1;
-        if (ret[0] !== 0) {
-            v1 = getStringFromWasm0(ret[0], ret[1]).slice();
-            wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-        }
-        return v1;
-    }
-    /**
-     * @param {string | null} [arg0]
-     */
-    set l1_tx_hash(arg0) {
-        var ptr0 = isLikeNone(arg0) ? 0 : passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        var len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsclaiminfo_l1_tx_hash(this.__wbg_ptr, ptr0, len0);
-    }
 }
 
 const JsContractWithdrawalFinalization = (typeof FinalizationRegistry === 'undefined')
@@ -3004,7 +2961,7 @@ export class JsEncryptedData {
     set data(arg0) {
         const ptr0 = passArray8ToWasm0(arg0, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsblock_prev_block_hash(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsencrypteddata_data(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {string}
@@ -3027,20 +2984,20 @@ export class JsEncryptedData {
     set digest(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsblock_deposit_tree_root(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsencrypteddata_digest(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {bigint}
      */
     get timestamp() {
-        const ret = wasm.__wbg_get_jsblock_timestamp(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_jsencrypteddata_timestamp(this.__wbg_ptr);
         return BigInt.asUintN(64, ret);
     }
     /**
      * @param {bigint} arg0
      */
     set timestamp(arg0) {
-        wasm.__wbg_set_jsblock_timestamp(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_jsencrypteddata_timestamp(this.__wbg_ptr, arg0);
     }
     /**
      * Deposit, Transfer(Receive), Tx(Send)
@@ -3065,7 +3022,7 @@ export class JsEncryptedData {
     set data_type(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsblock_signature_hash(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsencrypteddata_data_type(this.__wbg_ptr, ptr0, len0);
     }
 }
 
@@ -3682,7 +3639,7 @@ export class JsMetaDataCursor {
     set order(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsmetadatacursor_order(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsblock_signature_hash(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {number | undefined}
@@ -4369,7 +4326,7 @@ export class JsPaymentMemoEntry {
     set topic(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_intmaxaccount_privkey(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jspaymentmemoentry_topic(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {string}
@@ -4392,7 +4349,7 @@ export class JsPaymentMemoEntry {
     set memo(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_intmaxaccount_pubkey(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jspaymentmemoentry_memo(this.__wbg_ptr, ptr0, len0);
     }
 }
 
@@ -4585,7 +4542,7 @@ export class JsTransferData {
     set sender(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsclaim_recipient(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jstransferdata_sender(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {JsTransfer}
@@ -4843,7 +4800,7 @@ export class JsTxData {
     set tx(arg0) {
         _assertClass(arg0, JsTx);
         var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_jstransfer_recipient(this.__wbg_ptr, ptr0);
+        wasm.__wbg_set_jstxdata_tx(this.__wbg_ptr, ptr0);
     }
     /**
      * @returns {JsTransfer[]}
@@ -5095,7 +5052,7 @@ export class JsTxResult {
     set tx_tree_root(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsclaim_recipient(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jstransferdata_sender(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {string[]}
@@ -5238,7 +5195,7 @@ export class JsUserData {
     set pubkey(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsblock_signature_hash(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsencrypteddata_data_type(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * The token balances of the user
@@ -5289,7 +5246,7 @@ export class JsUserData {
      * @returns {bigint}
      */
     get deposit_lpt() {
-        const ret = wasm.__wbg_get_jsblock_timestamp(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_jsencrypteddata_timestamp(this.__wbg_ptr);
         return BigInt.asUintN(64, ret);
     }
     /**
@@ -5297,7 +5254,7 @@ export class JsUserData {
      * @param {bigint} arg0
      */
     set deposit_lpt(arg0) {
-        wasm.__wbg_set_jsblock_timestamp(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_jsencrypteddata_timestamp(this.__wbg_ptr, arg0);
     }
     /**
      * The last unix timestamp of processed transfers
@@ -5484,26 +5441,6 @@ export class JsWithdrawalInfo {
         _assertClass(arg0, JsContractWithdrawal);
         var ptr0 = arg0.__destroy_into_raw();
         wasm.__wbg_set_jswithdrawalinfo_contract_withdrawal(this.__wbg_ptr, ptr0);
-    }
-    /**
-     * @returns {string | undefined}
-     */
-    get l1_tx_hash() {
-        const ret = wasm.__wbg_get_jswithdrawalinfo_l1_tx_hash(this.__wbg_ptr);
-        let v1;
-        if (ret[0] !== 0) {
-            v1 = getStringFromWasm0(ret[0], ret[1]).slice();
-            wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
-        }
-        return v1;
-    }
-    /**
-     * @param {string | null} [arg0]
-     */
-    set l1_tx_hash(arg0) {
-        var ptr0 = isLikeNone(arg0) ? 0 : passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        var len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jswithdrawalinfo_l1_tx_hash(this.__wbg_ptr, ptr0, len0);
     }
 }
 
@@ -5694,7 +5631,7 @@ export class TokenBalance {
      * @returns {number}
      */
     get token_index() {
-        const ret = wasm.__wbg_get_jstx_nonce(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_tokenbalance_token_index(this.__wbg_ptr);
         return ret >>> 0;
     }
     /**
@@ -5702,7 +5639,7 @@ export class TokenBalance {
      * @param {number} arg0
      */
     set token_index(arg0) {
-        wasm.__wbg_set_jstx_nonce(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_tokenbalance_token_index(this.__wbg_ptr, arg0);
     }
     /**
      * The amount of the token. 10 base string
@@ -5727,7 +5664,7 @@ export class TokenBalance {
     set amount(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsclaim_recipient(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jstransferdata_sender(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * Flag indicating whether the balance is insufficient for that token index.
@@ -6042,7 +5979,7 @@ function __wbg_get_imports() {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return __wbg_adapter_620(a, state0.b, arg0, arg1);
+                    return __wbg_adapter_614(a, state0.b, arg0, arg1);
                 } finally {
                     state0.a = a;
                 }
@@ -6238,16 +6175,16 @@ function __wbg_get_imports() {
         const ret = false;
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper3489 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 856, __wbg_adapter_34);
+    imports.wbg.__wbindgen_closure_wrapper3354 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 795, __wbg_adapter_34);
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper3525 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 877, __wbg_adapter_37);
+    imports.wbg.__wbindgen_closure_wrapper3390 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 816, __wbg_adapter_37);
         return ret;
     };
-    imports.wbg.__wbindgen_closure_wrapper3752 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 1013, __wbg_adapter_40);
+    imports.wbg.__wbindgen_closure_wrapper3617 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 952, __wbg_adapter_40);
         return ret;
     };
     imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {

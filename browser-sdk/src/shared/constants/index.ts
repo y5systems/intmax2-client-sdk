@@ -26,7 +26,7 @@ export const MAINNET_ENV: SDKUrls = {
   rollup_contract_deployed_block_number: 8803282,
   rpc_url_l1: 'https://sepolia.gateway.tenderly.co',
   rpc_url_l2: 'https://sepolia-rpc.scroll.io',
-  key_vault_url: 'https://oimhddprvflxjsumnmmg.supabase.co/functions/v1/keyvault',
+  key_vault_url: 'https://oimhddprvflxjsumnmmg.supabase.co/functions/v1/keyvault/external',
   tokens_url: 'https://dev.token.intmax.xyz/v1',
 };
 
@@ -40,15 +40,15 @@ export const TESTNET_ENV: SDKUrls = {
   chain_id_l1: 11155111,
   chain_id_l2: 534351,
   //
-  liquidity_contract: '0xB1a7C44026114812E29258C9c9B5CBd79BEF6206',
-  rollup_contract: '0xd9F57161f8f4517D0904A64cDf88F96F129761c6',
-  withdrawal_contract_address: '0x55Fb56231c95886F94097d246123dCfE3d7b3Fc9',
+  liquidity_contract: '0xCd81CCC2d3f20DCEa1740aDD7C4a56Fd08471009',
+  rollup_contract: '0xB7846197B64222Bd1510464a11E1611Cd3b94D4c',
+  withdrawal_contract_address: '0xCB0886301d5524fA37656670C67fc1a26DBC4F98',
   predicate_contract_address: '0x4D9B3CF9Cb04B27C5D221c82B428D9dE990D3e3a',
   //
-  rollup_contract_deployed_block_number: 8835495,
+  rollup_contract_deployed_block_number: 8869305,
   rpc_url_l1: 'https://sepolia.gateway.tenderly.co',
   rpc_url_l2: 'https://sepolia-rpc.scroll.io',
-  key_vault_url: 'https://slxcnfhgxpfokwtathje.supabase.co/functions/v1/keyvault',
+  key_vault_url: 'https://slxcnfhgxpfokwtathje.supabase.co/functions/v1/keyvault/external',
   tokens_url: 'https://stage.api.token.intmax.io/v1',
 };
 

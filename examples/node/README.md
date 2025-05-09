@@ -21,12 +21,14 @@ pnpm build
 
 ### 3. **Run the Node example**
 
+1. **Install Dependencies**
+
 ```bash
 cd ../examples/node
 pnpm install
 ```
 
-3. **Create a `.env` file**
+2. **Create a `.env` file**
 
 Create a `.env` file in the `examples/node` directory with the following contents:
 
@@ -37,7 +39,7 @@ L1_RPC_URL=https://your-l1-rpc-url
 
 > 🔐 Replace the values with your actual Ethereum private key and RPC URL.
 
-4. **Run the script**
+3. **Run the script**
 
 ```bash
 node index.js

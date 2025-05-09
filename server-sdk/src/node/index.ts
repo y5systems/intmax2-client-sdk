@@ -113,7 +113,10 @@ export class IntMaxNodeClient implements INTMAXClient {
   address: string = '';
   tokenBalances: TokenBalance[] = [];
 
-  constructor({ environment, eth_private_key, l1_rpc_url }: ConstructorNodeParams) {
+  constructor(params: ConstructorNodeParams) {
+    this.validateConstructorParams(params);
+    const { environment, eth_private_key, l1_rpc_url } = params;
+
     this.#cacheMap.set('user_data_fetch', []);
     this.#ethAccount = privateKeyToAccount(eth_private_key);
 
@@ -138,6 +141,20 @@ export class IntMaxNodeClient implements INTMAXClient {
     this.#tokenFetcher = new TokenFetcher(environment);
     this.#indexerFetcher = new IndexerFetcher(environment);
     this.#predicateFetcher = new PredicateFetcher(environment);
+  }
+
+  private validateConstructorParams({ environment, eth_private_key, l1_rpc_url }: ConstructorNodeParams) {
+    if (environment !== 'mainnet' && environment !== 'testnet' && environment !== 'devnet') {
+      throw new Error('Invalid environment. Must be "mainnet", "testnet", or "devnet"');
+    }
+
+    if (!eth_private_key || typeof eth_private_key !== 'string' || !eth_private_key.startsWith('0x')) {
+      throw new Error('Invalid Ethereum private key. Must be a string starting with "0x"');
+    }
+
+    if (!l1_rpc_url || typeof l1_rpc_url !== 'string' || !l1_rpc_url.startsWith('http')) {
+      throw new Error('Invalid L1 RPC URL. Must be a string starting with "http" or "https"');
+    }
   }
 
   async login() {

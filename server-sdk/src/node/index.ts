@@ -64,6 +64,7 @@ import {
   WithdrawRequest,
 } from '../shared';
 import {
+  await_tx_sendable,
   Config,
   fetch_deposit_history,
   fetch_transfer_history,
@@ -350,6 +351,8 @@ export class IntMaxNodeClient implements INTMAXClient {
         withdrawalTransfers = await generate_withdrawal_transfers(this.#config, transfers[0], 0, true);
       }
 
+      await await_tx_sendable(this.#config, privateKey);
+
       // send the tx request
       memo = (await send_tx_request(
         this.#config,
@@ -396,7 +399,7 @@ export class IntMaxNodeClient implements INTMAXClient {
         }
       }
       await sleep(40000);
-      await sync_withdrawals(this.#config, privateKey, 0);
+      await retryWithAttempts(async () => await sync_withdrawals(this.#config, privateKey, 0), 1000, 5);
     }
 
     return {
@@ -754,10 +757,8 @@ export class IntMaxNodeClient implements INTMAXClient {
       BigInt(20), // Block Builder Query Limit
       // ---------------------
       urls.rpc_url_l1, // L1 RPC URL
-      BigInt(urls.chain_id_l1), // L1 Chain ID
       urls.liquidity_contract, // Liquidity Contract Address
       urls.rpc_url_l2, // L2 RPC URL
-      BigInt(urls.chain_id_l2), // L2 Chain ID
       urls.rollup_contract, // Rollup Contract Address
       urls.withdrawal_contract_address, // Withdrawal Contract Address
       true, // use_private_zkp_server
@@ -861,7 +862,7 @@ export class IntMaxNodeClient implements INTMAXClient {
   }
 
   async #prepareDepositToken({ token, isGasEstimation, amount, address }: PrepareEstimateDepositTransactionRequest) {
-    const amountStr = amount.toLocaleString("en-us", {
+    const amountStr = amount.toLocaleString('en-us', {
       maximumFractionDigits: token.decimals ?? 18,
       minimumFractionDigits: 0,
     });
@@ -875,13 +876,13 @@ export class IntMaxNodeClient implements INTMAXClient {
     const salt = isGasEstimation
       ? randomBytesHex(16)
       : await this.#depositToAccount({
-        depositor: this.#ethAccount.address,
-        pubkey: address,
-        amountInDecimals,
-        tokenIndex: token.tokenIndex,
-        token_type: token.tokenType,
-        token_address: token.contractAddress as `0x${string}`,
-      });
+          depositor: this.#ethAccount.address,
+          pubkey: address,
+          amountInDecimals,
+          tokenIndex: token.tokenIndex,
+          token_type: token.tokenType,
+          token_address: token.contractAddress as `0x${string}`,
+        });
 
     let amlPermission: `0x${string}` = '0x';
     if (!isGasEstimation) {
@@ -898,6 +899,11 @@ export class IntMaxNodeClient implements INTMAXClient {
         to: this.#urls.predicate_contract_address as `0x${string}`,
         msg_value: token.tokenType === TokenType.NATIVE ? amountInDecimals.toString() : '0',
       });
+
+      if (!predicateMessage.is_compliant) {
+        throw new Error('AML check failed');
+      }
+
       amlPermission = this.#predicateFetcher.encodePredicateSignature(predicateMessage);
     }
 

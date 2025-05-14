@@ -66,6 +66,7 @@ import {
   WithdrawRequest,
 } from '../shared';
 import {
+  await_tx_sendable,
   Config,
   fetch_deposit_history,
   fetch_transfer_history,
@@ -358,6 +359,8 @@ export class IntMaxClient implements INTMAXClient {
         withdrawalTransfers = await generate_withdrawal_transfers(this.#config, transfers[0], 0, true);
       }
 
+      await await_tx_sendable(this.#config, privateKey);
+
       // send the tx request
       memo = (await send_tx_request(
         this.#config,
@@ -386,6 +389,7 @@ export class IntMaxClient implements INTMAXClient {
 
     let tx: JsTxResult | undefined;
     try {
+      console.log('DATE', new Date().getTime(), new Date());
       tx = await query_and_finalize(this.#config, await this.#indexerFetcher.getBlockBuilderUrl(), privateKey, memo);
       await this.#indexerFetcher.fetchBlockBuilderUrl();
     } catch (e) {
@@ -404,7 +408,7 @@ export class IntMaxClient implements INTMAXClient {
         }
       }
       await sleep(40000);
-      await sync_withdrawals(this.#config, privateKey, 0);
+      await retryWithAttempts(async () => await sync_withdrawals(this.#config, privateKey, 0), 1000, 5);
     }
 
     return {
@@ -715,10 +719,8 @@ export class IntMaxClient implements INTMAXClient {
       BigInt(20), // Block Builder Query Limit
       // ---------------------
       urls.rpc_url_l1, // L1 RPC URL
-      BigInt(urls.chain_id_l1), // L1 Chain ID
       urls.liquidity_contract, // Liquidity Contract Address
       urls.rpc_url_l2, // L2 RPC URL
-      BigInt(urls.chain_id_l2), // L2 Chain ID
       urls.rollup_contract, // Rollup Contract Address
       urls.withdrawal_contract_address, // Withdrawal Contract Address
       true, // use_private_zkp_server
@@ -824,7 +826,7 @@ export class IntMaxClient implements INTMAXClient {
 
   async #prepareDepositToken({ token, isGasEstimation, amount, address }: PrepareEstimateDepositTransactionRequest) {
     const accounts = await this.#walletClient.getAddresses();
-    const amountStr = amount.toLocaleString("en-us", {
+    const amountStr = amount.toLocaleString('en-us', {
       maximumFractionDigits: token.decimals ?? 18,
       minimumFractionDigits: 0,
     });
@@ -862,6 +864,11 @@ export class IntMaxClient implements INTMAXClient {
         to: this.#urls.predicate_contract_address as `0x${string}`,
         msg_value: token.tokenType === TokenType.NATIVE ? amountInDecimals.toString() : '0',
       });
+
+      if (!predicateMessage.is_compliant) {
+        throw new Error('AML check failed');
+      }
+
       amlPermission = this.#predicateFetcher.encodePredicateSignature(predicateMessage);
     }
 

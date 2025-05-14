@@ -5,11 +5,6 @@ export function generate_withdrawal_transfers(config: Config, withdrawal_transfe
  * Generate fee payment memo from given transfers and fee transfer indices
  */
 export function generate_fee_payment_memo(transfers: JsTransfer[], withdrawal_fee_transfer_index?: number | null, claim_fee_transfer_index?: number | null): JsPaymentMemoEntry[];
-export function save_derive_path(config: Config, private_key: string, derive: JsDerive): Promise<string>;
-export function get_derive_path_list(config: Config, private_key: string): Promise<JsDerive[]>;
-export function fetch_deposit_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsDepositHistory>;
-export function fetch_transfer_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsTransferHistory>;
-export function fetch_tx_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsTxHistory>;
 /**
  * Decrypt the deposit data.
  */
@@ -36,6 +31,11 @@ export function decrypt_bls_interaction_step3(client_key: string, step1_response
 export function multi_signature_interaction_step1(client_private_key: string, message: Uint8Array): JsMultisigStep1Response;
 export function multi_signature_interaction_step2(server_private_key: string, step1_response: JsMultisigStep1Response): JsMultisigStep2Response;
 export function multi_signature_interaction_step3(client_private_key: string, step1_response: JsMultisigStep1Response, step2_response: JsMultisigStep2Response): JsMultisigStep3Response;
+export function fetch_deposit_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsDepositHistory>;
+export function fetch_transfer_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsTransferHistory>;
+export function fetch_tx_history(config: Config, private_key: string, cursor: JsMetaDataCursor): Promise<JsTxHistory>;
+export function save_derive_path(config: Config, private_key: string, derive: JsDerive): Promise<string>;
+export function get_derive_path_list(config: Config, private_key: string): Promise<JsDerive[]>;
 /**
  * Generate a new key pair from the given ethereum private key (32bytes hex string).
  */
@@ -49,6 +49,10 @@ export function get_deposit_hash(depositor: string, recipient_salt_hash: string,
  * You can also get the pubkey_salt_hash from the return value.
  */
 export function prepare_deposit(config: Config, depositor: string, recipient: string, amount: string, token_type: number, token_address: string, token_id: string, is_mining: boolean): Promise<JsDepositResult>;
+/**
+ * Wait for the tx to be sendable. Wait for the sync of validity prover and balance proof.
+ */
+export function await_tx_sendable(config: Config, private_key: string): Promise<void>;
 /**
  * Function to send a tx request to the block builder. The return value contains information to take a backup.
  */
@@ -91,9 +95,11 @@ export function quote_claim_fee(config: Config, fee_token_index: number): Promis
 export function make_history_backup(config: Config, private_key: string, from: bigint, chunk_size: number): Promise<string[]>;
 export function generate_transfer_receipt(config: Config, private_key: string, transfer_digest: string, receiver: string): Promise<string>;
 export function validate_transfer_receipt(config: Config, private_key: string, transfer_receipt: string): Promise<JsTransferData>;
+export function get_balances_without_sync(config: Config, private_key: string): Promise<TokenBalance[]>;
+export function check_validity_prover(config: Config): Promise<void>;
 export class Config {
   free(): void;
-  constructor(store_vault_server_url: string, balance_prover_url: string, validity_prover_url: string, withdrawal_server_url: string, deposit_timeout: bigint, tx_timeout: bigint, is_faster_mining: boolean, block_builder_request_interval: bigint, block_builder_request_limit: bigint, block_builder_query_wait_time: bigint, block_builder_query_interval: bigint, block_builder_query_limit: bigint, l1_rpc_url: string, l1_chain_id: bigint, liquidity_contract_address: string, l2_rpc_url: string, l2_chain_id: bigint, rollup_contract_address: string, withdrawal_contract_address: string, use_private_zkp_server: boolean, use_s3: boolean, private_zkp_server_max_retires?: number | null, private_zkp_server_retry_interval?: bigint | null);
+  constructor(store_vault_server_url: string, balance_prover_url: string, validity_prover_url: string, withdrawal_server_url: string, deposit_timeout: bigint, tx_timeout: bigint, is_faster_mining: boolean, block_builder_request_interval: bigint, block_builder_request_limit: bigint, block_builder_query_wait_time: bigint, block_builder_query_interval: bigint, block_builder_query_limit: bigint, l1_rpc_url: string, liquidity_contract_address: string, l2_rpc_url: string, rollup_contract_address: string, withdrawal_contract_address: string, use_private_zkp_server: boolean, use_s3: boolean, private_zkp_server_max_retires?: number | null, private_zkp_server_retry_interval?: bigint | null);
   /**
    * URL of the store vault server
    */
@@ -146,10 +152,6 @@ export class Config {
    */
   l1_rpc_url: string;
   /**
-   * Chain ID of the Ethereum network
-   */
-  l1_chain_id: bigint;
-  /**
    * Address of the liquidity contract
    */
   liquidity_contract_address: string;
@@ -157,10 +159,6 @@ export class Config {
    * URL of the Scroll RPC
    */
   l2_rpc_url: string;
-  /**
-   * Chain ID of the Scroll network
-   */
-  l2_chain_id: bigint;
   /**
    * Address of the rollup contract
    */
@@ -225,6 +223,8 @@ export class JsClaimInfo {
   free(): void;
   status: string;
   claim: JsClaim;
+  get l1_tx_hash(): string | undefined;
+  set l1_tx_hash(value: string | null | undefined);
 }
 export class JsContractWithdrawal {
   free(): void;
@@ -506,6 +506,7 @@ export class JsTxResult {
   private constructor();
   free(): void;
   tx_tree_root: string;
+  tx_digest: string;
   transfer_digests: string[];
   withdrawal_digests: string[];
   transfer_data_vec: JsTransferData[];
@@ -565,6 +566,8 @@ export class JsWithdrawalInfo {
   free(): void;
   status: string;
   contract_withdrawal: JsContractWithdrawal;
+  get l1_tx_hash(): string | undefined;
+  set l1_tx_hash(value: string | null | undefined);
 }
 export class JsWithdrawalTransfers {
   private constructor();

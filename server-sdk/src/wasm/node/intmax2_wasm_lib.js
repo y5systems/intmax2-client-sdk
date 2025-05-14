@@ -37,6 +37,11 @@ function handleError(f, args) {
     }
 }
 
+function getArrayU8FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
+}
+
 let WASM_VECTOR_LEN = 0;
 
 let cachedTextEncoder = new TextEncoder('utf-8');
@@ -202,11 +207,6 @@ function debugString(val) {
     return className;
 }
 
-function getArrayU8FromWasm0(ptr, len) {
-    ptr = ptr >>> 0;
-    return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
-}
-
 function passArray8ToWasm0(arg, malloc) {
     const ptr = malloc(arg.length * 1, 1) >>> 0;
     getUint8ArrayMemory0().set(arg, ptr / 1);
@@ -276,79 +276,6 @@ module.exports.generate_fee_payment_memo = function(transfers, withdrawal_fee_tr
     var v2 = getArrayJsValueFromWasm0(ret[0], ret[1]).slice();
     wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
     return v2;
-};
-
-/**
- * @param {Config} config
- * @param {string} private_key
- * @param {JsDerive} derive
- * @returns {Promise<string>}
- */
-module.exports.save_derive_path = function(config, private_key, derive) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    _assertClass(derive, JsDerive);
-    const ret = wasm.save_derive_path(config.__wbg_ptr, ptr0, len0, derive.__wbg_ptr);
-    return ret;
-};
-
-/**
- * @param {Config} config
- * @param {string} private_key
- * @returns {Promise<JsDerive[]>}
- */
-module.exports.get_derive_path_list = function(config, private_key) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.get_derive_path_list(config.__wbg_ptr, ptr0, len0);
-    return ret;
-};
-
-/**
- * @param {Config} config
- * @param {string} private_key
- * @param {JsMetaDataCursor} cursor
- * @returns {Promise<JsDepositHistory>}
- */
-module.exports.fetch_deposit_history = function(config, private_key, cursor) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    _assertClass(cursor, JsMetaDataCursor);
-    const ret = wasm.fetch_deposit_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
-    return ret;
-};
-
-/**
- * @param {Config} config
- * @param {string} private_key
- * @param {JsMetaDataCursor} cursor
- * @returns {Promise<JsTransferHistory>}
- */
-module.exports.fetch_transfer_history = function(config, private_key, cursor) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    _assertClass(cursor, JsMetaDataCursor);
-    const ret = wasm.fetch_transfer_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
-    return ret;
-};
-
-/**
- * @param {Config} config
- * @param {string} private_key
- * @param {JsMetaDataCursor} cursor
- * @returns {Promise<JsTxHistory>}
- */
-module.exports.fetch_tx_history = function(config, private_key, cursor) {
-    _assertClass(config, Config);
-    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    _assertClass(cursor, JsMetaDataCursor);
-    const ret = wasm.fetch_tx_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
-    return ret;
 };
 
 /**
@@ -622,6 +549,79 @@ module.exports.multi_signature_interaction_step3 = function(client_private_key, 
 };
 
 /**
+ * @param {Config} config
+ * @param {string} private_key
+ * @param {JsMetaDataCursor} cursor
+ * @returns {Promise<JsDepositHistory>}
+ */
+module.exports.fetch_deposit_history = function(config, private_key, cursor) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    _assertClass(cursor, JsMetaDataCursor);
+    const ret = wasm.fetch_deposit_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
+    return ret;
+};
+
+/**
+ * @param {Config} config
+ * @param {string} private_key
+ * @param {JsMetaDataCursor} cursor
+ * @returns {Promise<JsTransferHistory>}
+ */
+module.exports.fetch_transfer_history = function(config, private_key, cursor) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    _assertClass(cursor, JsMetaDataCursor);
+    const ret = wasm.fetch_transfer_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
+    return ret;
+};
+
+/**
+ * @param {Config} config
+ * @param {string} private_key
+ * @param {JsMetaDataCursor} cursor
+ * @returns {Promise<JsTxHistory>}
+ */
+module.exports.fetch_tx_history = function(config, private_key, cursor) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    _assertClass(cursor, JsMetaDataCursor);
+    const ret = wasm.fetch_tx_history(config.__wbg_ptr, ptr0, len0, cursor.__wbg_ptr);
+    return ret;
+};
+
+/**
+ * @param {Config} config
+ * @param {string} private_key
+ * @param {JsDerive} derive
+ * @returns {Promise<string>}
+ */
+module.exports.save_derive_path = function(config, private_key, derive) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    _assertClass(derive, JsDerive);
+    const ret = wasm.save_derive_path(config.__wbg_ptr, ptr0, len0, derive.__wbg_ptr);
+    return ret;
+};
+
+/**
+ * @param {Config} config
+ * @param {string} private_key
+ * @returns {Promise<JsDerive[]>}
+ */
+module.exports.get_derive_path_list = function(config, private_key) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.get_derive_path_list(config.__wbg_ptr, ptr0, len0);
+    return ret;
+};
+
+/**
  * Generate a new key pair from the given ethereum private key (32bytes hex string).
  * @param {string} eth_private_key
  * @returns {Promise<IntmaxAccount>}
@@ -693,6 +693,20 @@ module.exports.prepare_deposit = function(config, depositor, recipient, amount, 
     const ptr4 = passStringToWasm0(token_id, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len4 = WASM_VECTOR_LEN;
     const ret = wasm.prepare_deposit(config.__wbg_ptr, ptr0, len0, ptr1, len1, ptr2, len2, token_type, ptr3, len3, ptr4, len4, is_mining);
+    return ret;
+};
+
+/**
+ * Wait for the tx to be sendable. Wait for the sync of validity prover and balance proof.
+ * @param {Config} config
+ * @param {string} private_key
+ * @returns {Promise<void>}
+ */
+module.exports.await_tx_sendable = function(config, private_key) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.await_tx_sendable(config.__wbg_ptr, ptr0, len0);
     return ret;
 };
 
@@ -990,20 +1004,47 @@ module.exports.validate_transfer_receipt = function(config, private_key, transfe
     return ret;
 };
 
+/**
+ * @param {Config} config
+ * @param {string} private_key
+ * @returns {Promise<TokenBalance[]>}
+ */
+module.exports.get_balances_without_sync = function(config, private_key) {
+    _assertClass(config, Config);
+    const ptr0 = passStringToWasm0(private_key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.get_balances_without_sync(config.__wbg_ptr, ptr0, len0);
+    return ret;
+};
+
+/**
+ * @param {Config} config
+ * @returns {Promise<void>}
+ */
+module.exports.check_validity_prover = function(config) {
+    _assertClass(config, Config);
+    const ret = wasm.check_validity_prover(config.__wbg_ptr);
+    return ret;
+};
+
 function __wbg_adapter_34(arg0, arg1) {
-    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__he3409dd9cfd30035(arg0, arg1);
+    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hf7e4b0744b9f2665(arg0, arg1);
 }
 
 function __wbg_adapter_37(arg0, arg1) {
-    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h138b359d2165d9ed(arg0, arg1);
+    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hdda9f253fec228a6(arg0, arg1);
 }
 
-function __wbg_adapter_40(arg0, arg1, arg2) {
-    wasm.closure951_externref_shim(arg0, arg1, arg2);
+function __wbg_adapter_40(arg0, arg1) {
+    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hd9563d8a3de9336b(arg0, arg1);
 }
 
-function __wbg_adapter_614(arg0, arg1, arg2, arg3) {
-    wasm.closure1941_externref_shim(arg0, arg1, arg2, arg3);
+function __wbg_adapter_43(arg0, arg1, arg2) {
+    wasm.closure1807_externref_shim(arg0, arg1, arg2);
+}
+
+function __wbg_adapter_628(arg0, arg1, arg2, arg3) {
+    wasm.closure2142_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 const __wbindgen_enum_RequestCredentials = ["omit", "same-origin", "include"];
@@ -1275,21 +1316,6 @@ class Config {
         wasm.__wbg_set_config_l1_rpc_url(this.__wbg_ptr, ptr0, len0);
     }
     /**
-     * Chain ID of the Ethereum network
-     * @returns {bigint}
-     */
-    get l1_chain_id() {
-        const ret = wasm.__wbg_get_config_l1_chain_id(this.__wbg_ptr);
-        return BigInt.asUintN(64, ret);
-    }
-    /**
-     * Chain ID of the Ethereum network
-     * @param {bigint} arg0
-     */
-    set l1_chain_id(arg0) {
-        wasm.__wbg_set_config_l1_chain_id(this.__wbg_ptr, arg0);
-    }
-    /**
      * Address of the liquidity contract
      * @returns {string}
      */
@@ -1338,21 +1364,6 @@ class Config {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         wasm.__wbg_set_config_l2_rpc_url(this.__wbg_ptr, ptr0, len0);
-    }
-    /**
-     * Chain ID of the Scroll network
-     * @returns {bigint}
-     */
-    get l2_chain_id() {
-        const ret = wasm.__wbg_get_config_l2_chain_id(this.__wbg_ptr);
-        return BigInt.asUintN(64, ret);
-    }
-    /**
-     * Chain ID of the Scroll network
-     * @param {bigint} arg0
-     */
-    set l2_chain_id(arg0) {
-        wasm.__wbg_set_config_l2_chain_id(this.__wbg_ptr, arg0);
     }
     /**
      * Address of the rollup contract
@@ -1470,10 +1481,8 @@ class Config {
      * @param {bigint} block_builder_query_interval
      * @param {bigint} block_builder_query_limit
      * @param {string} l1_rpc_url
-     * @param {bigint} l1_chain_id
      * @param {string} liquidity_contract_address
      * @param {string} l2_rpc_url
-     * @param {bigint} l2_chain_id
      * @param {string} rollup_contract_address
      * @param {string} withdrawal_contract_address
      * @param {boolean} use_private_zkp_server
@@ -1481,7 +1490,7 @@ class Config {
      * @param {number | null} [private_zkp_server_max_retires]
      * @param {bigint | null} [private_zkp_server_retry_interval]
      */
-    constructor(store_vault_server_url, balance_prover_url, validity_prover_url, withdrawal_server_url, deposit_timeout, tx_timeout, is_faster_mining, block_builder_request_interval, block_builder_request_limit, block_builder_query_wait_time, block_builder_query_interval, block_builder_query_limit, l1_rpc_url, l1_chain_id, liquidity_contract_address, l2_rpc_url, l2_chain_id, rollup_contract_address, withdrawal_contract_address, use_private_zkp_server, use_s3, private_zkp_server_max_retires, private_zkp_server_retry_interval) {
+    constructor(store_vault_server_url, balance_prover_url, validity_prover_url, withdrawal_server_url, deposit_timeout, tx_timeout, is_faster_mining, block_builder_request_interval, block_builder_request_limit, block_builder_query_wait_time, block_builder_query_interval, block_builder_query_limit, l1_rpc_url, liquidity_contract_address, l2_rpc_url, rollup_contract_address, withdrawal_contract_address, use_private_zkp_server, use_s3, private_zkp_server_max_retires, private_zkp_server_retry_interval) {
         const ptr0 = passStringToWasm0(store_vault_server_url, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         const ptr1 = passStringToWasm0(balance_prover_url, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
@@ -1500,7 +1509,7 @@ class Config {
         const len7 = WASM_VECTOR_LEN;
         const ptr8 = passStringToWasm0(withdrawal_contract_address, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len8 = WASM_VECTOR_LEN;
-        const ret = wasm.config_new(ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, deposit_timeout, tx_timeout, is_faster_mining, block_builder_request_interval, block_builder_request_limit, block_builder_query_wait_time, block_builder_query_interval, block_builder_query_limit, ptr4, len4, l1_chain_id, ptr5, len5, ptr6, len6, l2_chain_id, ptr7, len7, ptr8, len8, use_private_zkp_server, use_s3, isLikeNone(private_zkp_server_max_retires) ? 0x100000001 : (private_zkp_server_max_retires) >>> 0, !isLikeNone(private_zkp_server_retry_interval), isLikeNone(private_zkp_server_retry_interval) ? BigInt(0) : private_zkp_server_retry_interval);
+        const ret = wasm.config_new(ptr0, len0, ptr1, len1, ptr2, len2, ptr3, len3, deposit_timeout, tx_timeout, is_faster_mining, block_builder_request_interval, block_builder_request_limit, block_builder_query_wait_time, block_builder_query_interval, block_builder_query_limit, ptr4, len4, ptr5, len5, ptr6, len6, ptr7, len7, ptr8, len8, use_private_zkp_server, use_s3, isLikeNone(private_zkp_server_max_retires) ? 0x100000001 : (private_zkp_server_max_retires) >>> 0, !isLikeNone(private_zkp_server_retry_interval), isLikeNone(private_zkp_server_retry_interval) ? BigInt(0) : private_zkp_server_retry_interval);
         this.__wbg_ptr = ret >>> 0;
         ConfigFinalization.register(this, this.__wbg_ptr, this);
         return this;
@@ -2087,6 +2096,26 @@ class JsClaimInfo {
         _assertClass(arg0, JsClaim);
         var ptr0 = arg0.__destroy_into_raw();
         wasm.__wbg_set_jsclaiminfo_claim(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {string | undefined}
+     */
+    get l1_tx_hash() {
+        const ret = wasm.__wbg_get_jsclaiminfo_l1_tx_hash(this.__wbg_ptr);
+        let v1;
+        if (ret[0] !== 0) {
+            v1 = getStringFromWasm0(ret[0], ret[1]).slice();
+            wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        }
+        return v1;
+    }
+    /**
+     * @param {string | null} [arg0]
+     */
+    set l1_tx_hash(arg0) {
+        var ptr0 = isLikeNone(arg0) ? 0 : passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len0 = WASM_VECTOR_LEN;
+        wasm.__wbg_set_jsclaiminfo_l1_tx_hash(this.__wbg_ptr, ptr0, len0);
     }
 }
 module.exports.JsClaimInfo = JsClaimInfo;
@@ -2981,7 +3010,7 @@ class JsEncryptedData {
     set data(arg0) {
         const ptr0 = passArray8ToWasm0(arg0, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsencrypteddata_data(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsblock_prev_block_hash(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {string}
@@ -3004,20 +3033,20 @@ class JsEncryptedData {
     set digest(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsencrypteddata_digest(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsblock_deposit_tree_root(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {bigint}
      */
     get timestamp() {
-        const ret = wasm.__wbg_get_jsencrypteddata_timestamp(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_jsblock_timestamp(this.__wbg_ptr);
         return BigInt.asUintN(64, ret);
     }
     /**
      * @param {bigint} arg0
      */
     set timestamp(arg0) {
-        wasm.__wbg_set_jsencrypteddata_timestamp(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_jsblock_timestamp(this.__wbg_ptr, arg0);
     }
     /**
      * Deposit, Transfer(Receive), Tx(Send)
@@ -3042,7 +3071,7 @@ class JsEncryptedData {
     set data_type(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsencrypteddata_data_type(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsblock_signature_hash(this.__wbg_ptr, ptr0, len0);
     }
 }
 module.exports.JsEncryptedData = JsEncryptedData;
@@ -3667,7 +3696,7 @@ class JsMetaDataCursor {
     set order(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsblock_signature_hash(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsmetadatacursor_order(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {number | undefined}
@@ -3875,7 +3904,7 @@ class JsMining {
      * @param {bigint | null} [arg0]
      */
     set maturity(arg0) {
-        wasm.__wbg_set_jsaccountinfo_account_id(this.__wbg_ptr, !isLikeNone(arg0), isLikeNone(arg0) ? BigInt(0) : arg0);
+        wasm.__wbg_set_jsmining_maturity(this.__wbg_ptr, !isLikeNone(arg0), isLikeNone(arg0) ? BigInt(0) : arg0);
     }
     /**
      * @returns {string}
@@ -4363,7 +4392,7 @@ class JsPaymentMemoEntry {
     set topic(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jspaymentmemoentry_topic(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_intmaxaccount_privkey(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {string}
@@ -4386,7 +4415,7 @@ class JsPaymentMemoEntry {
     set memo(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jspaymentmemoentry_memo(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_intmaxaccount_pubkey(this.__wbg_ptr, ptr0, len0);
     }
 }
 module.exports.JsPaymentMemoEntry = JsPaymentMemoEntry;
@@ -4581,7 +4610,7 @@ class JsTransferData {
     set sender(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jstransferdata_sender(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsclaim_recipient(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {JsTransfer}
@@ -4843,7 +4872,7 @@ class JsTxData {
     set tx(arg0) {
         _assertClass(arg0, JsTx);
         var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_jstxdata_tx(this.__wbg_ptr, ptr0);
+        wasm.__wbg_set_jstransfer_recipient(this.__wbg_ptr, ptr0);
     }
     /**
      * @returns {JsTransfer[]}
@@ -5099,7 +5128,30 @@ class JsTxResult {
     set tx_tree_root(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jstransferdata_sender(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsclaim_recipient(this.__wbg_ptr, ptr0, len0);
+    }
+    /**
+     * @returns {string}
+     */
+    get tx_digest() {
+        let deferred1_0;
+        let deferred1_1;
+        try {
+            const ret = wasm.__wbg_get_jstxresult_tx_digest(this.__wbg_ptr);
+            deferred1_0 = ret[0];
+            deferred1_1 = ret[1];
+            return getStringFromWasm0(ret[0], ret[1]);
+        } finally {
+            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+        }
+    }
+    /**
+     * @param {string} arg0
+     */
+    set tx_digest(arg0) {
+        const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.__wbg_set_jsclaim_amount(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * @returns {string[]}
@@ -5243,7 +5295,7 @@ class JsUserData {
     set pubkey(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jsencrypteddata_data_type(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsblock_signature_hash(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * The token balances of the user
@@ -5294,7 +5346,7 @@ class JsUserData {
      * @returns {bigint}
      */
     get deposit_lpt() {
-        const ret = wasm.__wbg_get_jsencrypteddata_timestamp(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_jsblock_timestamp(this.__wbg_ptr);
         return BigInt.asUintN(64, ret);
     }
     /**
@@ -5302,7 +5354,7 @@ class JsUserData {
      * @param {bigint} arg0
      */
     set deposit_lpt(arg0) {
-        wasm.__wbg_set_jsencrypteddata_timestamp(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_jsblock_timestamp(this.__wbg_ptr, arg0);
     }
     /**
      * The last unix timestamp of processed transfers
@@ -5490,6 +5542,26 @@ class JsWithdrawalInfo {
         _assertClass(arg0, JsContractWithdrawal);
         var ptr0 = arg0.__destroy_into_raw();
         wasm.__wbg_set_jswithdrawalinfo_contract_withdrawal(this.__wbg_ptr, ptr0);
+    }
+    /**
+     * @returns {string | undefined}
+     */
+    get l1_tx_hash() {
+        const ret = wasm.__wbg_get_jswithdrawalinfo_l1_tx_hash(this.__wbg_ptr);
+        let v1;
+        if (ret[0] !== 0) {
+            v1 = getStringFromWasm0(ret[0], ret[1]).slice();
+            wasm.__wbindgen_free(ret[0], ret[1] * 1, 1);
+        }
+        return v1;
+    }
+    /**
+     * @param {string | null} [arg0]
+     */
+    set l1_tx_hash(arg0) {
+        var ptr0 = isLikeNone(arg0) ? 0 : passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len0 = WASM_VECTOR_LEN;
+        wasm.__wbg_set_jswithdrawalinfo_l1_tx_hash(this.__wbg_ptr, ptr0, len0);
     }
 }
 module.exports.JsWithdrawalInfo = JsWithdrawalInfo;
@@ -5683,7 +5755,7 @@ class TokenBalance {
      * @returns {number}
      */
     get token_index() {
-        const ret = wasm.__wbg_get_tokenbalance_token_index(this.__wbg_ptr);
+        const ret = wasm.__wbg_get_jstx_nonce(this.__wbg_ptr);
         return ret >>> 0;
     }
     /**
@@ -5691,7 +5763,7 @@ class TokenBalance {
      * @param {number} arg0
      */
     set token_index(arg0) {
-        wasm.__wbg_set_tokenbalance_token_index(this.__wbg_ptr, arg0);
+        wasm.__wbg_set_jstx_nonce(this.__wbg_ptr, arg0);
     }
     /**
      * The amount of the token. 10 base string
@@ -5716,7 +5788,7 @@ class TokenBalance {
     set amount(arg0) {
         const ptr0 = passStringToWasm0(arg0, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        wasm.__wbg_set_jstransferdata_sender(this.__wbg_ptr, ptr0, len0);
+        wasm.__wbg_set_jsclaim_recipient(this.__wbg_ptr, ptr0, len0);
     }
     /**
      * Flag indicating whether the balance is insufficient for that token index.
@@ -5780,7 +5852,7 @@ module.exports.__wbg_clearTimeout_86721db0036bea98 = function(arg0) {
     return ret;
 };
 
-module.exports.__wbg_crypto_ed58b8e10a292839 = function(arg0) {
+module.exports.__wbg_crypto_574e78ad8b13b65f = function(arg0) {
     const ret = arg0.crypto;
     return ret;
 };
@@ -5812,12 +5884,11 @@ module.exports.__wbg_fetch_d36a73832f0a45e8 = function(arg0) {
     return ret;
 };
 
-module.exports.__wbg_fetch_f1856afdb49415d1 = function(arg0) {
-    const ret = fetch(arg0);
-    return ret;
-};
+module.exports.__wbg_getRandomValues_3c9c0d586e575a16 = function() { return handleError(function (arg0, arg1) {
+    globalThis.crypto.getRandomValues(getArrayU8FromWasm0(arg0, arg1));
+}, arguments) };
 
-module.exports.__wbg_getRandomValues_bcb4912f16000dc4 = function() { return handleError(function (arg0, arg1) {
+module.exports.__wbg_getRandomValues_b8f5dbd5f3995a9e = function() { return handleError(function (arg0, arg1) {
     arg0.getRandomValues(arg1);
 }, arguments) };
 
@@ -6037,7 +6108,7 @@ module.exports.__wbg_length_a446193dc22c12f8 = function(arg0) {
     return ret;
 };
 
-module.exports.__wbg_msCrypto_0a36e2ec3a343d26 = function(arg0) {
+module.exports.__wbg_msCrypto_a61aeb35a24c1329 = function(arg0) {
     const ret = arg0.msCrypto;
     return ret;
 };
@@ -6059,7 +6130,7 @@ module.exports.__wbg_new_23a2665fac83c611 = function(arg0, arg1) {
             const a = state0.a;
             state0.a = 0;
             try {
-                return __wbg_adapter_614(a, state0.b, arg0, arg1);
+                return __wbg_adapter_628(a, state0.b, arg0, arg1);
             } finally {
                 state0.a = a;
             }
@@ -6121,12 +6192,22 @@ module.exports.__wbg_next_6574e1a8a62d1055 = function() { return handleError(fun
     return ret;
 }, arguments) };
 
-module.exports.__wbg_node_02999533c4ea02e3 = function(arg0) {
+module.exports.__wbg_node_905d3e251edff8a2 = function(arg0) {
     const ret = arg0.node;
     return ret;
 };
 
-module.exports.__wbg_process_5c1d670bc53614b8 = function(arg0) {
+module.exports.__wbg_now_fb0466b5460cff09 = function(arg0) {
+    const ret = arg0.now();
+    return ret;
+};
+
+module.exports.__wbg_performance_71b063e177862740 = function(arg0) {
+    const ret = arg0.performance;
+    return ret;
+};
+
+module.exports.__wbg_process_dc0fbacc7c1c06f7 = function(arg0) {
     const ret = arg0.process;
     return ret;
 };
@@ -6140,11 +6221,11 @@ module.exports.__wbg_queueMicrotask_d3219def82552485 = function(arg0) {
     return ret;
 };
 
-module.exports.__wbg_randomFillSync_ab2cfe79ebbf2740 = function() { return handleError(function (arg0, arg1) {
+module.exports.__wbg_randomFillSync_ac0988aba3254290 = function() { return handleError(function (arg0, arg1) {
     arg0.randomFillSync(arg1);
 }, arguments) };
 
-module.exports.__wbg_require_79b1e9274cde3c87 = function() { return handleError(function () {
+module.exports.__wbg_require_60cc747a6bc5215a = function() { return handleError(function () {
     const ret = module.require;
     return ret;
 }, arguments) };
@@ -6153,6 +6234,11 @@ module.exports.__wbg_resolve_4851785c9c5f573d = function(arg0) {
     const ret = Promise.resolve(arg0);
     return ret;
 };
+
+module.exports.__wbg_setTimeout_25eabdb2fc442ea2 = function() { return handleError(function (arg0, arg1, arg2) {
+    const ret = arg0.setTimeout(arg1, arg2);
+    return ret;
+}, arguments) };
 
 module.exports.__wbg_setTimeout_2e707715f8cc9497 = function(arg0, arg1) {
     const ret = setTimeout(arg0, arg1);
@@ -6278,7 +6364,7 @@ module.exports.__wbg_value_cd1ffa7b1ab794f1 = function(arg0) {
     return ret;
 };
 
-module.exports.__wbg_versions_c71aa1626a93e0a1 = function(arg0) {
+module.exports.__wbg_versions_c01dfd4722a88165 = function(arg0) {
     const ret = arg0.versions;
     return ret;
 };
@@ -6302,18 +6388,23 @@ module.exports.__wbindgen_cb_drop = function(arg0) {
     return ret;
 };
 
-module.exports.__wbindgen_closure_wrapper3354 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 795, __wbg_adapter_34);
+module.exports.__wbindgen_closure_wrapper3632 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 1010, __wbg_adapter_34);
     return ret;
 };
 
-module.exports.__wbindgen_closure_wrapper3390 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 816, __wbg_adapter_37);
+module.exports.__wbindgen_closure_wrapper5116 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 1757, __wbg_adapter_37);
     return ret;
 };
 
-module.exports.__wbindgen_closure_wrapper3617 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 952, __wbg_adapter_40);
+module.exports.__wbindgen_closure_wrapper5206 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 1787, __wbg_adapter_40);
+    return ret;
+};
+
+module.exports.__wbindgen_closure_wrapper5246 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 1808, __wbg_adapter_43);
     return ret;
 };
 

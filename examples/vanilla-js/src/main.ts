@@ -140,7 +140,7 @@ const claimWithdrawalsButton = async () => {
       resultDiv.style.marginTop = '10px';
       resultDiv.innerHTML = JSON.stringify(result, null, 2);
       wrapper.appendChild(resultDiv);
-    } catch (e) { }
+    } catch (e) {}
 
     button.innerHTML = `Claim Withdrawals`;
   };
@@ -168,7 +168,7 @@ const createInitButton = () => {
   const button = document.createElement('button');
   button.innerHTML = 'Initialize Client';
   button.onclick = async () => {
-    client = await IntMaxClient.init({ environment: 'testnet' });
+    client = await IntMaxClient.init({ environment: 'devnet' });
     createLoginButton();
     button.remove();
   };
@@ -229,6 +229,7 @@ const createDepositForm = () => {
     //TODO: create validation for NFT or ERC20
     if (!token) {
       alert('Token not found');
+      submitButton.disabled = false;
       return;
     }
 

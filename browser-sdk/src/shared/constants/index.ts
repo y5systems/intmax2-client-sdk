@@ -31,11 +31,11 @@ export const MAINNET_ENV: SDKUrls = {
 };
 
 export const TESTNET_ENV: SDKUrls = {
-  store_vault_server_url: 'https://lshmjrbbsx.a.pinggy.link/store-vault-server',
-  balance_prover_url: 'https://lshmjrbbsx.a.pinggy.link/balance-prover',
-  block_builder_url: 'https://lshmjrbbsx.a.pinggy.link/block-builder',
-  validity_prover_url: 'https://lshmjrbbsx.a.pinggy.link/validity-prover',
-  withdrawal_aggregator_url: 'https://lshmjrbbsx.a.pinggy.link/withdrawal-server',
+  store_vault_server_url: 'https://poc-intmax.y5.systems/store-vault-server',
+  balance_prover_url: 'https://poc-intmax.y5.systems/balance-prover',
+  block_builder_url: 'https://poc-intmax.y5.systems/block-builder',
+  validity_prover_url: 'https://poc-intmax.y5.systems/validity-prover',
+  withdrawal_aggregator_url: 'https://poc-intmax.y5.systems/withdrawal-server',
 
   liquidity_contract: '0x0A664C39bf36e66AB493bD2ca64D44d9e21B5798',
   rollup_contract: '0x59729403f35B78d8C2cFFFFA9dda5f867FEE8F70',

@@ -11,17 +11,14 @@ export class TransactionFetcher {
   readonly #liquidityContractAddress: string;
 
   constructor(environment: IntMaxEnvironment) {
-    this.#liquidityContractAddress =
-      environment === 'mainnet'
-        ? MAINNET_ENV.liquidity_contract
-        : environment === 'testnet'
-          ? TESTNET_ENV.liquidity_contract
-          : DEVNET_ENV.liquidity_contract;
+    const urls = environment === 'mainnet' ? MAINNET_ENV : environment === 'testnet' ? TESTNET_ENV : DEVNET_ENV;
+
+    this.#liquidityContractAddress = urls.liquidity_contract;
 
     // @ts-expect-error using different chains
     this.#publicClient = createPublicClient({
       chain: environment === 'mainnet' ? base : baseSepolia,
-      transport: http(DEVNET_ENV.rpc_url_l1),
+      transport: http(urls.rpc_url_l1),
     });
   }
 

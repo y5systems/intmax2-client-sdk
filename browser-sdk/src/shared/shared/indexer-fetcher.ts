@@ -10,17 +10,12 @@ export class IndexerFetcher {
   readonly #httpClient: AxiosInstance;
 
   constructor(environment: IntMaxEnvironment) {
-    this.#httpClient = axiosClientInit({
-      baseURL:
-        environment === 'mainnet'
-          ? MAINNET_ENV.indexer_url
-          : environment === 'testnet'
-            ? TESTNET_ENV.indexer_url
-            : DEVNET_ENV.indexer_url,
-    });
+    const urls = environment === 'mainnet' ? MAINNET_ENV : environment === 'testnet' ? TESTNET_ENV : DEVNET_ENV;
 
-    if (environment === 'testnet' && TESTNET_ENV.block_builder_url) {
-      this.#url = TESTNET_ENV.block_builder_url;
+    this.#httpClient = axiosClientInit({ baseURL: urls.indexer_url });
+
+    if (urls.block_builder_url) {
+      this.#url = urls.block_builder_url;
     }
   }
 

@@ -17,21 +17,11 @@ export class TokenFetcher {
   readonly #publicClient: PublicClient;
 
   constructor(environment: IntMaxEnvironment) {
-    this.#liquidityContractAddress =
-      environment === 'mainnet'
-        ? MAINNET_ENV.liquidity_contract
-        : environment === 'testnet'
-          ? TESTNET_ENV.liquidity_contract
-          : DEVNET_ENV.liquidity_contract;
+    const urls = environment === 'mainnet' ? MAINNET_ENV : environment === 'testnet' ? TESTNET_ENV : DEVNET_ENV;
 
-    this.#httpClient = axiosClientInit({
-      baseURL:
-        environment === 'mainnet'
-          ? MAINNET_ENV.tokens_url
-          : environment === 'testnet'
-            ? TESTNET_ENV.tokens_url
-            : DEVNET_ENV.tokens_url,
-    });
+    this.#liquidityContractAddress = urls.liquidity_contract;
+
+    this.#httpClient = axiosClientInit({ baseURL: urls.tokens_url });
 
     // this.#publicClient = createPublicClient({
     //   chain: environment === 'mainnet' ? mainnet : sepolia,
@@ -41,7 +31,7 @@ export class TokenFetcher {
     // @ts-expect-error using different chains
     this.#publicClient = createPublicClient({
       chain: environment === 'mainnet' ? base : baseSepolia,
-      transport: http(DEVNET_ENV.rpc_url_l1),
+      transport: http(urls.rpc_url_l1),
     });
 
     this.fetchTokens();

@@ -123,6 +123,8 @@ export class IntMaxClient implements INTMAXClient {
     }
     initSync(async_params);
 
+    this.#urls = environment === 'mainnet' ? MAINNET_ENV : environment === 'testnet' ? TESTNET_ENV : DEVNET_ENV;
+
     // this.#walletClient = createWalletClient({
     //   chain: environment === 'mainnet' ? mainnet : sepolia,
     //   transport: custom(window.ethereum!),
@@ -141,19 +143,10 @@ export class IntMaxClient implements INTMAXClient {
     // @ts-expect-error using different chains
     this.#publicClient = createPublicClient({
       chain: environment === 'mainnet' ? base : baseSepolia,
-      transport: http(DEVNET_ENV.rpc_url_l1),
+      transport: http(this.#urls.rpc_url_l1),
     });
 
-    this.#urls = environment === 'mainnet' ? MAINNET_ENV : environment === 'testnet' ? TESTNET_ENV : DEVNET_ENV;
-
-    this.#vaultHttpClient = axiosClientInit({
-      baseURL:
-        environment === 'mainnet'
-          ? MAINNET_ENV.key_vault_url
-          : environment === 'testnet'
-            ? TESTNET_ENV.key_vault_url
-            : DEVNET_ENV.key_vault_url,
-    });
+    this.#vaultHttpClient = axiosClientInit({ baseURL: this.#urls.key_vault_url });
 
     this.#config = this.#generateConfig(environment);
     this.#txFetcher = new TransactionFetcher(environment);

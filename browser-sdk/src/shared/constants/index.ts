@@ -31,25 +31,29 @@ export const MAINNET_ENV: SDKUrls = {
 };
 
 export const TESTNET_ENV: SDKUrls = {
-  balance_prover_url: 'https://stage.api.private.zkp.intmax.io',
-  indexer_url: 'https://stage.api.indexer.intmax.io/v1/indexer',
-  validity_prover_url: 'https://stage.api.node.intmax.io/validity-prover',
-  store_vault_server_url: 'https://stage.api.node.intmax.io/store-vault-server',
-  withdrawal_aggregator_url: 'https://stage.api.node.intmax.io/withdrawal-server',
-  predicate_url: 'https://stage.api.predicate.intmax.io/v1/predicate',
-  chain_id_l1: 11155111,
+  store_vault_server_url: 'https://lshmjrbbsx.a.pinggy.link/store-vault-server',
+  balance_prover_url: 'https://lshmjrbbsx.a.pinggy.link/balance-prover',
+  block_builder_url: 'https://lshmjrbbsx.a.pinggy.link/block-builder',
+  validity_prover_url: 'https://lshmjrbbsx.a.pinggy.link/validity-prover',
+  withdrawal_aggregator_url: 'https://lshmjrbbsx.a.pinggy.link/withdrawal-server',
+
+  liquidity_contract: '0x0A664C39bf36e66AB493bD2ca64D44d9e21B5798',
+  rollup_contract: '0x59729403f35B78d8C2cFFFFA9dda5f867FEE8F70',
+  withdrawal_contract_address: '0xB0e889e390778D14efE3c759B8bf774385507342',
+
+  rollup_contract_deployed_block_number: 9713994,
+  chain_id_l1: 84532,
   chain_id_l2: 534351,
-  //
-  liquidity_contract: '0xCd81CCC2d3f20DCEa1740aDD7C4a56Fd08471009',
-  rollup_contract: '0xB7846197B64222Bd1510464a11E1611Cd3b94D4c',
-  withdrawal_contract_address: '0xCB0886301d5524fA37656670C67fc1a26DBC4F98',
-  predicate_contract_address: '0x4D9B3CF9Cb04B27C5D221c82B428D9dE990D3e3a',
-  //
-  rollup_contract_deployed_block_number: 8869965,
-  rpc_url_l1: 'https://sepolia.gateway.tenderly.co',
-  rpc_url_l2: 'https://sepolia-rpc.scroll.io',
-  key_vault_url: 'https://slxcnfhgxpfokwtathje.supabase.co/functions/v1/keyvault/external',
+
+  rpc_url_l1: 'https://base-sepolia.infura.io/v3/f257356b35944054840b39e5da49c2fb',
+  rpc_url_l2: 'https://scroll-sepolia.infura.io/v3/f257356b35944054840b39e5da49c2fb',
+
+  indexer_url: 'https://stage.api.indexer.intmax.io/v1/indexer',
   tokens_url: 'https://stage.api.token.intmax.io/v1',
+
+  predicate_url: 'https://stage.api.predicate.intmax.io/v1/predicate',
+  predicate_contract_address: '0x4D9B3CF9Cb04B27C5D221c82B428D9dE990D3e3a',
+  key_vault_url: 'https://slxcnfhgxpfokwtathje.supabase.co/functions/v1/keyvault/external',
 };
 
 export const DEVNET_ENV: SDKUrls = {

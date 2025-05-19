@@ -254,6 +254,7 @@ export interface PaginatedResponse<T> {
 
 export interface SDKUrls {
   balance_prover_url: string;
+  block_builder_url?: string;
   indexer_url: string;
   predicate_url: string;
   validity_prover_url: string;

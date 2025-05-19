@@ -722,7 +722,7 @@ export class IntMaxClient implements INTMAXClient {
       urls.rpc_url_l2, // L2 RPC URL
       urls.rollup_contract, // Rollup Contract Address
       urls.withdrawal_contract_address, // Withdrawal Contract Address
-      true, // use_private_zkp_server
+      false, // use_private_zkp_server
       true, // use_s3
       25, // private_zkp_server_max_retries
       5n, // private_zkp_server_retry_interval

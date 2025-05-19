@@ -18,6 +18,10 @@ export class IndexerFetcher {
             ? TESTNET_ENV.indexer_url
             : DEVNET_ENV.indexer_url,
     });
+
+    if (environment === 'testnet' && TESTNET_ENV.block_builder_url) {
+      this.#url = TESTNET_ENV.block_builder_url;
+    }
   }
 
   async fetchBlockBuilderUrl(): Promise<string> {

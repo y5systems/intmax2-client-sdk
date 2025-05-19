@@ -389,9 +389,8 @@ export class IntMaxClient implements INTMAXClient {
 
     let tx: JsTxResult | undefined;
     try {
-      console.log('DATE', new Date().getTime(), new Date());
       tx = await query_and_finalize(this.#config, await this.#indexerFetcher.getBlockBuilderUrl(), privateKey, memo);
-      await this.#indexerFetcher.fetchBlockBuilderUrl();
+      await this.#indexerFetcher.getBlockBuilderUrl();
     } catch (e) {
       console.error(e);
       throw new Error('Failed to finalize tx');

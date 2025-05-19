@@ -509,6 +509,29 @@ export class IntMaxClient implements INTMAXClient {
   async estimateDepositGas(params: PrepareEstimateDepositTransactionRequest): Promise<bigint> {
     const txConfig = await this.#prepareDepositToken(params);
 
+    const estimatedGas = await this.#publicClient.estimateContractGas({
+      address: txConfig.address,
+      abi: txConfig.abi,
+      functionName: txConfig.functionName,
+      args: txConfig.args,
+      account: txConfig.account as `0x${string}`,
+      value: txConfig.value,
+    });
+
+    const gasPrice = await this.#publicClient.getGasPrice();
+
+    return gasPrice * estimatedGas;
+  }
+
+  async deposit(params: PrepareDepositTransactionRequest): Promise<PrepareDepositTransactionResponse> {
+    const address = params.address;
+    if (params.token.tokenType === TokenType.ERC20) {
+      // eslint-disable-next-line no-param-reassign
+      params.token = await this.#tokenFetcher.getTokenChainInfo(params.token.contractAddress as `0x${string}`);
+    }
+
+    const txConfig = await this.#prepareDepositToken({ ...params, address, isGasEstimation: false});
+
     if (txConfig.functionName !== 'depositNativeToken') {
       const isValidApproval = await this.#validateApproval({
         tokenAddress: txConfig.args?.[0] as `0x${string}`,
@@ -528,29 +551,6 @@ export class IntMaxClient implements INTMAXClient {
         }
       }
     }
-
-    const estimatedGas = await this.#publicClient.estimateContractGas({
-      address: txConfig.address,
-      abi: txConfig.abi,
-      functionName: txConfig.functionName,
-      args: txConfig.args,
-      account: txConfig.account as `0x${string}`,
-      value: txConfig.value,
-    });
-
-    const gasPrice = await this.#publicClient.getGasPrice();
-
-    return parseEther((gasPrice ?? 0n * estimatedGas).toString());
-  }
-
-  async deposit(params: PrepareDepositTransactionRequest): Promise<PrepareDepositTransactionResponse> {
-    const address = params.address;
-    if (params.token.tokenType === TokenType.ERC20) {
-      // eslint-disable-next-line no-param-reassign
-      params.token = await this.#tokenFetcher.getTokenChainInfo(params.token.contractAddress as `0x${string}`);
-    }
-
-    const txConfig = await this.#prepareDepositToken({ ...params, address, isGasEstimation: false });
 
     const depositHash = await this.#walletClient.writeContract(txConfig);
 

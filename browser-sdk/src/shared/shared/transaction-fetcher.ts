@@ -1,5 +1,5 @@
 import { Abi, createPublicClient, http, PublicClient } from 'viem';
-import { mainnet, sepolia } from 'viem/chains';
+import { base, baseSepolia } from 'viem/chains';
 
 import { Config, get_withdrawal_info, JsWithdrawalInfo } from '../../wasm/browser/intmax2_wasm_lib';
 import { DEVNET_ENV, LiquidityAbi, MAINNET_ENV, TESTNET_ENV } from '../constants';
@@ -18,9 +18,10 @@ export class TransactionFetcher {
           ? TESTNET_ENV.liquidity_contract
           : DEVNET_ENV.liquidity_contract;
 
+    // @ts-expect-error using different chains
     this.#publicClient = createPublicClient({
-      chain: environment === 'mainnet' ? mainnet : sepolia,
-      transport: http(),
+      chain: environment === 'mainnet' ? base : baseSepolia,
+      transport: http(DEVNET_ENV.rpc_url_l1),
     });
   }
 

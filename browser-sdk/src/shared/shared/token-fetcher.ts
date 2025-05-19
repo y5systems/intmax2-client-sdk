@@ -1,6 +1,7 @@
 import { AxiosInstance } from 'axios';
 import { Abi, createPublicClient, erc20Abi, http, PublicClient, zeroAddress } from 'viem';
-import { mainnet, sepolia } from 'viem/chains';
+// import { mainnet, sepolia } from 'viem/chains';
+import { base, baseSepolia } from 'viem/chains';
 
 import { DEVNET_ENV, liquidityAbiNft, MAINNET_ENV, TESTNET_ENV } from '../constants';
 import { IntMaxEnvironment, PaginatedResponse, Token, TokenType } from '../types';
@@ -32,9 +33,15 @@ export class TokenFetcher {
             : DEVNET_ENV.tokens_url,
     });
 
+    // this.#publicClient = createPublicClient({
+    //   chain: environment === 'mainnet' ? mainnet : sepolia,
+    //   transport: http(),
+    // });
+
+    // @ts-expect-error using different chains
     this.#publicClient = createPublicClient({
-      chain: environment === 'mainnet' ? mainnet : sepolia,
-      transport: http(),
+      chain: environment === 'mainnet' ? base : baseSepolia,
+      transport: http(DEVNET_ENV.rpc_url_l1),
     });
 
     this.fetchTokens();

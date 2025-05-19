@@ -17,7 +17,8 @@ import {
   WalletClient,
   WriteContractParameters,
 } from 'viem';
-import { mainnet, sepolia } from 'viem/chains';
+// import { mainnet, sepolia } from 'viem/chains';
+import { base, baseSepolia } from 'viem/chains';
 
 import {
   axiosClientInit,
@@ -122,14 +123,25 @@ export class IntMaxClient implements INTMAXClient {
     }
     initSync(async_params);
 
+    // this.#walletClient = createWalletClient({
+    //   chain: environment === 'mainnet' ? mainnet : sepolia,
+    //   transport: custom(window.ethereum!),
+    // });
+
     this.#walletClient = createWalletClient({
-      chain: environment === 'mainnet' ? mainnet : sepolia,
+      chain: environment === 'mainnet' ? base : baseSepolia,
       transport: custom(window.ethereum!),
     });
 
+    // this.#publicClient = createPublicClient({
+    //   chain: environment === 'mainnet' ? mainnet : sepolia,
+    //   transport: http(),
+    // });
+
+    // @ts-expect-error using different chains
     this.#publicClient = createPublicClient({
-      chain: environment === 'mainnet' ? mainnet : sepolia,
-      transport: http(),
+      chain: environment === 'mainnet' ? base : baseSepolia,
+      transport: http(DEVNET_ENV.rpc_url_l1),
     });
 
     this.#urls = environment === 'mainnet' ? MAINNET_ENV : environment === 'testnet' ? TESTNET_ENV : DEVNET_ENV;

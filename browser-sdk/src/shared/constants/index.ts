@@ -36,20 +36,20 @@ export const TESTNET_ENV: SDKUrls = {
   block_builder_url: 'https://poc-intmax.y5.systems/block-builder',
   validity_prover_url: 'https://poc-intmax.y5.systems/validity-prover',
   withdrawal_aggregator_url: 'https://poc-intmax.y5.systems/withdrawal-server',
+  tokens_url: 'https://poc-intmax.y5.systems/tokens/v1',
 
-  liquidity_contract: '0x0A664C39bf36e66AB493bD2ca64D44d9e21B5798',
-  rollup_contract: '0x59729403f35B78d8C2cFFFFA9dda5f867FEE8F70',
-  withdrawal_contract_address: '0xB0e889e390778D14efE3c759B8bf774385507342',
+  liquidity_contract: '0x7a4Db37a8Ae341A57B9d7307381Bf28620FBA34d',
+  rollup_contract: '0x04EBcC33E8A7F3e0E77156923C42Fb4034117F48',
+  withdrawal_contract_address: '0x7DbaDCECEA63882A525117C2359526e97bEEC35f',
 
-  rollup_contract_deployed_block_number: 9713994,
+  rollup_contract_deployed_block_number: 10186646,
   chain_id_l1: 84532,
   chain_id_l2: 534351,
 
-  rpc_url_l1: 'https://base-sepolia.infura.io/v3/f257356b35944054840b39e5da49c2fb',
-  rpc_url_l2: 'https://scroll-sepolia.infura.io/v3/f257356b35944054840b39e5da49c2fb',
+  rpc_url_l1: '',
+  rpc_url_l2: '',
 
   indexer_url: 'https://stage.api.indexer.intmax.io/v1/indexer',
-  tokens_url: 'https://stage.api.token.intmax.io/v1',
 
   predicate_url: 'https://stage.api.predicate.intmax.io/v1/predicate',
   predicate_contract_address: '0x4D9B3CF9Cb04B27C5D221c82B428D9dE990D3e3a',

@@ -100,6 +100,8 @@ import {
 } from '../wasm/browser/intmax2_wasm_lib';
 import wasmBytes from '../wasm/browser/intmax2_wasm_lib_bg.wasm?url';
 
+const NATIVE_TOKEN_INDEX = 1384972288;
+
 export class IntMaxClient implements INTMAXClient {
   readonly #config: Config;
   readonly #tokenFetcher: TokenFetcher;
@@ -355,13 +357,13 @@ export class IntMaxClient implements INTMAXClient {
         this.#config,
         await this.#indexerFetcher.getBlockBuilderUrl(),
         pubKey,
-        0,
+        NATIVE_TOKEN_INDEX,
       )) as JsFeeQuote;
 
       let withdrawalTransfers: JsWithdrawalTransfers | undefined;
 
       if (isWithdrawal) {
-        withdrawalTransfers = await generate_withdrawal_transfers(this.#config, transfers[0], 0, true);
+        withdrawalTransfers = await generate_withdrawal_transfers(this.#config, transfers[0], NATIVE_TOKEN_INDEX, true);
       }
 
       await await_tx_sendable(this.#config, privateKey);
@@ -405,14 +407,14 @@ export class IntMaxClient implements INTMAXClient {
       await sleep(40000);
       if (rawTransfers[0].claim_beneficiary) {
         try {
-          await sync_claims(this.#config, privateKey, rawTransfers[0].claim_beneficiary, 0);
+          await sync_claims(this.#config, privateKey, rawTransfers[0].claim_beneficiary, NATIVE_TOKEN_INDEX);
         } catch (e) {
           console.error(e);
           throw e;
         }
       }
       await sleep(40000);
-      await retryWithAttempts(async () => await sync_withdrawals(this.#config, privateKey, 0), 1000, 5);
+      await retryWithAttempts(async () => await sync_withdrawals(this.#config, privateKey, NATIVE_TOKEN_INDEX), 1000, 5);
     }
 
     return {
@@ -674,7 +676,7 @@ export class IntMaxClient implements INTMAXClient {
       this.#config,
       await this.#indexerFetcher.getBlockBuilderUrl(),
       this.address as string,
-      0,
+      NATIVE_TOKEN_INDEX
     )) as JsFeeQuote;
     return {
       beneficiary: transferFee.beneficiary,
@@ -684,7 +686,7 @@ export class IntMaxClient implements INTMAXClient {
   }
 
   async getWithdrawalFee(token: Token): Promise<FeeResponse> {
-    const withdrawalFee = (await quote_withdrawal_fee(this.#config, token.tokenIndex, 0)) as JsFeeQuote;
+    const withdrawalFee = (await quote_withdrawal_fee(this.#config, token.tokenIndex, NATIVE_TOKEN_INDEX)) as JsFeeQuote;
     return {
       beneficiary: withdrawalFee.beneficiary,
       fee: withdrawalFee.fee,
@@ -693,7 +695,7 @@ export class IntMaxClient implements INTMAXClient {
   }
 
   async getClaimFee(): Promise<FeeResponse> {
-    const claim_fee = await quote_claim_fee(this.#config, 0);
+    const claim_fee = await quote_claim_fee(this.#config, NATIVE_TOKEN_INDEX);
 
     return {
       beneficiary: claim_fee.beneficiary,
@@ -804,7 +806,7 @@ export class IntMaxClient implements INTMAXClient {
       // sync withdrawals
       await retryWithAttempts(
         () => {
-          return sync_withdrawals(this.#config, this.#privateKey, 0);
+          return sync_withdrawals(this.#config, this.#privateKey, NATIVE_TOKEN_INDEX);
         },
         10000,
         5,

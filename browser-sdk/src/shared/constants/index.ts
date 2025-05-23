@@ -38,11 +38,11 @@ export const TESTNET_ENV: SDKUrls = {
   withdrawal_aggregator_url: 'https://poc-intmax.y5.systems/withdrawal-server',
   tokens_url: 'https://poc-intmax.y5.systems/token/v1',
 
-  liquidity_contract: '0x784D54b415A7c0aa8624Df350F8499F9d6f7AE8f',
-  rollup_contract: '0x8b9cF7dDCee84331a50937cD768d5f897FfBbFE2',
-  withdrawal_contract_address: '0x9EDad28468beDdF9d93aB99A31aa469976680286',
+  liquidity_contract: '0xe80B1caECce7682Cf92d4559169F6f5FAa7b79C8',
+  rollup_contract: '0xA8188e9F61803a354eed0F184ECD7b49D705C63E',
+  withdrawal_contract_address: '0x3d80C1666979EcD0B9AFF4cD8aa6e2dAe1DF02DF',
 
-  rollup_contract_deployed_block_number: 10208388,
+  rollup_contract_deployed_block_number: 10239197,
   chain_id_l1: 84532,
   chain_id_l2: 534351,
 

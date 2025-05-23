@@ -288,8 +288,10 @@ export class IntMaxClient implements INTMAXClient {
         };
       }
 
+      const nativeIndex = token.tokenIndex & 0x3FFF;
+
       return {
-        token: { ...token, tokenType: token.tokenIndex !== 0 ? TokenType.ERC20 : TokenType.NATIVE },
+        token: { ...token, tokenType: token.tokenIndex !== nativeIndex ? TokenType.ERC20 : TokenType.NATIVE },
         amount: BigInt(balance.amount),
       };
     });

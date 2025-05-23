@@ -36,13 +36,13 @@ export const TESTNET_ENV: SDKUrls = {
   block_builder_url: 'https://poc-intmax.y5.systems/block-builder',
   validity_prover_url: 'https://poc-intmax.y5.systems/validity-prover',
   withdrawal_aggregator_url: 'https://poc-intmax.y5.systems/withdrawal-server',
-  tokens_url: 'https://poc-intmax.y5.systems/tokens/v1',
+  tokens_url: 'https://poc-intmax.y5.systems/token/v1',
 
-  liquidity_contract: '0x7a4Db37a8Ae341A57B9d7307381Bf28620FBA34d',
-  rollup_contract: '0x04EBcC33E8A7F3e0E77156923C42Fb4034117F48',
-  withdrawal_contract_address: '0x7DbaDCECEA63882A525117C2359526e97bEEC35f',
+  liquidity_contract: '0x784D54b415A7c0aa8624Df350F8499F9d6f7AE8f',
+  rollup_contract: '0x8b9cF7dDCee84331a50937cD768d5f897FfBbFE2',
+  withdrawal_contract_address: '0x9EDad28468beDdF9d93aB99A31aa469976680286',
 
-  rollup_contract_deployed_block_number: 10186646,
+  rollup_contract_deployed_block_number: 10208388,
   chain_id_l1: 84532,
   chain_id_l2: 534351,
 
